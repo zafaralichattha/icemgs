@@ -182,7 +182,7 @@ class CustomRegisterSerializer(RegisterSerializer):
                     message=f'Your verification code is: {otp_code}',
                     from_email=settings.EMAIL_HOST_USER or 'noreply@icemgs.com',
                     recipient_list=[user.email],
-                    fail_silently=False,
+                    fail_silently=True,
                 )
             except Exception as e:
                 logger.error(f"Failed to send email to {user.email}: {e}")

@@ -200,6 +200,7 @@ EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 EMAIL_HOST_USER = _email_user
 EMAIL_HOST_PASSWORD = _email_password
+EMAIL_TIMEOUT = config('EMAIL_TIMEOUT', default=5, cast=int)
 DEFAULT_FROM_EMAIL = _email_user or 'noreply@icemgs.com'
 
 # CSRF Trusted Origins — required for Django 4.x in production

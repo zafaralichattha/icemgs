@@ -120,7 +120,7 @@ class ResendOTPView(APIView):
                 message=f'Your new verification code is: {otp_code}\n\nThis code expires in 10 minutes.',
                 from_email=settings.EMAIL_HOST_USER or 'noreply@icemgs.com',
                 recipient_list=[user.email],
-                fail_silently=False,
+                fail_silently=True,
             )
         except Exception as e:
             logger.error(f"Failed to send email to {user.email}: {e}")
