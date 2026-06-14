@@ -1,0 +1,52 @@
+# render.docker.yaml — Render Blueprint for ICEMGS Unified App
+# Docs: https://docs.render.com/blueprint-spec
+
+services:
+  # Unified Web Service (React Frontend + Django Backend in one container)
+  - type: web
+    name: icemgs-app
+    runtime: docker
+    dockerFilePath: Dockerfile
+    dockerContext: .
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: DB_NAME
+        fromDatabase:
+          name: icemgs-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: icemgs-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: icemgs-db
+          property: password
+      - key: DB_HOST
+        fromDatabase:
+          name: icemgs-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: icemgs-db
+          property: port
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: EMAIL_HOST_USER
+        sync: false
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+
+databases:
+  - name: icemgs-db
+    plan: free
+    databaseName: icemgs_db

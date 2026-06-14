@@ -26,3 +26,11 @@ urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 admin.site.site_header = "ICEMGS Administration"
 admin.site.site_title = "ICEMGS Admin Portal"
 admin.site.index_title = "Welcome to ICEMGS Admin Portal"
+
+# Catch-all to serve frontend Single Page Application (SPA)
+from django.views.generic import TemplateView
+from django.urls import re_path
+
+urlpatterns += [
+    re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
+]

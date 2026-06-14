@@ -206,7 +206,7 @@ export const authService = {
     const response = await api.post('/auth/google/login/', {
       access_token: accessToken,
     });
-    
+
     const key = response.data?.key;
     if (key) {
       localStorage.setItem('auth_token', key);
