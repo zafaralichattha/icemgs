@@ -216,6 +216,7 @@ export const authService = {
         return { key, user };
       } catch (e) {
         console.error('Failed to fetch user after Google login', e);
+        throw e; // Bubble up the error so the UI shows why authentication failed
       }
     }
     return response.data;

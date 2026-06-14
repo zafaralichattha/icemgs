@@ -1,7 +1,19 @@
 import axios from 'axios';
 
-// API Base URL - Default to localhost for development
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+// API Base URL - Default to localhost for development, or current host for production
+const getApiBaseUrl = () => {
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  const origin = window.location.origin;
+  if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+    return 'http://localhost:8000/api';
+  }
+  // Fallback for production unified deployment (frontend and backend served on same domain)
+  return `${origin}/api`;
+};
+
+export const API_BASE_URL = getApiBaseUrl();
 
 // Create axios instance with default config
 const api = axios.create({
