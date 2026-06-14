@@ -54,6 +54,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Trigger Render Deploy
-        if: ${{ secrets.RENDER_DEPLOY_HOOK_URL != '' }}
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        if: ${{ env.RENDER_DEPLOY_HOOK_URL != '' }}
         run: |
-          curl -fX GET "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
+          curl -fX GET "$RENDER_DEPLOY_HOOK_URL"
