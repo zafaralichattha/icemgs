@@ -9,6 +9,15 @@ const getApiBaseUrl = () => {
   if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
     return 'http://localhost:8000/api';
   }
+  
+  // Smart mapping for separate Render frontend/backend setup
+  if (origin.includes('icemgs-frontend.onrender.com')) {
+    return 'https://icemgs-backend.onrender.com/api';
+  }
+  if (origin.includes('-frontend.onrender.com')) {
+    return origin.replace('-frontend.onrender.com', '-backend.onrender.com') + '/api';
+  }
+  
   // Fallback for production unified deployment (frontend and backend served on same domain)
   return `${origin}/api`;
 };
