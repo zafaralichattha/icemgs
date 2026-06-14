@@ -1348,6 +1348,27 @@ class DiagnoseView(APIView):
                 'user_exists': user_exists,
                 'email_queried': email
             }
+            
+            # Test email sending if requested
+            test_email = request.query_params.get('test_email')
+            if test_email:
+                try:
+                    from django.core.mail import send_mail
+                    from django.conf import settings
+                    send_mail(
+                        subject='ICEMGS Diagnosis Test Email',
+                        message='This is a test email sent from the ICEMGS diagnostics endpoint.',
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=[test_email],
+                        fail_silently=False,
+                    )
+                    res['email_test_status'] = 'success'
+                except Exception as mail_ex:
+                    import traceback
+                    res['email_test_status'] = 'failed'
+                    res['email_test_error'] = f"{type(mail_ex).__name__}: {str(mail_ex)}"
+                    res['email_test_traceback'] = traceback.format_exc()
+
             if user_exists:
                 user = User.objects.get(email__iexact=email)
                 res.update({
