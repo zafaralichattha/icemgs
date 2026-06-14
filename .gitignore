@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+.venv/
+venv/
+backend/venv/
+
+# Build output
+dist/
+
+# Environment files (contain secrets!)
+.env
+backend/.env
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Django
+backend/staticfiles/
+backend/media/
+backend/error_log.txt
+backend/error.html
+backend/full_error.html
+backend/mock_error.html
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
