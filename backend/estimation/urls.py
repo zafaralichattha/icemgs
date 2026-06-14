@@ -8,7 +8,7 @@ from .views import (
     FloorViewSet, RoomViewSet, FinishingDetailsViewSet,
     BillOfMaterialViewSet, CostHistoryViewSet, DashboardStatsView,
     DatabaseHealthCheckView, VerifyEmailView, ResendOTPView,
-    AICostPredictionView
+    AICostPredictionView, DiagnoseView
 )
 
 router = DefaultRouter()
@@ -28,4 +28,5 @@ urlpatterns = [
     path('dashboard/stats/', DashboardStatsView.as_view(), name='dashboard-stats'),
     path('health-check/', DatabaseHealthCheckView.as_view(), name='health-check'),
     path('ai/predict-cost/', AICostPredictionView.as_view(), name='ai-predict-cost'),
+    path('diagnose/', DiagnoseView.as_view(), name='diagnose'),
 ]

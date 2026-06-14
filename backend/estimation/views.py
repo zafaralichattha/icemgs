@@ -1329,3 +1329,50 @@ class AICostPredictionView(APIView):
                 {'error': f'Prediction failed: {str(e)}'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+
+class DiagnoseView(APIView):
+    """Secure Diagnostic Endpoint for Checking Database and Auth State"""
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        email = request.query_params.get('email', 'zafarali.chatha22@gmail.com')
+        try:
+            from django.contrib.auth import get_user_model
+            from allauth.account.models import EmailAddress
+            from rest_framework.authtoken.models import Token
+            User = get_user_model()
+            
+            user_exists = User.objects.filter(email__iexact=email).exists()
+            res = {
+                'user_exists': user_exists,
+                'email_queried': email
+            }
+            if user_exists:
+                user = User.objects.get(email__iexact=email)
+                res.update({
+                    'is_active': user.is_active,
+                    'is_staff': user.is_staff,
+                    'is_superuser': user.is_superuser,
+                    'role': user.role,
+                    'has_usable_password': user.has_usable_password(),
+                })
+                # Check password match if password param is provided
+                test_pass = request.query_params.get('pass')
+                if test_pass:
+                    res['password_match'] = user.check_password(test_pass)
+                
+                # Check email address record
+                email_records = EmailAddress.objects.filter(user=user)
+                res['email_records'] = [
+                    {'email': e.email, 'verified': e.verified, 'primary': e.primary}
+                    for e in email_records
+                ]
+                
+                # Check token
+                token_exists = Token.objects.filter(user=user).exists()
+                res['token_exists'] = token_exists
+                
+            return Response(res)
+        except Exception as e:
+            return Response({'error': str(e)}, status=500)
