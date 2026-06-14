@@ -161,7 +161,18 @@ export default function StepPlotDetails({ onNext }: StepPlotDetailsProps) {
                 <input
                   type="number"
                   value={formData.plotLength}
-                  onChange={(e) => handleChange('plotLength', e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === '' || parseFloat(val) >= 0) {
+                      handleChange('plotLength', val);
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === '-' || e.key === 'e') {
+                      e.preventDefault();
+                    }
+                  }}
+                  min="0"
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                     errors.plotLength ? 'border-red-500' : 'border-gray-300'
                   }`}
@@ -178,7 +189,18 @@ export default function StepPlotDetails({ onNext }: StepPlotDetailsProps) {
                 <input
                   type="number"
                   value={formData.plotWidth}
-                  onChange={(e) => handleChange('plotWidth', e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === '' || parseFloat(val) >= 0) {
+                      handleChange('plotWidth', val);
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === '-' || e.key === 'e') {
+                      e.preventDefault();
+                    }
+                  }}
+                  min="0"
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                     errors.plotWidth ? 'border-red-500' : 'border-gray-300'
                   }`}

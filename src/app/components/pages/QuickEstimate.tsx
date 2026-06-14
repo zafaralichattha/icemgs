@@ -146,7 +146,18 @@ export default function QuickEstimate({ onMenuClick }: QuickEstimateProps) {
                   <input
                     type="number"
                     value={plotLength}
-                    onChange={(e) => setPlotLength(e.target.value)}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === '' || parseFloat(val) >= 0) {
+                        setPlotLength(val);
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === '-' || e.key === 'e') {
+                        e.preventDefault();
+                      }
+                    }}
+                    min="0"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     placeholder="e.g., 25"
                   />
@@ -157,7 +168,18 @@ export default function QuickEstimate({ onMenuClick }: QuickEstimateProps) {
                   <input
                     type="number"
                     value={plotWidth}
-                    onChange={(e) => setPlotWidth(e.target.value)}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === '' || parseFloat(val) >= 0) {
+                        setPlotWidth(val);
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === '-' || e.key === 'e') {
+                        e.preventDefault();
+                      }
+                    }}
+                    min="0"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     placeholder="e.g., 45"
                   />
@@ -170,7 +192,18 @@ export default function QuickEstimate({ onMenuClick }: QuickEstimateProps) {
                   <input
                     type="number"
                     value={plotMarlas}
-                    onChange={(e) => setPlotMarlas(e.target.value)}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === '' || parseFloat(val) >= 0) {
+                        setPlotMarlas(val);
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === '-' || e.key === 'e') {
+                        e.preventDefault();
+                      }
+                    }}
+                    min="0"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     placeholder="e.g., 5"
                   />
