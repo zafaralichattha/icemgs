@@ -176,19 +176,23 @@ class CustomRegisterSerializer(RegisterSerializer):
             # Always log OTP so it can be retrieved from Render logs
             logger.info(f"Generated OTP for {user.email}: {otp_code}")
             
-            # Attempt to send email
-            try:
-                logger.info(f"EMAIL_BACKEND={settings.EMAIL_BACKEND}, EMAIL_HOST={settings.EMAIL_HOST}, EMAIL_PORT={settings.EMAIL_PORT}, EMAIL_HOST_USER={settings.EMAIL_HOST_USER}, EMAIL_TIMEOUT={getattr(settings, 'EMAIL_TIMEOUT', 'not set')}")
-                result = send_mail(
-                    subject='Verify your ICEMGS Account',
-                    message=f'Your verification code is: {otp_code}\n\nThis code expires in 10 minutes.',
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[user.email],
-                    fail_silently=False,
-                )
-                logger.info(f"Email send result for {user.email}: {result} (1=success, 0=failed)")
-            except Exception as e:
-                logger.error(f"SMTP ERROR sending email to {user.email}: {type(e).__name__}: {e}")
+            # Send Email Asynchronously in a background thread to avoid request timeouts
+            import threading
+            def send_otp_email_async(email_addr, otp):
+                try:
+                    logger.info(f"[Async Email] EMAIL_BACKEND={settings.EMAIL_BACKEND}, EMAIL_HOST={settings.EMAIL_HOST}, EMAIL_PORT={settings.EMAIL_PORT}, EMAIL_HOST_USER={settings.EMAIL_HOST_USER}")
+                    result = send_mail(
+                        subject='Verify your ICEMGS Account',
+                        message=f'Your verification code is: {otp}\n\nThis code expires in 10 minutes.',
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=[email_addr],
+                        fail_silently=False,
+                    )
+                    logger.info(f"[Async Email] Email send result for {email_addr}: {result} (1=success, 0=failed)")
+                except Exception as ex:
+                    logger.error(f"[Async Email] SMTP ERROR sending email to {email_addr}: {type(ex).__name__}: {ex}")
+
+            threading.Thread(target=send_otp_email_async, args=(user.email, otp_code), daemon=True).start()
 
             logger.info(f"User created successfully: {user.email}")
             return user

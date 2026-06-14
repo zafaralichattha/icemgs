@@ -112,19 +112,23 @@ class ResendOTPView(APIView):
         otp_code = str(random.randint(100000, 999999))
         OTPVerification.objects.create(user=user, otp_code=otp_code)
 
-        # Send email
-        try:
-            logger.info(f"Resend OTP for {user.email}: {otp_code}")
-            result = send_mail(
-                subject='Verify your ICEMGS Account',
-                message=f'Your new verification code is: {otp_code}\n\nThis code expires in 10 minutes.',
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[user.email],
-                fail_silently=False,
-            )
-            logger.info(f"Resend email result for {user.email}: {result}")
-        except Exception as e:
-            logger.error(f"SMTP ERROR resending OTP to {user.email}: {type(e).__name__}: {e}")
+        # Send email asynchronously in a background thread to prevent request timeouts
+        import threading
+        def send_otp_email_async(email_addr, otp):
+            try:
+                logger.info(f"[Async Email] Resend OTP for {email_addr}: {otp}")
+                result = send_mail(
+                    subject='Verify your ICEMGS Account',
+                    message=f'Your new verification code is: {otp}\n\nThis code expires in 10 minutes.',
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[email_addr],
+                    fail_silently=False,
+                )
+                logger.info(f"[Async Email] Resend email result for {email_addr}: {result}")
+            except Exception as ex:
+                logger.error(f"[Async Email] SMTP ERROR resending OTP to {email_addr}: {type(ex).__name__}: {ex}")
+
+        threading.Thread(target=send_otp_email_async, args=(user.email, otp_code), daemon=True).start()
 
         return Response({'message': 'A new verification code has been sent to your email.'}, status=status.HTTP_200_OK)
 
