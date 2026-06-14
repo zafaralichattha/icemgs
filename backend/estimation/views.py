@@ -115,15 +115,16 @@ class ResendOTPView(APIView):
         # Send email
         try:
             logger.info(f"Resend OTP for {user.email}: {otp_code}")
-            send_mail(
+            result = send_mail(
                 subject='Verify your ICEMGS Account',
                 message=f'Your new verification code is: {otp_code}\n\nThis code expires in 10 minutes.',
-                from_email=settings.EMAIL_HOST_USER or 'noreply@icemgs.com',
+                from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[user.email],
-                fail_silently=True,
+                fail_silently=False,
             )
+            logger.info(f"Resend email result for {user.email}: {result}")
         except Exception as e:
-            logger.error(f"Failed to send email to {user.email}: {e}")
+            logger.error(f"SMTP ERROR resending OTP to {user.email}: {type(e).__name__}: {e}")
 
         return Response({'message': 'A new verification code has been sent to your email.'}, status=status.HTTP_200_OK)
 

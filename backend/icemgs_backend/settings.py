@@ -144,6 +144,10 @@ CORS_ALLOWED_ORIGINS = config(
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 CORS_ALLOW_CREDENTIALS = True
+# Allow all .onrender.com subdomains in production
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r'^https://.*\.onrender\.com$',
+]
 
 # Django Allauth — email-only, no username field
 SITE_ID = 1
@@ -200,19 +204,27 @@ EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 EMAIL_HOST_USER = _email_user
 EMAIL_HOST_PASSWORD = _email_password
-EMAIL_TIMEOUT = config('EMAIL_TIMEOUT', default=5, cast=int)
+EMAIL_TIMEOUT = config('EMAIL_TIMEOUT', default=30, cast=int)
 DEFAULT_FROM_EMAIL = _email_user or 'noreply@icemgs.com'
 
 # CSRF Trusted Origins — required for Django 4.x in production
+_csrf_defaults = 'http://localhost:5173,http://localhost:3000,http://localhost:8000'
 CSRF_TRUSTED_ORIGINS = config(
     'CSRF_TRUSTED_ORIGINS',
-    default='http://localhost:5173,http://localhost:3000,http://localhost:8000',
+    default=_csrf_defaults,
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
+# Auto-add Render domains to CSRF trusted origins
+for origin in list(CORS_ALLOWED_ORIGINS):
+    if origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(origin)
 
 # Production security settings
 if not DEBUG:
-    SECURE_SSL_REDIRECT = True
+    # Render handles SSL termination at the proxy level.
+    # SECURE_SSL_REDIRECT must be False to prevent infinite redirect loops.
+    SECURE_SSL_REDIRECT = False
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True

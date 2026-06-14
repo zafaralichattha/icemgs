@@ -173,21 +173,24 @@ class CustomRegisterSerializer(RegisterSerializer):
             otp_code = str(random.randint(100000, 999999))
             OTPVerification.objects.create(user=user, otp_code=otp_code)
 
-            # Send Email
+            # Always log OTP so it can be retrieved from Render logs
+            logger.info(f"Generated OTP for {user.email}: {otp_code}")
+            
+            # Attempt to send email
             try:
-                # We log it so it can be seen in the console during development
-                logger.info(f"Generated OTP for {user.email}: {otp_code}")
-                send_mail(
+                logger.info(f"EMAIL_BACKEND={settings.EMAIL_BACKEND}, EMAIL_HOST={settings.EMAIL_HOST}, EMAIL_PORT={settings.EMAIL_PORT}, EMAIL_HOST_USER={settings.EMAIL_HOST_USER}, EMAIL_TIMEOUT={getattr(settings, 'EMAIL_TIMEOUT', 'not set')}")
+                result = send_mail(
                     subject='Verify your ICEMGS Account',
-                    message=f'Your verification code is: {otp_code}',
-                    from_email=settings.EMAIL_HOST_USER or 'noreply@icemgs.com',
+                    message=f'Your verification code is: {otp_code}\n\nThis code expires in 10 minutes.',
+                    from_email=settings.DEFAULT_FROM_EMAIL,
                     recipient_list=[user.email],
-                    fail_silently=True,
+                    fail_silently=False,
                 )
+                logger.info(f"Email send result for {user.email}: {result} (1=success, 0=failed)")
             except Exception as e:
-                logger.error(f"Failed to send email to {user.email}: {e}")
+                logger.error(f"SMTP ERROR sending email to {user.email}: {type(e).__name__}: {e}")
 
-            logger.info(f"User created successfully and OTP sent: {user.email}")
+            logger.info(f"User created successfully: {user.email}")
             return user
         except Exception as e:
             logger.error(f"Error saving user: {str(e)}")
