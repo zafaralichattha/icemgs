@@ -2,8 +2,8 @@
 FROM node:20-alpine AS frontend-builder
 WORKDIR /app
 RUN npm install -g pnpm
-COPY package.json pnpm-lock.yaml* ./
-RUN pnpm install --frozen-lockfile
+COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* ./
+RUN pnpm install --no-frozen-lockfile
 COPY . .
 # Inject Vite env vars during build-time compilation
 ARG VITE_API_URL

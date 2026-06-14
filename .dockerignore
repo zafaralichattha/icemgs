@@ -1,0 +1,12 @@
+node_modules
+dist
+.git
+.github
+backend/venv
+.venv
+venv
+__pycache__
+*.pyc
+.env
+.env.local
+.DS_Store
