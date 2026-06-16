@@ -149,8 +149,17 @@ export const authService = {
 
       console.log('✅ Registration response:', response.data);
 
-      // OTP Verification is required. Ignore any returned token because the user is inactive.
-      return { success: true, message: 'OTP sent to email', requiresVerification: true };
+      // Auto-verify bypass is active. We read the token and user from the response.
+      const user = response.data?.user;
+      const token = response.data?.key;
+      
+      return { 
+        success: true, 
+        message: 'Registration successful', 
+        requiresVerification: false,
+        token: token,
+        user: user
+      };
     } catch (error: any) {
       // Log detailed error information
       console.error('❌ Registration error:', {
