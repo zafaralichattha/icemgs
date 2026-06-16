@@ -196,6 +196,7 @@ _email_password = config('EMAIL_HOST_PASSWORD', default='')
 _has_real_email_creds = bool(_email_user and _email_password and _email_password != 'your-email-password')
 
 _sendgrid_key = config('SENDGRID_API_KEY', default='')
+_brevo_key = config('BREVO_API_KEY', default='')
 
 if _sendgrid_key:
     # Use SendGrid HTTP API to bypass Render's SMTP blocks
@@ -203,6 +204,13 @@ if _sendgrid_key:
     EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
     ANYMAIL = {
         "SENDGRID_API_KEY": _sendgrid_key,
+    }
+elif _brevo_key:
+    # Use Brevo (Sendinblue) HTTP API to bypass Render's SMTP blocks
+    INSTALLED_APPS.append('anymail')
+    EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
+    ANYMAIL = {
+        "SENDINBLUE_API_KEY": _brevo_key,
     }
 else:
     EMAIL_BACKEND = config(
