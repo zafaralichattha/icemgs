@@ -195,10 +195,21 @@ _email_user = config('EMAIL_HOST_USER', default='')
 _email_password = config('EMAIL_HOST_PASSWORD', default='')
 _has_real_email_creds = bool(_email_user and _email_password and _email_password != 'your-email-password')
 
-EMAIL_BACKEND = config(
-    'EMAIL_BACKEND',
-    default='django.core.mail.backends.smtp.EmailBackend' if _has_real_email_creds else 'django.core.mail.backends.console.EmailBackend'
-)
+_sendgrid_key = config('SENDGRID_API_KEY', default='')
+
+if _sendgrid_key:
+    # Use SendGrid HTTP API to bypass Render's SMTP blocks
+    INSTALLED_APPS.append('anymail')
+    EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
+    ANYMAIL = {
+        "SENDGRID_API_KEY": _sendgrid_key,
+    }
+else:
+    EMAIL_BACKEND = config(
+        'EMAIL_BACKEND',
+        default='django.core.mail.backends.smtp.EmailBackend' if _has_real_email_creds else 'django.core.mail.backends.console.EmailBackend'
+    )
+
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
 EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
