@@ -169,7 +169,8 @@ export default function LandingPage({ onMenuClick }: LandingPageProps) {
       {/* Footer */}
       <footer className="bg-gray-800 text-white py-8 mt-20">
         <div className="max-w-6xl mx-auto px-4 text-center">
-          <p>&copy; 2025 ICEMGS - Intelligent Construction Estimation & Map Generator System</p>
+          <p>&copy; 2026 ICEMGS - Intelligent Construction Estimation & Map Generator System</p>
+          <p className="text-gray-400 text-sm mt-2">Created by Zafar Ali Chatha</p>
         </div>
       </footer>
     </div>

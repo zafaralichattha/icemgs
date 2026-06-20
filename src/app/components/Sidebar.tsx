@@ -203,7 +203,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         {/* Footer */}
         <div className="px-4 pb-4">
           <p className="text-xs text-gray-500 text-center">
-            © 2026 ICEMGS v1.0
+            © 2026 ICEMGS
           </p>
         </div>
       </aside>
