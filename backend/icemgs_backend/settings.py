@@ -206,11 +206,11 @@ if _sendgrid_key:
         "SENDGRID_API_KEY": _sendgrid_key,
     }
 elif _brevo_key:
-    # Use Brevo (Sendinblue) HTTP API to bypass Render's SMTP blocks
+    # Use Brevo HTTP API to bypass Render's SMTP blocks
     INSTALLED_APPS.append('anymail')
-    EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
+    EMAIL_BACKEND = "anymail.backends.brevo.EmailBackend"
     ANYMAIL = {
-        "SENDINBLUE_API_KEY": _brevo_key,
+        "BREVO_API_KEY": _brevo_key,
     }
 else:
     EMAIL_BACKEND = config(
@@ -224,7 +224,11 @@ EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 EMAIL_HOST_USER = _email_user
 EMAIL_HOST_PASSWORD = _email_password
 EMAIL_TIMEOUT = config('EMAIL_TIMEOUT', default=30, cast=int)
-DEFAULT_FROM_EMAIL = _email_user or 'noreply@icemgs.com'
+# For Brevo HTTP API, the from-email must be a verified sender in your Brevo account.
+# Brevo auto-verifies the login email (aef655001@smtp-brevo.com won't work as FROM).
+# Use the email configured as a verified sender in Brevo dashboard.
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default=_email_user or 'mastermathstwelve@gmail.com')
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 # CSRF Trusted Origins — required for Django 4.x in production
 _csrf_defaults = 'http://localhost:5173,http://localhost:3000,http://localhost:8000'

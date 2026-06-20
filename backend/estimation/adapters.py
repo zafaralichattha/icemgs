@@ -2,8 +2,11 @@
 Custom allauth adapters for ICEMGS.
 These are required because our User model uses email-only authentication (no username field).
 """
+import logging
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
+
+adapter_logger = logging.getLogger(__name__)
 
 
 class AccountAdapter(DefaultAccountAdapter):
@@ -86,10 +89,36 @@ class SocialAccountAdapter(DefaultSocialAccountAdapter):
         return user
 
     def save_user(self, request, sociallogin, form=None):
+        """Save social login user, ensuring they are active (no OTP needed for OAuth)."""
         try:
+            # Ensure user is active for social logins (skip OTP)
+            sociallogin.user.is_active = True
             sociallogin.user.full_clean()
         except Exception as e:
-            with open('error_log.txt', 'a') as f:
-                f.write(f"FULL_CLEAN_ERROR: {str(e)}\n")
+            adapter_logger.error(f"Social account save_user full_clean error: {type(e).__name__}: {e}")
             raise e
-        return super().save_user(request, sociallogin, form)
+        user = super().save_user(request, sociallogin, form)
+        adapter_logger.info(f"Social account user saved: {user.email}, active={user.is_active}")
+        return user
+
+    def pre_social_login(self, request, sociallogin):
+        """
+        Auto-connect social account to existing user with same email.
+        This handles the case where a user registered with email/password
+        and later tries to log in with Google using the same email.
+        """
+        email = sociallogin.user.email
+        if not email:
+            return
+
+        from estimation.models import User
+        try:
+            existing_user = User.objects.get(email__iexact=email)
+            if not sociallogin.is_existing:
+                sociallogin.connect(request, existing_user)
+                adapter_logger.info(f"Auto-connected social account for existing user: {email}")
+        except User.DoesNotExist:
+            pass
+        except Exception as e:
+            adapter_logger.error(f"Error in pre_social_login for {email}: {type(e).__name__}: {e}")
+

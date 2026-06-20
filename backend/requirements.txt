@@ -16,4 +16,4 @@ chardet==5.2.0
 requests==2.32.0
 beautifulsoup4==4.12.3
 google-genai>=1.0.0
-django-anymail[sendinblue]==10.3
+django-anymail[brevo]==10.3

@@ -40,6 +40,29 @@ class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
     client_class = OAuth2Client
 
+    def post(self, request, *args, **kwargs):
+        """Override post to add error logging and ensure proper token return."""
+        import logging
+        google_logger = logging.getLogger(__name__)
+        google_logger.info(f"Google login attempt with data keys: {list(request.data.keys())}")
+        try:
+            response = super().post(request, *args, **kwargs)
+            google_logger.info(f"Google login successful, response keys: {list(response.data.keys()) if hasattr(response, 'data') else 'N/A'}")
+
+            # Ensure the response contains user data alongside the token
+            if hasattr(response, 'data') and 'key' in response.data and self.user:
+                from .serializers import UserSerializer
+                response.data['user'] = UserSerializer(self.user).data
+            return response
+        except Exception as e:
+            google_logger.error(f"Google login FAILED: {type(e).__name__}: {e}")
+            import traceback
+            google_logger.error(traceback.format_exc())
+            return Response(
+                {'non_field_errors': [f'Google authentication failed: {str(e)}']},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
 
 class VerifyEmailView(APIView):
     """Verify email with OTP and return token"""
@@ -118,16 +141,32 @@ class ResendOTPView(APIView):
         def send_otp_email_async(email_addr, otp):
             try:
                 logger.info(f"[Async Email] Resend OTP for {email_addr}: {otp}")
+                
+                html_message = f"""
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                    <h2 style="color: #2563EB;">ICEMGS - Email Verification</h2>
+                    <p>Your new verification code is:</p>
+                    <div style="background: #f0f4ff; padding: 20px; text-align: center; border-radius: 8px; margin: 20px 0;">
+                        <span style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #1e40af;">{otp}</span>
+                    </div>
+                    <p>This code expires in 10 minutes.</p>
+                    <p style="color: #6b7280; font-size: 12px;">If you did not request this code, please ignore this email.</p>
+                </div>
+                """
+                
                 result = send_mail(
                     subject='Verify your ICEMGS Account',
                     message=f'Your new verification code is: {otp}\n\nThis code expires in 10 minutes.',
                     from_email=settings.DEFAULT_FROM_EMAIL,
                     recipient_list=[email_addr],
+                    html_message=html_message,
                     fail_silently=False,
                 )
                 logger.info(f"[Async Email] Resend email result for {email_addr}: {result}")
             except Exception as ex:
-                logger.error(f"[Async Email] SMTP ERROR resending OTP to {email_addr}: {type(ex).__name__}: {ex}")
+                logger.error(f"[Async Email] EMAIL ERROR resending OTP to {email_addr}: {type(ex).__name__}: {ex}")
+                import traceback
+                logger.error(f"[Async Email] Full traceback: {traceback.format_exc()}")
 
         threading.Thread(target=send_otp_email_async, args=(user.email, otp_code), daemon=True).start()
 

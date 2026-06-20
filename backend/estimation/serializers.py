@@ -180,17 +180,39 @@ class CustomRegisterSerializer(RegisterSerializer):
             import threading
             def send_otp_email_async(email_addr, otp):
                 try:
-                    logger.info(f"[Async Email] EMAIL_BACKEND={settings.EMAIL_BACKEND}, EMAIL_HOST={settings.EMAIL_HOST}, EMAIL_PORT={settings.EMAIL_PORT}, EMAIL_HOST_USER={settings.EMAIL_HOST_USER}")
+                    # Log full email configuration for debugging
+                    anymail_cfg = getattr(settings, 'ANYMAIL', {})
+                    logger.info(
+                        f"[Async Email] EMAIL_BACKEND={settings.EMAIL_BACKEND}, "
+                        f"DEFAULT_FROM_EMAIL={settings.DEFAULT_FROM_EMAIL}, "
+                        f"ANYMAIL keys={list(anymail_cfg.keys()) if anymail_cfg else 'N/A'}"
+                    )
+                    
+                    html_message = f"""
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                        <h2 style="color: #2563EB;">ICEMGS - Email Verification</h2>
+                        <p>Your verification code is:</p>
+                        <div style="background: #f0f4ff; padding: 20px; text-align: center; border-radius: 8px; margin: 20px 0;">
+                            <span style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #1e40af;">{otp}</span>
+                        </div>
+                        <p>This code expires in 10 minutes.</p>
+                        <p style="color: #6b7280; font-size: 12px;">If you did not request this code, please ignore this email.</p>
+                    </div>
+                    """
+                    
                     result = send_mail(
                         subject='Verify your ICEMGS Account',
                         message=f'Your verification code is: {otp}\n\nThis code expires in 10 minutes.',
                         from_email=settings.DEFAULT_FROM_EMAIL,
                         recipient_list=[email_addr],
+                        html_message=html_message,
                         fail_silently=False,
                     )
                     logger.info(f"[Async Email] Email send result for {email_addr}: {result} (1=success, 0=failed)")
                 except Exception as ex:
-                    logger.error(f"[Async Email] SMTP ERROR sending email to {email_addr}: {type(ex).__name__}: {ex}")
+                    logger.error(f"[Async Email] EMAIL ERROR sending to {email_addr}: {type(ex).__name__}: {ex}")
+                    import traceback
+                    logger.error(f"[Async Email] Full traceback: {traceback.format_exc()}")
 
             threading.Thread(target=send_otp_email_async, args=(user.email, otp_code), daemon=True).start()
 
