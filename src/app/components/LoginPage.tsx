@@ -79,12 +79,12 @@ export default function LoginPage({ onMenuClick }: LoginPageProps) {
     onSuccess: async (tokenResponse) => {
       try {
         setLoading(true);
+        setError('');
         const success = await authContext.googleLogin(tokenResponse.access_token);
-        if (success) {
-          navigate('/dashboard');
-        } else {
+        if (!success) {
           setError('Google login failed');
         }
+        // Navigation is handled by the useEffect watching isAuthenticated
       } catch (err: any) {
         console.error('Google Auth Backend Error:', err.response?.data || err);
         setError('Failed to authenticate with Google: ' + (err.response?.data?.non_field_errors?.[0] || err.message));
