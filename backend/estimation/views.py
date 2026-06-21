@@ -36,6 +36,54 @@ from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
 from django.conf import settings as django_settings
+import requests
+from rest_framework.views import APIView
+from rest_framework import status
+from rest_framework.response import Response
+from dj_rest_auth.models import TokenModel
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+class GoogleIdTokenLogin(APIView):
+    """Validate an id_token from Google and return a DRF token."""
+    def post(self, request, *args, **kwargs):
+        id_token = request.data.get('id_token')
+        if not id_token:
+            return Response({'detail': 'id_token missing'}, status=status.HTTP_400_BAD_REQUEST)
+        # Verify token with Google
+        try:
+            google_resp = requests.get(
+                'https://oauth2.googleapis.com/tokeninfo',
+                params={'id_token': id_token},
+                timeout=5,
+            )
+        except Exception as e:
+            return Response({'detail': f'Google verification error: {str(e)}'}, status=status.HTTP_502_BAD_GATEWAY)
+
+        if google_resp.status_code != 200:
+            return Response({'detail': 'Invalid Google token'}, status=status.HTTP_401_UNAUTHORIZED)
+        payload = google_resp.json()
+        email = payload.get('email')
+        if not email:
+            return Response({'detail': 'Google token missing email'}, status=status.HTTP_401_UNAUTHORIZED)
+        # Get or create the Django user
+        user, _ = User.objects.get_or_create(email=email, defaults={
+            'first_name': payload.get('given_name', ''),
+            'last_name': payload.get('family_name', ''),
+        })
+        # Issue (or retrieve) a DRF token for this user
+        token, _ = TokenModel.objects.get_or_create(user=user)
+        return Response({
+            'key': token.key,
+            'user': {
+                'id': user.id,
+                'email': user.email,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+            },
+        }, status=status.HTTP_200_OK)
+
 
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter

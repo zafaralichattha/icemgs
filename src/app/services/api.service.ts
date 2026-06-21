@@ -202,9 +202,11 @@ export const authService = {
     return { token: key, user };
   },
 
-  async googleLogin(accessToken: string) {
-    const response = await api.post('/auth/google/login/', {
-      access_token: accessToken,
+  async googleLogin(idToken: string) {
+    // Posts the id_token (JWT credential) from @react-oauth/google's GoogleLogin component
+    // to the backend endpoint that verifies it directly with Google's tokeninfo API.
+    const response = await api.post('/auth/google-id/', {
+      id_token: idToken,
     });
 
     const key = response.data?.key;
@@ -216,11 +218,12 @@ export const authService = {
         return { key, user };
       } catch (e) {
         console.error('Failed to fetch user after Google login', e);
-        throw e; // Bubble up the error so the UI shows why authentication failed
+        throw e;
       }
     }
     return response.data;
   },
+
 
   async verifyEmail(email: string, otp: string) {
     const response = await api.post('auth/verify-email/', { email, otp });
