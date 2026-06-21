@@ -136,9 +136,13 @@ export default function RegisterPage({ onMenuClick }: RegisterPageProps) {
         setLoading(false);
       }
     },
-    onError: () => {
-      setError('Google Sign-up was unsuccessful');
+    onError: (error) => {
+      console.error('Google OAuth error:', error);
+      setError('Google Sign-up was unsuccessful. Please try again.');
     },
+    // Explicitly set flow to 'implicit' so @react-oauth/google returns an
+    // access_token directly — this matches what the backend expects.
+    flow: 'implicit',
   });
 
   const handleGoogleLogin = () => {

@@ -92,9 +92,13 @@ export default function LoginPage({ onMenuClick }: LoginPageProps) {
         setLoading(false);
       }
     },
-    onError: () => {
-      setError('Google Login was unsuccessful');
+    onError: (error) => {
+      console.error('Google OAuth error:', error);
+      setError('Google Login was unsuccessful. Please try again.');
     },
+    // Explicitly set flow to 'implicit' so @react-oauth/google returns an
+    // access_token directly — this matches what the backend expects.
+    flow: 'implicit',
   });
 
   const handleGoogleLogin = () => {

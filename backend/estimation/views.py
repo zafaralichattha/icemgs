@@ -38,6 +38,10 @@ from dj_rest_auth.registration.views import SocialLoginView
 
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
+    # callback_url must match what Google sees during the OAuth flow.
+    # For the implicit/access_token flow used by @react-oauth/google,
+    # this URL just needs to be a registered origin — it isn't actually called.
+    callback_url = 'https://icemgs-unified-latest.onrender.com'
     client_class = OAuth2Client
 
     def post(self, request, *args, **kwargs):
