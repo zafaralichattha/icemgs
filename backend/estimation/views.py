@@ -35,14 +35,18 @@ def custom_exception_handler(exc, context):
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
+from django.conf import settings as django_settings
 
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
-    # callback_url must match what Google sees during the OAuth flow.
-    # For the implicit/access_token flow used by @react-oauth/google,
-    # this URL just needs to be a registered origin — it isn't actually called.
-    callback_url = 'https://icemgs-unified-latest.onrender.com'
+    # callback_url is read from GOOGLE_CALLBACK_URL env var on Render.
+    # For the implicit/access_token flow, this URL just needs to be a
+    # registered Authorized Redirect URI in Google Cloud Console.
     client_class = OAuth2Client
+
+    @property
+    def callback_url(self):
+        return getattr(django_settings, 'GOOGLE_CALLBACK_URL', 'https://icemgs-unified-latest.onrender.com')
 
     def post(self, request, *args, **kwargs):
         """Override post to add error logging and ensure proper token return."""
