@@ -202,11 +202,11 @@ export const authService = {
     return { token: key, user };
   },
 
-  async googleLogin(idToken: string) {
-    // Posts the id_token (JWT credential) from @react-oauth/google's GoogleLogin component
-    // to the backend endpoint that verifies it directly with Google's tokeninfo API.
-    const response = await api.post('/auth/google-id/', {
-      id_token: idToken,
+  async googleLogin(code: string) {
+    // Sends the authorization code from useGoogleLogin(flow='auth-code').
+    // Backend exchanges it with Google using client_id + client_secret + redirect_uri='postmessage'.
+    const response = await api.post('/auth/google/login/', {
+      code: code,
     });
 
     const key = response.data?.key;

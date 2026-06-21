@@ -87,14 +87,11 @@ class GoogleIdTokenLogin(APIView):
 
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
-    # callback_url is read from GOOGLE_CALLBACK_URL env var on Render.
-    # For the implicit/access_token flow, this URL just needs to be a
-    # registered Authorized Redirect URI in Google Cloud Console.
+    # 'postmessage' is the special redirect_uri for popup-based auth-code flow.
+    # The frontend (useGoogleLogin with flow='auth-code') sends a one-time code;
+    # the backend exchanges it using client_id + client_secret + redirect_uri='postmessage'.
+    callback_url = 'postmessage'
     client_class = OAuth2Client
-
-    @property
-    def callback_url(self):
-        return getattr(django_settings, 'GOOGLE_CALLBACK_URL', 'https://icemgs-unified-latest.onrender.com')
 
     def post(self, request, *args, **kwargs):
         """Override post to add error logging and ensure proper token return."""
