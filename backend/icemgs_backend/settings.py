@@ -116,10 +116,13 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # Django REST Framework
+# NOTE: SessionAuthentication is intentionally excluded. The frontend uses
+# Token-based auth (Authorization: Token <key>), so CSRF enforcement by
+# SessionAuthentication is unnecessary and breaks mobile browsers that
+# block or strip SameSite cookies on cross-origin requests.
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -250,6 +253,12 @@ if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+    # SameSite=None is required for cross-origin cookie delivery (e.g.
+    # separate frontend/backend Render services). Combined with Secure=True
+    # this is safe and lets mobile browsers correctly receive cookies.
+    SESSION_COOKIE_SAMESITE = 'None'
+    CSRF_COOKIE_SAMESITE = 'None'
+    CSRF_COOKIE_HTTPONLY = False  # Allow JS to read the CSRF cookie if needed
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = 'DENY'
