@@ -231,6 +231,7 @@ export default function RegisterPage({ onMenuClick }: RegisterPageProps) {
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Minimum 8 characters"
+                  autoComplete="new-password"
                 />
               </div>
             </div>
@@ -245,6 +246,7 @@ export default function RegisterPage({ onMenuClick }: RegisterPageProps) {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Re-enter password"
+                  autoComplete="new-password"
                 />
               </div>
             </div>
