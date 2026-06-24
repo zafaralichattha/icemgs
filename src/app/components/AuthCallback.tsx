@@ -1,17 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { authService } from '../services/api.service';
 import { useAuth } from '../contexts/AuthContext';
 
 /**
  * Handles the redirect from the server-side Google OAuth callback.
  * URL: /auth/callback?token=<DRF_TOKEN>
- * Stores the token, fetches user data, then navigates to /dashboard.
+ *
+ * Uses loginWithToken() from AuthContext which sets both localStorage AND
+ * React state atomically — so PrivateRoute sees isAuthenticated=true
+ * immediately on the FIRST visit, without needing a page reload.
  */
 export default function AuthCallback() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { refreshUser } = useAuth();
+  const { loginWithToken } = useAuth();
   const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
@@ -31,22 +33,17 @@ export default function AuthCallback() {
       return;
     }
 
-    // Store token and fetch user
-    localStorage.setItem('auth_token', token);
-
-    authService.getCurrentUser()
-      .then((user) => {
-        localStorage.setItem('user', JSON.stringify(user));
-        // Trigger AuthContext to re-read from localStorage
-        window.dispatchEvent(new Event('auth-token-set'));
+    // loginWithToken sets localStorage + React state (token + user) in one call,
+    // so PrivateRoute sees isAuthenticated=true before navigate('/dashboard') fires.
+    loginWithToken(token).then((success) => {
+      if (success) {
         navigate('/dashboard', { replace: true });
-      })
-      .catch((err) => {
-        console.error('Failed to fetch user after Google login:', err);
-        setErrorMsg('Login succeeded but failed to load user. Redirecting...');
+      } else {
+        setErrorMsg('Login succeeded but failed to load profile. Redirecting...');
         setTimeout(() => navigate('/login'), 2000);
-      });
-  }, [searchParams, navigate]);
+      }
+    });
+  }, [searchParams, navigate, loginWithToken]);
 
   if (errorMsg) {
     return (
@@ -62,7 +59,8 @@ export default function AuthCallback() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-        <p className="text-gray-600">Completing Google sign in...</p>
+        <p className="text-gray-600 font-medium">Completing Google sign in...</p>
+        <p className="text-gray-400 text-sm mt-2">Please wait a moment</p>
       </div>
     </div>
   );

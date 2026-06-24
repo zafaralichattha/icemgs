@@ -20,6 +20,7 @@ interface AuthContextType {
   verifyOtp: (email: string, otp: string) => Promise<boolean>;
   resendOtp: (email: string) => Promise<string>;
   googleLogin: (accessToken: string) => Promise<boolean>;
+  loginWithToken: (token: string) => Promise<boolean>;
   logout: () => Promise<void>;
   updateUser: (data: Partial<User> | FormData) => Promise<void>;
 }
@@ -150,6 +151,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // Used by AuthCallback after a server-side Google OAuth redirect.
+  // Directly sets React state so PrivateRoute sees isAuthenticated=true
+  // immediately, without waiting for a page reload.
+  const loginWithToken = async (authToken: string): Promise<boolean> => {
+    try {
+      localStorage.setItem('auth_token', authToken);
+      const userData = await authService.getCurrentUser();
+      localStorage.setItem('user', JSON.stringify(userData));
+      setToken(authToken);
+      setUser(userData);
+      return true;
+    } catch (error) {
+      console.error('loginWithToken failed:', error);
+      localStorage.removeItem('auth_token');
+      return false;
+    }
+  };
+
   const resendOtp = async (email: string): Promise<string> => {
     try {
       const result = await authService.resendOtp(email);
@@ -193,6 +212,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         verifyOtp,
         resendOtp,
         googleLogin,
+        loginWithToken,
         logout,
         updateUser,
       }}
