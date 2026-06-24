@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Building2, Mail, Lock, User, AlertCircle, Menu } from 'lucide-react';
-import { useGoogleLogin } from '@react-oauth/google';
 
 interface RegisterPageProps {
   onMenuClick: () => void;
@@ -120,29 +119,12 @@ export default function RegisterPage({ onMenuClick }: RegisterPageProps) {
     setLoading(false);
   };
 
-  const googleLoginHook = useGoogleLogin({
-    flow: 'auth-code',
-    onSuccess: async ({ code }) => {
-      try {
-        setLoading(true);
-        setError('');
-        const success = await authContext.googleLogin(code);
-        if (!success) {
-          setError('Google registration failed. Please try again.');
-        }
-      } catch (err: any) {
-        setError('Failed to authenticate with Google: ' + (err.response?.data?.detail || err.response?.data?.non_field_errors?.[0] || err.message));
-      } finally {
-        setLoading(false);
-      }
-    },
-    onError: (error) => {
-      console.error('Google OAuth error:', error);
-      setError('Google Sign-up was unsuccessful. Please try again.');
-    },
-  });
-
-  const handleGoogleLogin = () => googleLoginHook();
+  const handleGoogleLogin = () => {
+    const backendBase = import.meta.env.VITE_API_URL
+      ? import.meta.env.VITE_API_URL.replace('/api', '')
+      : window.location.origin;
+    window.location.href = `${backendBase}/api/auth/google/redirect/`;
+  };
 
   const handleVerifySubmit = async (e: React.FormEvent) => {
     e.preventDefault();

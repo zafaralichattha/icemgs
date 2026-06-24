@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Building2, Mail, Lock, AlertCircle, Menu } from 'lucide-react';
-import { useGoogleLogin } from '@react-oauth/google';
 
 interface LoginPageProps {
   onMenuClick: () => void;
@@ -86,42 +85,15 @@ export default function LoginPage({ onMenuClick }: LoginPageProps) {
     }
   };
 
-  // Auth-code flow: gets a one-time code from Google which the backend
-  // exchanges securely using client_id + client_secret + redirect_uri='postmessage'.
-  // No FedCM/gsi/transform dependency — works reliably on all platforms.
-  const googleLoginHook = useGoogleLogin({
-    flow: 'auth-code',
-    onSuccess: async ({ code }) => {
-      console.log('✅ Google onSuccess called, code received, calling backend...');
-      try {
-        setLoading(true);
-        setError('');
-        const success = await authContext.googleLogin(code);
-        if (!success) {
-          setError('Google login failed. Please try again.');
-        }
-      } catch (err: any) {
-        console.error('Google Auth Backend Error:', err.response?.data || err);
-        const msg = err.response?.data?.detail
-          || err.response?.data?.non_field_errors?.[0]
-          || JSON.stringify(err.response?.data)
-          || err.message;
-        setError('Backend error: ' + msg);
-      } finally {
-        setLoading(false);
-      }
-    },
-    onError: (error) => {
-      console.error('❌ Google onError called:', JSON.stringify(error));
-      setError('Google error: ' + (JSON.stringify(error) || 'Unknown error. Check console.'));
-    },
-  });
-
+  // Server-side OAuth redirect — the most reliable approach.
+  // The browser navigates to the backend which redirects to Google,
+  // handles the callback, and redirects back to /auth/callback?token=...
   const handleGoogleLogin = () => {
-    console.log('🔵 Google login button clicked');
-    googleLoginHook();
+    const backendBase = import.meta.env.VITE_API_URL
+      ? import.meta.env.VITE_API_URL.replace('/api', '')
+      : window.location.origin;
+    window.location.href = `${backendBase}/api/auth/google/redirect/`;
   };
-
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4">

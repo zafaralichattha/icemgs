@@ -18,6 +18,7 @@ import Analytics from './components/pages/Analytics';
 import MaterialRates from './components/MaterialRates';
 import ProfilePage from './components/pages/ProfilePage';
 import HouseMapCreator from './components/pages/HouseMapCreator';
+import AuthCallback from './components/AuthCallback';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
@@ -52,6 +53,7 @@ function App() {
                   <Route path="/" element={<LandingPage onMenuClick={() => setSidebarOpen(true)} />} />
                   <Route path="/login" element={<LoginPage onMenuClick={() => setSidebarOpen(true)} />} />
                   <Route path="/register" element={<RegisterPage onMenuClick={() => setSidebarOpen(true)} />} />
+                  <Route path="/auth/callback" element={<AuthCallback />} />
                   <Route path="/quick-estimate" element={<QuickEstimate onMenuClick={() => setSidebarOpen(true)} />} />
                   <Route path="/cost-prediction" element={<CostPrediction onMenuClick={() => setSidebarOpen(true)} />} />
                   <Route

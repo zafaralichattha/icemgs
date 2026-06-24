@@ -37,6 +37,10 @@ from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
 from django.conf import settings as django_settings
 import requests
+import secrets
+from urllib.parse import urlencode
+from django.views import View
+from django.shortcuts import redirect as django_redirect
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
@@ -115,6 +119,110 @@ class GoogleLogin(SocialLoginView):
                 {'non_field_errors': [f'Google authentication failed: {str(e)}']},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+
+
+class GoogleOAuthRedirect(View):
+    """Server-side redirect: sends user's browser to Google OAuth page."""
+    def get(self, request):
+        client_id = django_settings.SOCIALACCOUNT_PROVIDERS['google']['APP']['client_id']
+        frontend_origin = getattr(django_settings, 'FRONTEND_URL', 'https://icemgs-unified-latest.onrender.com')
+        callback_url = frontend_origin.rstrip('/') + '/api/auth/google/callback/'
+
+        params = {
+            'client_id': client_id,
+            'redirect_uri': callback_url,
+            'response_type': 'code',
+            'scope': 'openid email profile',
+            'access_type': 'online',
+            'prompt': 'select_account',
+        }
+        google_auth_url = 'https://accounts.google.com/o/oauth2/v2/auth?' + urlencode(params)
+        return django_redirect(google_auth_url)
+
+
+class GoogleOAuthCallback(View):
+    """Server-side callback: exchanges code for tokens, creates user, redirects to frontend."""
+    def get(self, request):
+        google_logger = logging.getLogger(__name__)
+        frontend_origin = getattr(django_settings, 'FRONTEND_URL', 'https://icemgs-unified-latest.onrender.com')
+        error_redirect = frontend_origin.rstrip('/') + '/login?error='
+
+        code = request.GET.get('code')
+        if not code:
+            error = request.GET.get('error', 'cancelled')
+            google_logger.warning(f'Google OAuth callback: no code, error={error}')
+            return django_redirect(error_redirect + error)
+
+        client_id = django_settings.SOCIALACCOUNT_PROVIDERS['google']['APP']['client_id']
+        client_secret = django_settings.SOCIALACCOUNT_PROVIDERS['google']['APP']['secret']
+        callback_url = frontend_origin.rstrip('/') + '/api/auth/google/callback/'
+
+        # Exchange code for tokens
+        try:
+            token_response = requests.post(
+                'https://oauth2.googleapis.com/token',
+                data={
+                    'code': code,
+                    'client_id': client_id,
+                    'client_secret': client_secret,
+                    'redirect_uri': callback_url,
+                    'grant_type': 'authorization_code',
+                },
+                timeout=10,
+            )
+            token_info = token_response.json()
+            google_logger.info(f'Token exchange response status: {token_response.status_code}')
+        except Exception as e:
+            google_logger.error(f'Token exchange failed: {e}')
+            return django_redirect(error_redirect + 'token_exchange_failed')
+
+        if 'error' in token_info:
+            google_logger.error(f'Google token error: {token_info}')
+            return django_redirect(error_redirect + token_info.get('error', 'token_error'))
+
+        access_token = token_info.get('access_token')
+        if not access_token:
+            google_logger.error('No access_token in Google response')
+            return django_redirect(error_redirect + 'no_access_token')
+
+        # Get user info from Google
+        try:
+            userinfo_response = requests.get(
+                'https://www.googleapis.com/oauth2/v3/userinfo',
+                headers={'Authorization': f'Bearer {access_token}'},
+                timeout=10,
+            )
+            userinfo = userinfo_response.json()
+            google_logger.info(f'Got user info for email: {userinfo.get("email")}')
+        except Exception as e:
+            google_logger.error(f'Userinfo fetch failed: {e}')
+            return django_redirect(error_redirect + 'userinfo_failed')
+
+        email = userinfo.get('email')
+        if not email:
+            return django_redirect(error_redirect + 'no_email')
+
+        # Get or create Django user
+        UserModel = get_user_model()
+        user, created = UserModel.objects.get_or_create(
+            email=email,
+            defaults={
+                'first_name': userinfo.get('given_name', ''),
+                'last_name': userinfo.get('family_name', ''),
+                'is_active': True,
+            }
+        )
+        if not user.is_active:
+            user.is_active = True
+            user.save(update_fields=['is_active'])
+
+        # Issue DRF token
+        token, _ = TokenModel.objects.get_or_create(user=user)
+        google_logger.info(f'Google server-side login success for {email} (created={created})')
+
+        # Redirect browser to frontend callback page with token
+        return django_redirect(frontend_origin.rstrip('/') + f'/auth/callback?token={token.key}')
 
 
 class VerifyEmailView(APIView):

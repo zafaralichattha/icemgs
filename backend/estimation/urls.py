@@ -8,7 +8,8 @@ from .views import (
     FloorViewSet, RoomViewSet, FinishingDetailsViewSet,
     BillOfMaterialViewSet, CostHistoryViewSet, DashboardStatsView,
     DatabaseHealthCheckView, VerifyEmailView, ResendOTPView,
-    AICostPredictionView, DiagnoseView, GoogleIdTokenLogin
+    AICostPredictionView, DiagnoseView, GoogleIdTokenLogin,
+    GoogleOAuthRedirect, GoogleOAuthCallback
 )
 
 router = DefaultRouter()
@@ -26,6 +27,8 @@ urlpatterns = [
     path('auth/verify-email/', VerifyEmailView.as_view(), name='verify-email'),
     path('auth/resend-otp/', ResendOTPView.as_view(), name='resend-otp'),
     path('auth/google-id/', GoogleIdTokenLogin.as_view(), name='google-id-login'),
+    path('auth/google/redirect/', GoogleOAuthRedirect.as_view(), name='google-oauth-redirect'),
+    path('auth/google/callback/', GoogleOAuthCallback.as_view(), name='google-oauth-callback'),
     path('dashboard/stats/', DashboardStatsView.as_view(), name='dashboard-stats'),
     path('health-check/', DatabaseHealthCheckView.as_view(), name='health-check'),
     path('ai/predict-cost/', AICostPredictionView.as_view(), name='ai-predict-cost'),

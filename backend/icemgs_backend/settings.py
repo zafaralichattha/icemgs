@@ -166,9 +166,9 @@ SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
 SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
 
 # Google OAuth Settings
-# GOOGLE_CALLBACK_URL must be set in Render env vars to your production URL.
-# It must also be added as an Authorized Redirect URI in Google Cloud Console.
 GOOGLE_CALLBACK_URL = config('GOOGLE_CALLBACK_URL', default='https://icemgs-unified-latest.onrender.com')
+# Frontend URL used by the server-side OAuth callback to redirect back to the SPA
+FRONTEND_URL = config('FRONTEND_URL', default='https://icemgs-unified-latest.onrender.com')
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
