@@ -23,6 +23,17 @@ export default function LoginPage({ onMenuClick }: LoginPageProps) {
     }
   }, [isAuthenticated, navigate]);
 
+  // DEBUG: Intercept ALL postMessages from Google popup to diagnose silent failures
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin.includes('google') || event.origin.includes('accounts')) {
+        console.log('📨 Google postMessage received:', event.origin, event.data);
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -81,6 +92,7 @@ export default function LoginPage({ onMenuClick }: LoginPageProps) {
   const googleLoginHook = useGoogleLogin({
     flow: 'auth-code',
     onSuccess: async ({ code }) => {
+      console.log('✅ Google onSuccess called, code received, calling backend...');
       try {
         setLoading(true);
         setError('');
@@ -90,18 +102,25 @@ export default function LoginPage({ onMenuClick }: LoginPageProps) {
         }
       } catch (err: any) {
         console.error('Google Auth Backend Error:', err.response?.data || err);
-        setError('Failed to authenticate with Google: ' + (err.response?.data?.detail || err.response?.data?.non_field_errors?.[0] || err.message));
+        const msg = err.response?.data?.detail
+          || err.response?.data?.non_field_errors?.[0]
+          || JSON.stringify(err.response?.data)
+          || err.message;
+        setError('Backend error: ' + msg);
       } finally {
         setLoading(false);
       }
     },
     onError: (error) => {
-      console.error('Google OAuth error:', error);
-      setError('Google Login was unsuccessful. Please try again.');
+      console.error('❌ Google onError called:', JSON.stringify(error));
+      setError('Google error: ' + (JSON.stringify(error) || 'Unknown error. Check console.'));
     },
   });
 
-  const handleGoogleLogin = () => googleLoginHook();
+  const handleGoogleLogin = () => {
+    console.log('🔵 Google login button clicked');
+    googleLoginHook();
+  };
 
 
   return (
