@@ -79,4 +79,13 @@ if admin_email and admin_password:
     
     print(f"[create_admin] Admin setup complete for {email_clean}.")
 else:
-    print("[create_admin] ADMIN_EMAIL and/or ADMIN_PASSWORD not set. Skipping.")
+    print("[create_admin] ADMIN_EMAIL and/or ADMIN_PASSWORD not set. Skipping admin user setup.")
+
+# Automatically initialize/update material rates (including Steel Grade 40, Cement OPC 43) on startup
+try:
+    from django.core.management import call_command
+    print("[create_admin] Seeding default materials...")
+    call_command('init_materials')
+    print("[create_admin] Materials seeding complete.")
+except Exception as e:
+    print(f"[create_admin] Error seeding materials: {e}")

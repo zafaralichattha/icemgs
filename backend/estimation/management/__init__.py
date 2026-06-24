@@ -1,1 +1,1 @@
-# Management commands
+# Init file for management package
