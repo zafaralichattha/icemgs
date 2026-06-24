@@ -98,26 +98,25 @@ export default function QuickEstimate({ onMenuClick }: QuickEstimateProps) {
         </div>
       </header>
 
-      <div className="max-w-4xl mx-auto p-8">
+      <div className="max-w-4xl mx-auto p-4 sm:p-8">
         <div className="mb-8">
-          <h1 className="text-4xl mb-2">Quick Cost Estimator</h1>
-          <p className="text-xl text-gray-600">
+          <h1 className="text-2xl sm:text-4xl mb-2">Quick Cost Estimator</h1>
+          <p className="text-base sm:text-xl text-gray-600">
             Get instant gray structure cost estimates based on current market rates
           </p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-lg p-8">
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8">
           <div className="flex items-center gap-3 mb-6">
             <Calculator className="w-8 h-8 text-blue-600" />
-            <h2 className="text-2xl">Enter Plot Details</h2>
+            <h2 className="text-xl sm:text-2xl">Enter Plot Details</h2>
           </div>
 
-          {/* Input Type Selector */}
-          <div className="flex gap-4 mb-6 border-b pb-4">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-6 border-b pb-4">
             <button
               type="button"
               onClick={() => setInputType('dimensions')}
-              className={`flex-1 py-2.5 text-center rounded-lg font-semibold transition-colors ${
+              className={`w-full sm:flex-1 py-2.5 text-center rounded-lg font-semibold transition-colors ${
                 inputType === 'dimensions'
                   ? 'bg-blue-600 text-white shadow-sm'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -128,7 +127,7 @@ export default function QuickEstimate({ onMenuClick }: QuickEstimateProps) {
             <button
               type="button"
               onClick={() => setInputType('marlas')}
-              className={`flex-1 py-2.5 text-center rounded-lg font-semibold transition-colors ${
+              className={`w-full sm:flex-1 py-2.5 text-center rounded-lg font-semibold transition-colors ${
                 inputType === 'marlas'
                   ? 'bg-blue-600 text-white shadow-sm'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -264,14 +263,14 @@ export default function QuickEstimate({ onMenuClick }: QuickEstimateProps) {
             <div className="mt-8 space-y-4">
               {/* Main result */}
               <div className="p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-500 rounded-xl">
-                <div className="flex items-center gap-3 mb-1">
-                  <DollarSign className="w-8 h-8 text-green-600" />
-                  <h3 className="text-2xl text-green-900">Estimated Gray Structure Cost</h3>
+                <div className="flex items-center gap-2 sm:gap-3 mb-1">
+                  <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
+                  <h3 className="text-lg sm:text-2xl text-green-900">Estimated Gray Structure Cost</h3>
                 </div>
-                <p className="text-4xl text-green-600 mb-2">
+                <p className="text-2xl sm:text-4xl text-green-600 mb-2 font-bold">
                   {formatPKR(estimatedCost)}
                 </p>
-                <p className="text-sm text-green-800 font-medium">
+                <p className="text-xs sm:text-sm text-green-800 font-medium">
                   ({estimatedCost.toLocaleString('en-PK')} PKR)
                 </p>
               </div>

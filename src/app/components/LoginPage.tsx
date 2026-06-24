@@ -114,7 +114,7 @@ export default function LoginPage({ onMenuClick }: LoginPageProps) {
           <p className="text-gray-600">Login to access your construction projects</p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-lg p-8">
+        <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-2">

@@ -121,8 +121,8 @@ export default function Dashboard({ onMenuClick }: DashboardProps) {
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* Welcome Section */}
         <div className="mb-12">
-          <h1 className="text-4xl mb-4">Dashboard</h1>
-          <p className="text-xl text-gray-600">
+          <h1 className="text-2xl sm:text-4xl mb-4">Dashboard</h1>
+          <p className="text-base sm:text-xl text-gray-600">
             Start a new construction estimation project or continue with your saved projects.
           </p>
         </div>

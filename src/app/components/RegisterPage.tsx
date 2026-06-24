@@ -170,7 +170,7 @@ export default function RegisterPage({ onMenuClick }: RegisterPageProps) {
           </p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-lg p-8">
+        <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8">
           {step === 'register' ? (
             <form onSubmit={handleSubmit} className="space-y-6">
             {error && (

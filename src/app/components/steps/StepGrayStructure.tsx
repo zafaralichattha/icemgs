@@ -54,7 +54,7 @@ export default function StepGrayStructure({ onNext }: StepGrayStructureProps) {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-8">
+    <div className="bg-white rounded-xl shadow-sm p-4 sm:p-8">
       <div className="mb-6">
         <h2 className="text-2xl mb-2">Gray Structure (Basic Construction)</h2>
         <p className="text-gray-600">

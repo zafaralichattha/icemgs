@@ -83,7 +83,7 @@ export default function StepCompliance({ onNext }: StepComplianceProps) {
   const allCompliant = Object.values(complianceStatus).every(status => status);
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-8">
+    <div className="bg-white rounded-xl shadow-sm p-4 sm:p-8">
       <div className="mb-6">
         <h2 className="text-2xl mb-2">LDA Building Rules Check</h2>
         <p className="text-gray-600">

@@ -116,7 +116,7 @@ export default function StepPlotDetails({ onNext }: StepPlotDetailsProps) {
   }, [maxFloorsAllowed]);
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-8">
+    <div className="bg-white rounded-xl shadow-sm p-4 sm:p-8">
       <div className="mb-6">
         <h2 className="text-2xl mb-2">Plot Details</h2>
         <p className="text-gray-600">
@@ -126,11 +126,11 @@ export default function StepPlotDetails({ onNext }: StepPlotDetailsProps) {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Input Type Selector */}
-        <div className="flex gap-4 mb-6 border-b pb-4">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-6 border-b pb-4">
           <button
             type="button"
             onClick={() => setInputType('dimensions')}
-            className={`flex-1 py-2.5 text-center rounded-lg font-semibold transition-colors ${
+            className={`w-full sm:flex-1 py-2.5 text-center rounded-lg font-semibold transition-colors ${
               inputType === 'dimensions'
                 ? 'bg-blue-600 text-white shadow-sm'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -141,7 +141,7 @@ export default function StepPlotDetails({ onNext }: StepPlotDetailsProps) {
           <button
             type="button"
             onClick={() => setInputType('marlas')}
-            className={`flex-1 py-2.5 text-center rounded-lg font-semibold transition-colors ${
+            className={`w-full sm:flex-1 py-2.5 text-center rounded-lg font-semibold transition-colors ${
               inputType === 'marlas'
                 ? 'bg-blue-600 text-white shadow-sm'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'

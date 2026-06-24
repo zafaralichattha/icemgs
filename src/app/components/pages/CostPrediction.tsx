@@ -52,7 +52,7 @@ export default function CostPrediction({ onMenuClick }: CostPredictionProps) {
           <div className="w-9 h-9 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center"><Building2 className="w-5 h-5 text-white"/></div>
           <span className="text-lg text-white/90 font-medium">ICEMGS</span>
           <span className="text-white/30 mx-1">|</span>
-          <span className="text-sm text-purple-300">AI Cost Prediction</span>
+          <span className="text-xs sm:text-sm text-purple-300">AI Cost Prediction</span>
         </div>
       </header>
 
@@ -62,8 +62,8 @@ export default function CostPrediction({ onMenuClick }: CostPredictionProps) {
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4" style={{background:'linear-gradient(135deg,rgba(139,92,246,0.3),rgba(59,130,246,0.3))',border:'1px solid rgba(139,92,246,0.3)'}}>
             <Brain className="w-4 h-4 text-purple-400"/><span className="text-sm text-purple-300">Powered by AI</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-3" style={{background:'linear-gradient(135deg,#fff 0%,#c4b5fd 50%,#818cf8 100%)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>AI Cost Prediction</h1>
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto">Intelligent construction cost forecasting with market analysis, risk assessment, and actionable recommendations</p>
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-white mb-3" style={{background:'linear-gradient(135deg,#fff 0%,#c4b5fd 50%,#818cf8 100%)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>AI Cost Prediction</h1>
+          <p className="text-base sm:text-lg text-gray-400 max-w-2xl mx-auto">Intelligent construction cost forecasting with market analysis, risk assessment, and actionable recommendations</p>
         </div>
 
         {/* Input Form */}
@@ -199,10 +199,10 @@ export default function CostPrediction({ onMenuClick }: CostPredictionProps) {
             )}
 
             {/* Tabs */}
-            <div className="flex gap-1 p-1 rounded-xl" style={{background:'rgba(255,255,255,0.05)'}}>
+            <div className="flex overflow-x-auto gap-1 p-1 rounded-xl scrollbar-none" style={{background:'rgba(255,255,255,0.05)'}}>
               {([['forecast','📈 Forecast'],['risks','⚠️ Risks'],['breakdown','📊 Breakdown'],['recommendations','💡 Tips']] as const).map(([key,label])=>(
                 <button key={key} onClick={()=>setActiveTab(key as any)}
-                  className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-all ${activeTab===key?'text-white shadow-lg':'text-gray-400 hover:text-gray-200'}`}
+                  className={`flex-1 min-w-[100px] whitespace-nowrap flex-shrink-0 py-2.5 rounded-lg text-sm font-medium transition-all ${activeTab===key?'text-white shadow-lg':'text-gray-400 hover:text-gray-200'}`}
                   style={activeTab===key?{background:'linear-gradient(135deg,#7c3aed,#3b82f6)'}:{}}>{label}</button>
               ))}
             </div>

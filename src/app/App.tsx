@@ -21,14 +21,28 @@ import HouseMapCreator from './components/pages/HouseMapCreator';
 import AuthCallback from './components/AuthCallback';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useAuth();
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+  return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
 }
 
 function AdminRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, user } = useAuth();
-  if (!isAuthenticated) return <Navigate to="/login" />;
-  if (user?.role !== 'admin') return <Navigate to="/dashboard" />;
+  const { isAuthenticated, user, loading } = useAuth();
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (user?.role !== 'admin') return <Navigate to="/dashboard" replace />;
   return <>{children}</>;
 }
 
@@ -44,12 +58,12 @@ function App() {
       <Router>
         <AuthProvider>
           <ProjectProvider>
-            <div className="flex flex-col min-h-screen">
+            <div className="flex flex-col min-h-screen w-full max-w-full overflow-x-hidden">
               <BackendStatusBanner />
-              <div className="flex flex-1">
+              <div className="flex flex-1 w-full max-w-full overflow-x-hidden">
                 <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-                <div className="flex-1">
-                <Routes>
+                <div className="flex-1 min-w-0 w-full max-w-full overflow-x-hidden">
+                  <Routes>
                   <Route path="/" element={<LandingPage onMenuClick={() => setSidebarOpen(true)} />} />
                   <Route path="/login" element={<LoginPage onMenuClick={() => setSidebarOpen(true)} />} />
                   <Route path="/register" element={<RegisterPage onMenuClick={() => setSidebarOpen(true)} />} />

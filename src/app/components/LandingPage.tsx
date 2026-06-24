@@ -24,34 +24,34 @@ export default function LandingPage({ onMenuClick }: LandingPageProps) {
             <Building2 className="w-8 h-8 text-blue-600" />
             <span className="text-xl">ICEMGS</span>
           </div>
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-2 sm:gap-4 items-center">
             {isAuthenticated ? (
               <>
                 <span className="text-sm text-gray-600 hidden sm:inline">
                   Welcome, {user?.first_name || 'User'}
                 </span>
                 <Link to="/dashboard">
-                  <button className="px-6 py-2 text-blue-600 hover:text-blue-800 flex items-center gap-2">
+                  <button className="px-2.5 py-1.5 sm:px-6 sm:py-2 text-sm sm:text-base text-blue-600 hover:text-blue-800 flex items-center gap-1 sm:gap-2" title="Dashboard">
                     <LayoutDashboard className="w-4 h-4" />
-                    Dashboard
+                    <span className="hidden sm:inline">Dashboard</span>
                   </button>
                 </Link>
                 <Link to="/project/new">
-                  <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                  <button className="px-2.5 py-1.5 sm:px-6 sm:py-2 text-sm sm:text-base bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-1 sm:gap-2" title="New Project">
                     <PlusCircle className="w-4 h-4" />
-                    New Project
+                    <span className="hidden sm:inline">New Project</span>
                   </button>
                 </Link>
               </>
             ) : (
               <>
                 <Link to="/login">
-                  <button className="px-6 py-2 text-blue-600 hover:text-blue-800">
+                  <button className="px-3 py-1.5 sm:px-6 sm:py-2 text-sm sm:text-base text-blue-600 hover:text-blue-800">
                     Login
                   </button>
                 </Link>
                 <Link to="/register">
-                  <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                  <button className="px-3 py-1.5 sm:px-6 sm:py-2 text-sm sm:text-base bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                     Get Started
                   </button>
                 </Link>
@@ -61,12 +61,11 @@ export default function LandingPage({ onMenuClick }: LandingPageProps) {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="max-w-6xl mx-auto px-4 py-20 text-center">
-        <h1 className="text-5xl mb-6">
+      <section className="max-w-6xl mx-auto px-4 py-12 sm:py-20 text-center">
+        <h1 className="text-3xl sm:text-5xl font-bold mb-6 leading-tight">
           Intelligent Construction Estimation & Map Generator
         </h1>
-        <p className="text-xl text-gray-700 mb-8 max-w-3xl mx-auto">
+        <p className="text-base sm:text-xl text-gray-700 mb-8 max-w-3xl mx-auto">
           Automated construction cost estimation and 2D floor plan generation 
           that strictly follows LDA bylaws. Perfect for homeowners, contractors, and architecture students.
         </p>

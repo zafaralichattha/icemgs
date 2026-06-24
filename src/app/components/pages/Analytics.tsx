@@ -66,10 +66,10 @@ export default function Analytics({ onMenuClick }: AnalyticsProps) {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto p-8">
+      <div className="max-w-7xl mx-auto p-4 sm:p-8">
         <div className="mb-8">
-          <h1 className="text-4xl mb-2">Analytics Dashboard</h1>
-          <p className="text-xl text-gray-600">
+          <h1 className="text-2xl sm:text-4xl mb-2">Analytics Dashboard</h1>
+          <p className="text-base sm:text-xl text-gray-600">
             Overview of your construction projects and costs
           </p>
         </div>

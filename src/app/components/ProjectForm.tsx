@@ -92,7 +92,22 @@ export default function ProjectForm({ onMenuClick }: ProjectFormProps) {
       <div className="max-w-5xl mx-auto px-4 py-8">
         {/* Progress Steps */}
         <div className="mb-8">
-          <div className="flex items-center justify-between">
+          {/* Mobile view */}
+          <div className="md:hidden bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+            <div>
+              <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">Step {safeCurrentStep} of 6</p>
+              <h3 className="text-base font-bold text-gray-800">{steps[safeCurrentStep - 1]?.name}</h3>
+            </div>
+            <div className="w-24 bg-gray-200 rounded-full h-2">
+              <div
+                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${(safeCurrentStep / 6) * 100}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Desktop view */}
+          <div className="hidden md:flex items-center justify-between">
             {steps.map((step, index) => (
               <div key={step.id} className="flex items-center">
                 <div className="flex flex-col items-center">
@@ -124,7 +139,7 @@ export default function ProjectForm({ onMenuClick }: ProjectFormProps) {
         </div>
 
         {/* Current Step */}
-        <div className="bg-white rounded-xl shadow-sm p-8 mb-6">
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-8 mb-6">
           {safeCurrentStep === 6 ? (
             <StepReview onSubmit={handleSubmit} />
           ) : (

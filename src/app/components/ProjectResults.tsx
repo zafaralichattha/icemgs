@@ -193,18 +193,20 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
             <Building2 className="w-8 h-8 text-blue-600" />
             <span className="text-xl">ICEMGS</span>
           </div>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-1.5 sm:gap-4 justify-end">
             <button
               onClick={handleDownloadPDF}
               aria-label="download-pdf"
-              className="flex items-center gap-2 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-1 sm:gap-2 px-2.5 py-1.5 sm:px-6 sm:py-2 text-xs sm:text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Download className="w-5 h-5" />
-              Download Report
+              <Download className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">Download Report</span>
+              <span className="sm:hidden">Download</span>
             </button>
             <Link to="/dashboard">
-              <button className="px-6 py-2 text-gray-600 hover:text-gray-900">
-                Back to Dashboard
+              <button className="px-2.5 py-1.5 sm:px-6 sm:py-2 text-xs sm:text-sm text-gray-600 hover:text-gray-900">
+                <span className="hidden sm:inline">Back to Dashboard</span>
+                <span className="sm:hidden">Back</span>
               </button>
             </Link>
           </div>
@@ -213,8 +215,8 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-4xl mb-2">Construction Estimation Report</h1>
-          <p className="text-xl text-gray-600">
+          <h1 className="text-2xl sm:text-4xl mb-2">Construction Estimation Report</h1>
+          <p className="text-base sm:text-xl text-gray-600">
             Project: {projectData.plotDetails.location}
           </p>
           <p className="text-sm text-gray-500 mt-1">
@@ -480,7 +482,7 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
                 )}
 
                 {/* Tabs */}
-                <div className="flex gap-1 p-1 bg-slate-950/80 rounded-lg border border-slate-800">
+                <div className="flex overflow-x-auto gap-1 p-1 bg-slate-950/80 rounded-lg border border-slate-800 scrollbar-none">
                   {([
                     ['forecast', 'Forecast'],
                     ['risks', 'Risks'],
@@ -491,7 +493,7 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
                       key={key}
                       type="button"
                       onClick={() => setPredictionActiveTab(key)}
-                      className={`flex-1 py-1.5 rounded text-xs font-semibold transition-all ${
+                      className={`flex-1 min-w-[80px] whitespace-nowrap flex-shrink-0 py-1.5 rounded text-xs font-semibold transition-all ${
                         predictionActiveTab === key
                           ? 'bg-purple-600 text-white shadow'
                           : 'text-slate-400 hover:text-white'

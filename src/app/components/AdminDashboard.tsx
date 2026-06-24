@@ -276,10 +276,10 @@ export default function AdminDashboard({ onMenuClick }: AdminDashboardProps) {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Navigation Tabs */}
-        <div className="bg-white rounded-xl shadow-sm p-2 mb-8 flex gap-2">
+        <div className="bg-white rounded-xl shadow-sm p-2 mb-8 flex overflow-x-auto gap-2 scrollbar-none">
           <button
             onClick={() => setActiveTab('overview')}
-            className={`flex-1 px-6 py-3 rounded-lg transition-colors ${
+            className={`flex-1 min-w-[100px] whitespace-nowrap flex-shrink-0 px-3 sm:px-6 py-2.5 sm:py-3 rounded-lg transition-colors ${
               activeTab === 'overview' ? 'bg-purple-600 text-white' : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
@@ -287,7 +287,7 @@ export default function AdminDashboard({ onMenuClick }: AdminDashboardProps) {
           </button>
           <button
             onClick={() => setActiveTab('users')}
-            className={`flex-1 px-6 py-3 rounded-lg transition-colors ${
+            className={`flex-1 min-w-[100px] whitespace-nowrap flex-shrink-0 px-3 sm:px-6 py-2.5 sm:py-3 rounded-lg transition-colors ${
               activeTab === 'users' ? 'bg-purple-600 text-white' : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
@@ -295,7 +295,7 @@ export default function AdminDashboard({ onMenuClick }: AdminDashboardProps) {
           </button>
           <button
             onClick={() => setActiveTab('materials')}
-            className={`flex-1 px-6 py-3 rounded-lg transition-colors ${
+            className={`flex-1 min-w-[120px] whitespace-nowrap flex-shrink-0 px-3 sm:px-6 py-2.5 sm:py-3 rounded-lg transition-colors ${
               activeTab === 'materials' ? 'bg-purple-600 text-white' : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
@@ -303,7 +303,7 @@ export default function AdminDashboard({ onMenuClick }: AdminDashboardProps) {
           </button>
           <button
             onClick={() => setActiveTab('projects')}
-            className={`flex-1 px-6 py-3 rounded-lg transition-colors ${
+            className={`flex-1 min-w-[100px] whitespace-nowrap flex-shrink-0 px-3 sm:px-6 py-2.5 sm:py-3 rounded-lg transition-colors ${
               activeTab === 'projects' ? 'bg-purple-600 text-white' : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
