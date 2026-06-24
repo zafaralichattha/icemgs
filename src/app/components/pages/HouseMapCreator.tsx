@@ -77,7 +77,7 @@ export default function HouseMapCreator({ onMenuClick }: HouseMapCreatorProps) {
               <Menu className="w-6 h-6 text-gray-600" />
             </button>
             <Building2 className="w-8 h-8 text-blue-600" />
-            <span className="text-xl">ICEMGS - House Map Creator</span>
+            <span className="text-base sm:text-xl">ICEMGS - House Map Creator</span>
           </div>
         </div>
       </header>
