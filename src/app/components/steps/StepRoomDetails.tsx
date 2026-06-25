@@ -486,7 +486,7 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
         </div>
       </div>
 
-      {/* Sticky Utilization Bar - always visible */}
+      {/* Sticky Floor Name Bar - always visible */}
       <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-md border-b border-gray-200 px-4 sm:px-6 py-2.5 shadow-sm">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
@@ -500,29 +500,8 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
             </div>
           </div>
           
-          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-            <div className="flex items-center gap-2">
-              <span className={`text-xs sm:text-sm font-bold ${
-                areaUtilizationPercent > 100 || areaErrors.length > 0 ? 'text-red-600' : areaUtilizationPercent > 90 ? 'text-amber-600' : 'text-blue-600'
-              }`}>
-                {Math.round(areaUtilizationPercent)}%
-              </span>
-              <div className="w-12 sm:w-20 bg-gray-200 rounded-full h-1.5 overflow-hidden">
-                <div className={`h-full rounded-full transition-all duration-500 ${
-                  areaUtilizationPercent > 100 || areaErrors.length > 0 ? 'bg-red-500' :
-                  areaUtilizationPercent > 90 ? 'bg-amber-500' :
-                  areaUtilizationPercent > 70 ? 'bg-blue-500' : 'bg-green-500'
-                }`} style={{ width: `${Math.min(areaUtilizationPercent, 100)}%` }} />
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={handleSaveAndContinue}
-              disabled={areaUtilizationPercent > 100 || areaErrors.length > 0}
-              className="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors whitespace-nowrap"
-            >
-              Save &amp; Continue
-            </button>
+          <div className="text-right text-[11px] text-gray-500 font-medium">
+            <span>{Math.round(currentFloorAreaVal)} / {Math.round(usableAreaPerFloor)} sq ft used</span>
           </div>
         </div>
       </div>
@@ -980,6 +959,26 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                 </div>
               </div>
             )}
+            {/* Overall Space Utilization (at bottom, before nav buttons) */}
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mt-8 space-y-2">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm font-semibold text-gray-700 gap-1">
+                <span>Overall Space Utilization (All Floors Combined)</span>
+                <span className={areaUtilizationPercent > 100 || areaErrors.length > 0 ? 'text-red-600' : areaUtilizationPercent > 90 ? 'text-amber-600' : 'text-blue-600'}>
+                  {Math.round(areaUtilizationPercent)}% Used ({Math.round(totalRoomArea)} / {Math.round(totalUsableArea)} sq ft)
+                </span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                <div className={`h-full rounded-full transition-all duration-500 ${
+                  areaUtilizationPercent > 100 || areaErrors.length > 0 ? 'bg-red-500' :
+                  areaUtilizationPercent > 90 ? 'bg-amber-500' :
+                  areaUtilizationPercent > 70 ? 'bg-blue-500' : 'bg-green-500'
+                }`} style={{ width: `${Math.min(areaUtilizationPercent, 100)}%` }} />
+              </div>
+              <p className="text-[11px] text-gray-500">
+                Total usable area calculation excludes stair enclosures (Mumty) and parapet boundary walls.
+              </p>
+            </div>
+
           {/* Floor Navigation */}
           <div className="flex flex-col sm:flex-row items-center justify-between pt-5 border-t border-gray-200 mt-6 gap-3">
             <button
