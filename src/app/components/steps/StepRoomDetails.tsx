@@ -377,6 +377,13 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
       if (bathroomCount > maxRoomsPerFloor) {
         newErrors[`floor${floorIndex}_bathrooms_max`] = `Floor ${floorIndex + 1} exceeds max allowed bathrooms limit of ${maxRoomsPerFloor} for ${plotMarlas} Marla.`;
       }
+
+      // Individual floor area limit check
+      const floorArea = calculateFloorRoomArea(floorIndex);
+      if (floorArea > usableAreaPerFloor) {
+        const excess = floorArea - usableAreaPerFloor;
+        newErrors[`floor${floorIndex}_areaExceeded`] = `${getFloorName(floor.floorNumber)} Covered Area (${Math.round(floorArea)} sq ft) exceeds available usable space per floor (${Math.round(usableAreaPerFloor)} sq ft) by ${Math.round(excess)} sq ft.`;
+      }
     });
 
     // Check if total room area exceeds usable area
@@ -483,6 +490,24 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
     return recommendations;
   };
 
+  // Dynamic area validations in real-time
+  const areaErrors: string[] = [];
+  floors.forEach((floor, idx) => {
+    const floorArea = calculateFloorRoomArea(idx);
+    if (floorArea > usableAreaPerFloor) {
+      const excess = floorArea - usableAreaPerFloor;
+      areaErrors.push(
+        `${getFloorName(floor.floorNumber)} Covered Area (${Math.round(floorArea)} sq ft) exceeds available usable space per floor (${Math.round(usableAreaPerFloor)} sq ft) by ${Math.round(excess)} sq ft.`
+      );
+    }
+  });
+  if (totalRoomArea > totalUsableArea) {
+    const excess = totalRoomArea - totalUsableArea;
+    areaErrors.push(
+      `Total Covered Area (${Math.round(totalRoomArea)} sq ft) exceeds total available space (${Math.round(totalUsableArea)} sq ft) by ${Math.round(excess)} sq ft.`
+    );
+  }
+
   return (
     <div ref={stepRef} className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden relative">
       {/* Compact Header */}
@@ -511,13 +536,13 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
           <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             <div className="flex items-center gap-2">
               <span className={`text-xs sm:text-sm font-bold ${
-                areaUtilizationPercent > 100 ? 'text-red-600' : areaUtilizationPercent > 90 ? 'text-amber-600' : 'text-blue-600'
+                areaUtilizationPercent > 100 || areaErrors.length > 0 ? 'text-red-600' : areaUtilizationPercent > 90 ? 'text-amber-600' : 'text-blue-600'
               }`}>
                 {Math.round(areaUtilizationPercent)}%
               </span>
               <div className="w-12 sm:w-20 bg-gray-200 rounded-full h-1.5 overflow-hidden">
                 <div className={`h-full rounded-full transition-all duration-500 ${
-                  areaUtilizationPercent > 100 ? 'bg-red-500' :
+                  areaUtilizationPercent > 100 || areaErrors.length > 0 ? 'bg-red-500' :
                   areaUtilizationPercent > 90 ? 'bg-amber-500' :
                   areaUtilizationPercent > 70 ? 'bg-blue-500' : 'bg-green-500'
                 }`} style={{ width: `${Math.min(areaUtilizationPercent, 100)}%` }} />
@@ -526,7 +551,7 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
             <button
               type="button"
               onClick={handleSaveAndContinue}
-              disabled={areaUtilizationPercent > 100}
+              disabled={areaUtilizationPercent > 100 || areaErrors.length > 0}
               className="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors whitespace-nowrap"
             >
               Save &amp; Continue
@@ -540,19 +565,21 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
         <form onSubmit={handleSubmit} className="space-y-5">
 
           {/* Area Exceeded Error */}
-          {errors['areaExceeded'] && (
-            <div className="bg-red-50 border border-red-200 rounded-xl p-3">
-              <div className="flex items-start gap-2">
-                <AlertTriangle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
-                <div className="flex-1">
-                  <p className="text-red-800 text-xs font-medium">{errors['areaExceeded']}</p>
+          {areaErrors.length > 0 && (
+            <div className="bg-red-50 border border-red-200 rounded-xl p-3 space-y-1.5">
+              {areaErrors.map((err, idx) => (
+                <div key={idx} className="flex items-start gap-2">
+                  <AlertTriangle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-red-800 text-xs font-medium">{err}</p>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
           )}
 
           {/* Area Warning */}
-          {errors['areaWarning'] && !errors['areaExceeded'] && (
+          {errors['areaWarning'] && areaErrors.length === 0 && (
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-3">
               <div className="flex items-start gap-2">
                 <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
@@ -568,7 +595,9 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
             </div>
           )}
 
-          <div className="space-y-5">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* Left Column: Room Configurations */}
+            <div className="flex-1 w-full space-y-5">
             {/* 1. Bedrooms */}
             <div>
               <h4 className="font-semibold text-gray-900 mb-3">1. Bedrooms</h4>
@@ -909,8 +938,6 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                 </div>
               </div>
             )}
-          </div>
-
           {/* Floor Navigation */}
           <div className="flex flex-col sm:flex-row items-center justify-between pt-5 border-t border-gray-200 mt-6 gap-3">
             <button
@@ -938,15 +965,83 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
               <button
                 type="button"
                 onClick={handleSaveAndContinue}
-                disabled={areaUtilizationPercent > 100}
+                disabled={areaUtilizationPercent > 100 || areaErrors.length > 0}
                 className="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed transition-all font-semibold text-sm shadow-sm"
               >
                 ✓ Save & Continue
               </button>
             )}
           </div>
-        </form>
+        </div>
+
+        {/* Right Column: Sticky Floor Space Breakdown */}
+        <div className="w-full lg:w-72 shrink-0 lg:sticky lg:top-14 space-y-4">
+          <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 sm:p-5 shadow-sm space-y-4">
+            <h4 className="font-bold text-gray-900 text-xs flex items-center gap-1.5 uppercase tracking-wider text-gray-500">
+              📊 Floor Space Breakdown
+            </h4>
+            <div className="space-y-3">
+              {floors.map((floor, index) => {
+                const floorArea = calculateFloorRoomArea(index);
+                const floorPercent = (floorArea / usableAreaPerFloor) * 100;
+                const isExceeded = floorArea > usableAreaPerFloor;
+                
+                return (
+                  <div 
+                    key={index}
+                    className={`rounded-xl p-3 border transition-all ${
+                      isExceeded 
+                        ? 'bg-red-50 border-red-200 shadow-sm ring-1 ring-red-100' 
+                        : currentFloor === index 
+                          ? 'bg-blue-50/60 border-blue-200 shadow-sm' 
+                          : 'bg-white border-gray-100'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className={`font-bold text-xs ${isExceeded ? 'text-red-700' : 'text-gray-700'}`}>
+                        {getFloorName(floor.floorNumber)}
+                      </span>
+                      <span className={`font-black text-xs ${
+                        isExceeded ? 'text-red-600' : 'text-gray-900'
+                      }`}>
+                        {Math.round(floorArea)} / {Math.round(usableAreaPerFloor)} <span className="text-[10px] font-normal text-gray-400">sq ft</span>
+                      </span>
+                    </div>
+                    
+                    {/* Floor Progress Bar */}
+                    <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden border border-gray-300/30">
+                      <div 
+                        className={`h-full transition-all duration-300 ${
+                          isExceeded ? 'bg-red-500' :
+                          floorPercent > 90 ? 'bg-amber-500' : 'bg-blue-600'
+                        }`}
+                        style={{ width: `${Math.min(floorPercent, 100)}%` }}
+                      />
+                    </div>
+                    
+                    <div className="flex justify-between items-center mt-1.5 text-[10px] text-gray-500 font-semibold">
+                      <span>Used: {Math.round(floorPercent)}%</span>
+                      {isExceeded && (
+                        <span className="text-red-600 flex items-center gap-0.5">
+                          ⚠ Exceeded
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            
+            {/* Legend / Info */}
+            <div className="text-[11px] text-gray-500 leading-relaxed border-t border-gray-200/60 pt-3">
+              <p className="font-semibold text-gray-700 mb-1">About Usable Area:</p>
+              <p>Values represent the estimated room sizes. Around 65% of the total plot size is usable for rooms (remaining goes to stairs, walls, corridors).</p>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  );
+    </form>
+  </div>
+</div>
+);
 }
