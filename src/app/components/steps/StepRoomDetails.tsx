@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useProject, FloorDetail } from '../../contexts/ProjectContext';
-import { Home, Plus, Minus, AlertTriangle } from 'lucide-react';
+import { Home, Plus, Minus, AlertTriangle, ChevronUp, ChevronDown } from 'lucide-react';
 
 interface StepRoomDetailsProps {
   onNext: () => void;
@@ -133,6 +133,7 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
   const [roomCounts, setRoomCounts] = useState<RoomCount[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [combineDrawingDining, setCombineDrawingDining] = useState(projectData.roomDetails.combineDrawingDining || false);
+  const [showBreakdown, setShowBreakdown] = useState(true);
 
   const plotMarlas = parseFloat(projectData.plotDetails.plotMarlas) || 5;
   const getMaxRoomsPerFloor = (marlas: number) => {
@@ -467,8 +468,13 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
     );
   }
 
+  // Current floor area for the floating panel
+  const currentFloorAreaVal = calculateFloorRoomArea(currentFloor);
+  const currentFloorPercent = (currentFloorAreaVal / usableAreaPerFloor) * 100;
+  const currentFloorExceeded = currentFloorAreaVal > usableAreaPerFloor;
+
   return (
-    <div ref={stepRef} className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden relative">
+    <div ref={stepRef} className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden relative pb-40 sm:pb-36">
       {/* Compact Header */}
       <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-700 px-5 sm:px-8 py-5 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
@@ -484,7 +490,9 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
       <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-md border-b border-gray-200 px-4 sm:px-6 py-2.5 shadow-sm">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
-            <div className="w-7 h-7 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs border border-blue-200 flex-shrink-0">
+            <div className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs border flex-shrink-0 ${
+              currentFloorExceeded ? 'bg-red-100 text-red-600 border-red-300' : 'bg-blue-100 text-blue-600 border-blue-200'
+            }`}>
               {currentFloor + 1}
             </div>
             <div className="min-w-0">
@@ -554,9 +562,40 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
             </div>
           )}
 
-          <div className="flex flex-col lg:flex-row gap-6 items-start">
-            {/* Left Column: Room Configurations */}
-            <div className="flex-1 w-full space-y-5">
+          {/* Prominent Current Floor Name */}
+          <div className={`flex items-center gap-3 p-3.5 rounded-xl border-2 ${
+            currentFloorExceeded 
+              ? 'bg-red-50 border-red-300' 
+              : 'bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200'
+          }`}>
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-lg shadow-sm ${
+              currentFloorExceeded 
+                ? 'bg-red-500 text-white' 
+                : 'bg-blue-600 text-white'
+            }`}>
+              {currentFloor + 1}
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className={`font-bold text-base ${
+                currentFloorExceeded ? 'text-red-800' : 'text-gray-900'
+              }`}>
+                {getFloorName(floors[currentFloor]?.floorNumber || 1)}
+              </h3>
+              <p className="text-[11px] text-gray-500">
+                {Math.round(currentFloorAreaVal)} / {Math.round(usableAreaPerFloor)} sq ft used
+                {currentFloorExceeded && <span className="text-red-600 font-semibold ml-1">• Area Exceeded!</span>}
+              </p>
+            </div>
+            <div className="text-right">
+              <span className={`text-lg font-black ${
+                currentFloorExceeded ? 'text-red-600' : currentFloorPercent > 90 ? 'text-amber-600' : 'text-blue-600'
+              }`}>
+                {Math.round(currentFloorPercent)}%
+              </span>
+            </div>
+          </div>
+
+          <div className="space-y-5">
             {/* 1. Bedrooms */}
             <div>
               <h4 className="font-semibold text-gray-900 mb-3">1. Bedrooms</h4>
@@ -932,57 +971,112 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
             )}
           </div>
         </div>
+        </form>
+      </div>
 
-        {/* Right Column: Sticky Floor Space Breakdown */}
-        <div className="w-full lg:w-72 shrink-0 lg:sticky lg:top-14 space-y-4">
-          <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 sm:p-5 shadow-sm space-y-4">
-            <h4 className="font-bold text-gray-900 text-xs flex items-center gap-1.5 uppercase tracking-wider text-gray-500">
-              📊 Floor Space Breakdown
-            </h4>
-            <div className="space-y-3">
+      {/* Fixed Floating Floor Space Breakdown - always visible at bottom */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 transition-all duration-300">
+        {/* Toggle Header Bar - always visible */}
+        <div 
+          onClick={() => setShowBreakdown(!showBreakdown)}
+          className={`cursor-pointer px-4 sm:px-6 py-2.5 flex items-center justify-between border-t ${
+            areaErrors.length > 0 
+              ? 'bg-red-600 text-white border-red-700' 
+              : 'bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white border-blue-700'
+          }`}
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-bold">📊 Floor Space</span>
+            <div className="flex items-center gap-1.5">
+              {floors.map((floor, index) => {
+                const fa = calculateFloorRoomArea(index);
+                const fp = (fa / usableAreaPerFloor) * 100;
+                const exceeded = fa > usableAreaPerFloor;
+                return (
+                  <div key={index} className="flex items-center gap-1">
+                    <span className="text-[10px] font-semibold opacity-80">
+                      {floor.floorNumber === 1 ? 'GF' : `${floor.floorNumber - 1}F`}
+                    </span>
+                    <div className="w-10 sm:w-14 bg-white/30 rounded-full h-1.5 overflow-hidden">
+                      <div className={`h-full rounded-full transition-all duration-300 ${
+                        exceeded ? 'bg-red-300' : fp > 90 ? 'bg-amber-300' : 'bg-white/90'
+                      }`} style={{ width: `${Math.min(fp, 100)}%` }} />
+                    </div>
+                    <span className={`text-[10px] font-bold ${exceeded ? 'text-red-200' : ''}`}>{Math.round(fp)}%</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            {areaErrors.length > 0 && (
+              <span className="text-[10px] font-semibold bg-white/20 px-2 py-0.5 rounded-full">⚠ Exceeded</span>
+            )}
+            {showBreakdown ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
+          </div>
+        </div>
+
+        {/* Expanded Breakdown Panel */}
+        {showBreakdown && (
+          <div className="bg-white border-t border-gray-200 shadow-2xl px-4 sm:px-6 py-3 max-h-[40vh] overflow-y-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto">
               {floors.map((floor, index) => {
                 const floorArea = calculateFloorRoomArea(index);
                 const floorPercent = (floorArea / usableAreaPerFloor) * 100;
                 const isExceeded = floorArea > usableAreaPerFloor;
+                const isActive = currentFloor === index;
                 
                 return (
                   <div 
                     key={index}
-                    className={`rounded-xl p-3 border transition-all ${
+                    onClick={() => setCurrentFloor(index)}
+                    className={`rounded-xl p-3 border-2 transition-all cursor-pointer ${
                       isExceeded 
-                        ? 'bg-red-50 border-red-200 shadow-sm ring-1 ring-red-100' 
-                        : currentFloor === index 
-                          ? 'bg-blue-50/60 border-blue-200 shadow-sm' 
-                          : 'bg-white border-gray-100'
+                        ? 'bg-red-50 border-red-300 shadow-md ring-1 ring-red-100' 
+                        : isActive 
+                          ? 'bg-blue-50 border-blue-400 shadow-md' 
+                          : 'bg-gray-50 border-gray-200 hover:border-blue-300 hover:shadow-sm'
                     }`}
                   >
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className={`font-bold text-xs ${isExceeded ? 'text-red-700' : 'text-gray-700'}`}>
-                        {getFloorName(floor.floorNumber)}
-                      </span>
-                      <span className={`font-black text-xs ${
-                        isExceeded ? 'text-red-600' : 'text-gray-900'
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black ${
+                          isExceeded ? 'bg-red-500 text-white' : isActive ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-700'
+                        }`}>
+                          {index + 1}
+                        </div>
+                        <span className={`font-bold text-sm ${isExceeded ? 'text-red-700' : isActive ? 'text-blue-800' : 'text-gray-700'}`}>
+                          {getFloorName(floor.floorNumber)}
+                        </span>
+                        {isActive && (
+                          <span className="text-[9px] font-semibold bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full uppercase tracking-wider">Current</span>
+                        )}
+                      </div>
+                      <span className={`font-black text-sm ${
+                        isExceeded ? 'text-red-600' : floorPercent > 90 ? 'text-amber-600' : 'text-gray-900'
                       }`}>
-                        {Math.round(floorArea)} / {Math.round(usableAreaPerFloor)} <span className="text-[10px] font-normal text-gray-400">sq ft</span>
+                        {Math.round(floorPercent)}%
                       </span>
                     </div>
                     
                     {/* Floor Progress Bar */}
-                    <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden border border-gray-300/30">
+                    <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
                       <div 
-                        className={`h-full transition-all duration-300 ${
+                        className={`h-full rounded-full transition-all duration-500 ${
                           isExceeded ? 'bg-red-500' :
-                          floorPercent > 90 ? 'bg-amber-500' : 'bg-blue-600'
+                          floorPercent > 90 ? 'bg-amber-500' : 'bg-blue-500'
                         }`}
                         style={{ width: `${Math.min(floorPercent, 100)}%` }}
                       />
                     </div>
                     
-                    <div className="flex justify-between items-center mt-1.5 text-[10px] text-gray-500 font-semibold">
-                      <span>Used: {Math.round(floorPercent)}%</span>
+                    <div className="flex justify-between items-center mt-1.5">
+                      <span className="text-[11px] text-gray-500 font-medium">
+                        {Math.round(floorArea)} / {Math.round(usableAreaPerFloor)} sq ft
+                      </span>
                       {isExceeded && (
-                        <span className="text-red-600 flex items-center gap-0.5">
-                          ⚠ Exceeded
+                        <span className="text-[10px] text-red-600 font-bold flex items-center gap-0.5">
+                          ⚠ Over by {Math.round(floorArea - usableAreaPerFloor)} sq ft
                         </span>
                       )}
                     </div>
@@ -990,17 +1084,9 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                 );
               })}
             </div>
-            
-            {/* Legend / Info */}
-            <div className="text-[11px] text-gray-500 leading-relaxed border-t border-gray-200/60 pt-3">
-              <p className="font-semibold text-gray-700 mb-1">About Usable Area:</p>
-              <p>Values represent the estimated room sizes. Around 65% of the total plot size is usable for rooms (remaining goes to stairs, walls, corridors).</p>
-            </div>
           </div>
-        </div>
+        )}
       </div>
-    </form>
-  </div>
-</div>
-);
+    </div>
+  );
 }
