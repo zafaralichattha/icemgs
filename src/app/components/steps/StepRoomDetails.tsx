@@ -486,26 +486,6 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
         </div>
       </div>
 
-      {/* Sticky Floor Name Bar - always visible */}
-      <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-md border-b border-gray-200 px-4 sm:px-6 py-2.5 shadow-sm">
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 min-w-0">
-            <div className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs border flex-shrink-0 ${
-              currentFloorExceeded ? 'bg-red-100 text-red-600 border-red-300' : 'bg-blue-100 text-blue-600 border-blue-200'
-            }`}>
-              {currentFloor + 1}
-            </div>
-            <div className="min-w-0">
-              <p className="font-bold text-gray-900 text-xs sm:text-sm truncate">{getFloorName(floors[currentFloor]?.floorNumber || 1)}</p>
-            </div>
-          </div>
-          
-          <div className="text-right text-[11px] text-gray-500 font-medium">
-            <span>{Math.round(currentFloorAreaVal)} / {Math.round(usableAreaPerFloor)} sq ft used</span>
-          </div>
-        </div>
-      </div>
-
       {/* Content */}
       <div className="p-4 sm:p-6">
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -540,39 +520,6 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
               <p className="text-red-600 text-sm">{errors[`floor${currentFloor}`]}</p>
             </div>
           )}
-
-          {/* Prominent Current Floor Name */}
-          <div className={`flex items-center gap-3 p-3.5 rounded-xl border-2 ${
-            currentFloorExceeded 
-              ? 'bg-red-50 border-red-300' 
-              : 'bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200'
-          }`}>
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-lg shadow-sm ${
-              currentFloorExceeded 
-                ? 'bg-red-500 text-white' 
-                : 'bg-blue-600 text-white'
-            }`}>
-              {currentFloor + 1}
-            </div>
-            <div className="flex-1 min-w-0">
-              <h3 className={`font-bold text-base ${
-                currentFloorExceeded ? 'text-red-800' : 'text-gray-900'
-              }`}>
-                {getFloorName(floors[currentFloor]?.floorNumber || 1)}
-              </h3>
-              <p className="text-[11px] text-gray-500">
-                {Math.round(currentFloorAreaVal)} / {Math.round(usableAreaPerFloor)} sq ft used
-                {currentFloorExceeded && <span className="text-red-600 font-semibold ml-1">• Area Exceeded!</span>}
-              </p>
-            </div>
-            <div className="text-right">
-              <span className={`text-lg font-black ${
-                currentFloorExceeded ? 'text-red-600' : currentFloorPercent > 90 ? 'text-amber-600' : 'text-blue-600'
-              }`}>
-                {Math.round(currentFloorPercent)}%
-              </span>
-            </div>
-          </div>
 
           <div className="space-y-5">
             {/* 1. Bedrooms */}

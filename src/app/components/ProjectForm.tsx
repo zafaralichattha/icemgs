@@ -27,7 +27,7 @@ export default function ProjectForm({ onMenuClick }: ProjectFormProps) {
 
   // Scroll to top of window when step changes
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
   }, [currentStep]);
 
   const steps = [
@@ -46,6 +46,7 @@ export default function ProjectForm({ onMenuClick }: ProjectFormProps) {
   const handleNext = () => {
     if (currentStep < 6) {
       setCurrentStep(currentStep + 1);
+      window.scrollTo(0, 0);
     }
   };
 
