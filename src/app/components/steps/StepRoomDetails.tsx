@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useProject, FloorDetail } from '../../contexts/ProjectContext';
-import { Home, Plus, Minus, AlertTriangle, Layers } from 'lucide-react';
+import { Home, Plus, Minus, AlertTriangle } from 'lucide-react';
 
 interface StepRoomDetailsProps {
   onNext: () => void;
@@ -425,6 +425,36 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
     }, 100);
   };
 
+  const handleSaveAndContinue = () => {
+    if (validateForm()) {
+      updateProjectData('roomDetails', { floors, combineDrawingDining });
+      markStepComplete(2);
+      onNext();
+    }
+  };
+
+  const renderSizeSelector = (roomTypeId: string, idx: number, label: string) => (
+    <div key={idx} className="flex flex-col sm:flex-row sm:items-center gap-2 p-2.5 bg-blue-50/50 rounded-lg border border-blue-100">
+      <span className="text-xs font-semibold text-gray-700 sm:w-20 shrink-0">{label}</span>
+      <div className="flex flex-1 bg-white p-1 rounded-lg gap-0.5 border border-gray-200">
+        {(['small', 'medium', 'large'] as const).map(size => (
+          <button
+            key={size}
+            type="button"
+            onClick={() => updateRoomSize(currentFloor, roomTypeId, idx, size)}
+            className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${
+              getRoomSize(currentFloor, roomTypeId, idx) === size
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+            }`}
+          >
+            {size.charAt(0).toUpperCase() + size.slice(1)}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
   const getAreaStatusColor = () => {
     if (areaUtilizationPercent > 100) return 'text-red-600 bg-red-50 border-red-300';
     if (areaUtilizationPercent > 90) return 'text-amber-700 bg-amber-50 border-amber-300';
@@ -454,118 +484,91 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
   };
 
   return (
-    <div ref={stepRef} className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/40 p-4 sm:p-8 overflow-hidden relative">
-      {/* Premium Header */}
-      <div className="mb-8 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-700 -mx-4 sm:-mx-8 -mt-4 sm:-mt-8 p-6 sm:p-8 text-white shadow-md relative overflow-hidden">
-        {/* Abstract background pattern */}
+    <div ref={stepRef} className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden relative">
+      {/* Compact Header */}
+      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-700 px-5 sm:px-8 py-5 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
-        
-        <div className="relative z-10 flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl sm:text-3xl font-bold mb-2 flex items-center gap-3">
-              <Home className="w-8 h-8 text-blue-200" />
-              Room Details
-            </h2>
-            <p className="text-blue-100 text-sm sm:text-base max-w-xl">
-              Configure the spaces and room dimensions for your project. You have selected <strong>{totalRooms} room{totalRooms !== 1 ? 's' : ''}</strong> across {numberOfFloors} floor{numberOfFloors !== 1 ? 's' : ''}.
-            </p>
+        <div className="relative z-10">
+          <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
+            <Home className="w-6 h-6 text-blue-200" />
+            Room Details
+          </h2>
+        </div>
+      </div>
+
+      {/* Sticky Utilization Bar - always visible */}
+      <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-md border-b border-gray-200 px-4 sm:px-6 py-2.5 shadow-sm">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-7 h-7 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs border border-blue-200 flex-shrink-0">
+              {currentFloor + 1}
+            </div>
+            <div className="min-w-0">
+              <p className="font-bold text-gray-900 text-xs sm:text-sm truncate">{getFloorName(floors[currentFloor]?.floorNumber || 1)}</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            <div className="flex items-center gap-2">
+              <span className={`text-xs sm:text-sm font-bold ${
+                areaUtilizationPercent > 100 ? 'text-red-600' : areaUtilizationPercent > 90 ? 'text-amber-600' : 'text-blue-600'
+              }`}>
+                {Math.round(areaUtilizationPercent)}%
+              </span>
+              <div className="w-12 sm:w-20 bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                <div className={`h-full rounded-full transition-all duration-500 ${
+                  areaUtilizationPercent > 100 ? 'bg-red-500' :
+                  areaUtilizationPercent > 90 ? 'bg-amber-500' :
+                  areaUtilizationPercent > 70 ? 'bg-blue-500' : 'bg-green-500'
+                }`} style={{ width: `${Math.min(areaUtilizationPercent, 100)}%` }} />
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={handleSaveAndContinue}
+              disabled={areaUtilizationPercent > 100}
+              className="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors whitespace-nowrap"
+            >
+              Save &amp; Continue
+            </button>
           </div>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Content */}
+      <div className="p-4 sm:p-6">
+        <form onSubmit={handleSubmit} className="space-y-5">
 
-
-        {/* Area Exceeded Error */}
-        {errors['areaExceeded'] && (
-          <div className="bg-red-50 border-2 border-red-300 rounded-lg p-4">
-            <div className="flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <h4 className="font-semibold text-red-900 mb-2">Area Limit Exceeded!</h4>
-                <p className="text-red-800 text-sm mb-3">{errors['areaExceeded']}</p>
-                
-                {getSizeRecommendations().length > 0 && (
-                  <div>
-                    <p className="text-red-900 font-medium text-sm mb-1">Suggestions:</p>
-                    <ul className="list-disc list-inside text-red-800 text-sm space-y-1">
-                      {getSizeRecommendations().map((rec, idx) => (
-                        <li key={idx}>{rec}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Area Warning */}
-        {errors['areaWarning'] && !errors['areaExceeded'] && (
-          <div className="bg-amber-50 border-2 border-amber-300 rounded-lg p-4">
-            <div className="flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="text-amber-800 text-sm">{errors['areaWarning']}</p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* 2-Column Layout: Rooms + Sidebar */}
-        <div className="flex flex-col-reverse lg:flex-row gap-8">
-          {/* Left Column: Room Configuration */}
-          <div className="flex-1 min-w-0 space-y-8">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50/50 rounded-xl p-4 sm:p-5 border border-blue-100/50 shadow-sm gap-3">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-lg border border-blue-200">
-                  {currentFloor + 1}
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-gray-900">
-                    {getFloorName(floors[currentFloor]?.floorNumber || 1)}
-                  </h3>
-                  <p className="text-xs text-blue-600 font-medium tracking-wide uppercase">
-                    Floor {currentFloor + 1} of {floors.length}
-                  </p>
+          {/* Area Exceeded Error */}
+          {errors['areaExceeded'] && (
+            <div className="bg-red-50 border border-red-200 rounded-xl p-3">
+              <div className="flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="text-red-800 text-xs font-medium">{errors['areaExceeded']}</p>
                 </div>
               </div>
-              <div className="bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm text-sm whitespace-nowrap">
-                <span className="text-gray-500 mr-2">Allocated Area:</span>
-                <strong className={currentFloorArea > usableAreaPerFloor ? "text-red-600" : "text-gray-900"}>{Math.round(currentFloorArea)}</strong>
-                <span className="text-gray-400 mx-1">/</span>
-                <span className="text-gray-600">{Math.round(usableAreaPerFloor)} sq ft</span>
+            </div>
+          )}
+
+          {/* Area Warning */}
+          {errors['areaWarning'] && !errors['areaExceeded'] && (
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-3">
+              <div className="flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                <p className="text-amber-800 text-xs">{errors['areaWarning']}</p>
               </div>
             </div>
+          )}
 
+          {/* Floor Errors */}
           {errors[`floor${currentFloor}`] && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-3">
               <p className="text-red-600 text-sm">{errors[`floor${currentFloor}`]}</p>
             </div>
           )}
 
-          {errors[`floor${currentFloor}_kitchen`] && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-              <p className="text-red-600 text-sm">{errors[`floor${currentFloor}_kitchen`]}</p>
-            </div>
-          )}
-          {errors[`floor${currentFloor}_lounge`] && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-              <p className="text-red-600 text-sm">{errors[`floor${currentFloor}_lounge`]}</p>
-            </div>
-          )}
-          {errors[`floor${currentFloor}_bedrooms_max`] && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-              <p className="text-red-600 text-sm">{errors[`floor${currentFloor}_bedrooms_max`]}</p>
-            </div>
-          )}
-          {errors[`floor${currentFloor}_bathrooms_max`] && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-              <p className="text-red-600 text-sm">{errors[`floor${currentFloor}_bathrooms_max`]}</p>
-            </div>
-          )}
-
-          <div className="space-y-6">
+          <div className="space-y-5">
             {/* 1. Bedrooms */}
             <div>
               <h4 className="font-semibold text-gray-900 mb-3">1. Bedrooms</h4>
@@ -611,6 +614,15 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                           <Plus className="w-4 h-4" />
                         </button>
                       </div>
+
+                      {/* Inline Size Config */}
+                      {bedroomCount > 0 && (
+                        <div className="mt-3 pt-3 border-t border-gray-100 space-y-2">
+                          {Array.from({ length: bedroomCount }).map((_, idx) =>
+                            renderSizeSelector('bedroom', idx, `Bed ${idx + 1}`)
+                          )}
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -663,6 +675,15 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                             <Plus className="w-4 h-4" />
                           </button>
                         </div>
+
+                        {/* Inline Size Config */}
+                        {bathroomCount > 0 && (
+                          <div className="mt-3 pt-3 border-t border-gray-100 space-y-2">
+                            {Array.from({ length: bathroomCount }).map((_, idx) =>
+                              renderSizeSelector('bathroom', idx, `Bath ${idx + 1}`)
+                            )}
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -693,6 +714,11 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                     </div>
                     {currentFloor === 0 && roomCounts[currentFloor]?.['lounge'] === 0 && (
                       <span className="text-xs text-red-500 mt-1">Required on this floor</span>
+                    )}
+                    {roomCounts[currentFloor]?.['lounge'] > 0 && (
+                      <div className="mt-2 w-full" onClick={(e) => e.preventDefault()}>
+                        {renderSizeSelector('lounge', 0, 'Size')}
+                      </div>
                     )}
                   </div>
                 </label>
@@ -736,6 +762,11 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                           </label>
                         </div>
                       )}
+                      {roomCounts[currentFloor]?.['drawing'] > 0 && (
+                        <div className="mt-2 w-full" onClick={(e) => e.stopPropagation()}>
+                          {renderSizeSelector('drawing', 0, 'Size')}
+                        </div>
+                      )}
                     </div>
                   </label>
                 )}
@@ -765,6 +796,11 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                     {currentFloor === 0 && roomCounts[currentFloor]?.['kitchen'] === 0 && (
                       <span className="text-xs text-red-500 mt-1">Required on this floor</span>
                     )}
+                    {roomCounts[currentFloor]?.['kitchen'] > 0 && (
+                      <div className="mt-2 w-full" onClick={(e) => e.preventDefault()}>
+                        {renderSizeSelector('kitchen', 0, 'Size')}
+                      </div>
+                    )}
                   </div>
                 </label>
 
@@ -784,6 +820,11 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                         Store Room
                       </span>
                     </div>
+                    {roomCounts[currentFloor]?.['store'] > 0 && (
+                      <div className="mt-2 w-full" onClick={(e) => e.preventDefault()}>
+                        {renderSizeSelector('store', 0, 'Size')}
+                      </div>
+                    )}
                   </div>
                 </label>
               </div>
@@ -815,6 +856,11 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                               {currentFloor === 0 && id === 'terrace' ? 'Porch' : roomType.label}
                             </span>
                           </div>
+                          {isSelected && (
+                            <div className="mt-2 w-full" onClick={(e) => e.preventDefault()}>
+                              {renderSizeSelector(id, 0, 'Size')}
+                            </div>
+                          )}
                         </div>
                       </label>
                     );
@@ -865,229 +911,42 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
             )}
           </div>
 
-          {/* Room Size Configuration */}
-          {totalRooms > 0 && (
-            <div className="space-y-4">
-              <h4 className="font-semibold text-gray-900">{currentFloor === 0 ? '4.' : '3.'} Configure Selected Room Sizes</h4>
-              <div className="space-y-4">
-                {ALL_ROOM_TYPES.map((roomType) => {
-                  const count = roomCounts[currentFloor]?.[roomType.id] || 0;
-                  if (count === 0 || roomType.id === 'mumty') return null;
-
-                  const displayLabel = currentFloor === 0 && roomType.id === 'terrace' ? 'Porch' : roomType.label;
-                  return (
-                    <div key={roomType.id} className="bg-white rounded-xl p-5 border border-blue-100 shadow-sm">
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className="text-xl">{roomType.icon}</span>
-                        <h5 className="font-semibold text-blue-900">
-                          {displayLabel} ({count})
-                        </h5>
-                      </div>
-                      
-                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {Array.from({ length: count }).map((_, idx) => (
-                          <div key={idx} className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                            <div className="text-sm font-medium text-gray-700 mb-2">
-                              {displayLabel.replace(/s$/, '')} {idx + 1}
-                            </div>
-                            
-                            {/* Render size buttons as segmented control */}
-                            <div className="flex bg-gray-100/70 p-1.5 rounded-lg border border-gray-200">
-                              <button
-                                type="button"
-                                onClick={() => updateRoomSize(currentFloor, roomType.id, idx, 'small')}
-                                className={`flex-1 py-1.5 px-1 text-xs sm:text-sm font-semibold rounded-md transition-all truncate ${
-                                  getRoomSize(currentFloor, roomType.id, idx) === 'small'
-                                    ? 'bg-white text-blue-700 shadow-sm ring-1 ring-gray-200'
-                                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200/50'
-                                }`}
-                              >
-                                Small
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => updateRoomSize(currentFloor, roomType.id, idx, 'medium')}
-                                className={`flex-1 py-1.5 px-1 text-xs sm:text-sm font-semibold rounded-md transition-all truncate ${
-                                  getRoomSize(currentFloor, roomType.id, idx) === 'medium'
-                                    ? 'bg-white text-blue-700 shadow-sm ring-1 ring-gray-200'
-                                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200/50'
-                                }`}
-                              >
-                                Medium
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => updateRoomSize(currentFloor, roomType.id, idx, 'large')}
-                                className={`flex-1 py-1.5 px-1 text-xs sm:text-sm font-semibold rounded-md transition-all truncate ${
-                                  getRoomSize(currentFloor, roomType.id, idx) === 'large'
-                                    ? 'bg-white text-blue-700 shadow-sm ring-1 ring-gray-200'
-                                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200/50'
-                                }`}
-                              >
-                                Large
-                              </button>
-                            </div>
-                            
-                            <p className="text-xs text-gray-500 mt-2">
-                              {getSizeDescription(getRoomSize(currentFloor, roomType.id, idx), roomType.id, combineDrawingDining, plotMarlas)}
-                            </p>
-                            
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-          
-          {/* Floor Navigation (Bottom of Left Column) */}
-          <div className="flex flex-col sm:flex-row items-center justify-between pt-6 border-t border-gray-200 mt-10 gap-4">
+          {/* Floor Navigation */}
+          <div className="flex flex-col sm:flex-row items-center justify-between pt-5 border-t border-gray-200 mt-6 gap-3">
             <button
               type="button"
               onClick={() => handleFloorChange(currentFloor - 1)}
               disabled={currentFloor === 0}
-              className="w-full sm:w-auto px-6 py-3 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 hover:shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all font-semibold"
+              className="w-full sm:w-auto px-5 py-2.5 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all font-semibold text-sm"
             >
               ← Previous Floor
             </button>
             
-            <div className="text-sm text-gray-500 font-medium bg-gray-100 px-4 py-1.5 rounded-full">
+            <div className="text-xs text-gray-500 font-medium bg-gray-100 px-3 py-1 rounded-full">
               Floor {currentFloor + 1} of {floors.length}
             </div>
 
-            <button
-              type="button"
-              onClick={() => handleFloorChange(currentFloor + 1)}
-              disabled={currentFloor === floors.length - 1}
-              className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed transition-all font-semibold shadow-sm"
-            >
-              Next Floor →
-            </button>
+            {currentFloor < floors.length - 1 ? (
+              <button
+                type="button"
+                onClick={() => handleFloorChange(currentFloor + 1)}
+                className="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all font-semibold text-sm shadow-sm"
+              >
+                Next Floor →
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={handleSaveAndContinue}
+                disabled={areaUtilizationPercent > 100}
+                className="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed transition-all font-semibold text-sm shadow-sm"
+              >
+                ✓ Save & Continue
+              </button>
+            )}
           </div>
-        </div> {/* End of Left Column */}
-
-        {/* Right Column: Space Utilization Sidebar */}
-        <div className="lg:w-80 flex-shrink-0">
-          <div className="sticky top-24 space-y-5">
-            {/* Overall Space Utilization Status */}
-            <div className={`bg-white rounded-2xl p-5 shadow-xl border transition-all duration-300 ${
-              areaUtilizationPercent > 100 ? 'border-red-300 shadow-red-100/50 ring-1 ring-red-100' :
-              areaUtilizationPercent > 90 ? 'border-amber-300 shadow-amber-100/50 ring-1 ring-amber-100' :
-              areaUtilizationPercent > 70 ? 'border-blue-200 shadow-blue-100/50' :
-              'border-green-200 shadow-green-100/50'
-            }`}>
-              <div className="flex items-start gap-3">
-                <div className={`p-2 rounded-xl ${
-                  areaUtilizationPercent > 100 ? 'bg-red-100 text-red-600' :
-                  areaUtilizationPercent > 90 ? 'bg-amber-100 text-amber-600' :
-                  areaUtilizationPercent > 70 ? 'bg-blue-100 text-blue-600' :
-                  'bg-green-100 text-green-600'
-                }`}>
-                  {getAreaStatusIcon()}
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-bold text-gray-900">Space Used</h4>
-                    <span className={`text-lg font-black ${
-                      areaUtilizationPercent > 100 ? 'text-red-600' :
-                      areaUtilizationPercent > 90 ? 'text-amber-600' :
-                      areaUtilizationPercent > 70 ? 'text-blue-600' :
-                      'text-green-600'
-                    }`}>
-                      {Math.round(areaUtilizationPercent)}%
-                    </span>
-                  </div>
-                  
-                  {/* Progress Bar */}
-                  <div className="w-full bg-gray-100 rounded-full h-2.5 mb-4 overflow-hidden border border-gray-200/50 shadow-inner">
-                    <div 
-                      className={`h-full transition-all duration-500 ease-out rounded-full ${
-                        areaUtilizationPercent > 100 ? 'bg-gradient-to-r from-red-500 to-rose-500' :
-                        areaUtilizationPercent > 90 ? 'bg-gradient-to-r from-amber-400 to-orange-500' :
-                        areaUtilizationPercent > 70 ? 'bg-gradient-to-r from-blue-400 to-indigo-500' :
-                        'bg-gradient-to-r from-emerald-400 to-green-500'
-                      }`}
-                      style={{ width: `${Math.min(areaUtilizationPercent, 100)}%` }}
-                    />
-                  </div>
-                  
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between items-center text-gray-600">
-                      <span className="font-medium text-gray-500">Allocated</span>
-                      <strong className="text-gray-900">{Math.round(totalRoomArea)} <span className="text-xs text-gray-400">sq ft</span></strong>
-                    </div>
-                    <div className="flex justify-between items-center text-gray-600 border-t border-gray-100 pt-2">
-                      <span className="font-medium text-gray-500">Max Allowed</span>
-                      <strong className="text-gray-900">{Math.round(totalUsableArea)} <span className="text-xs text-gray-400">sq ft</span></strong>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Individual Floor Space Utilization */}
-            <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
-              <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Layers className="w-4 h-4 text-gray-400" />
-                Floor Breakdown
-              </h4>
-              <div className="space-y-3">
-                {floors.map((floor, index) => {
-                  const floorArea = calculateFloorRoomArea(index);
-                  const floorPercent = (floorArea / usableAreaPerFloor) * 100;
-                  
-                  return (
-                    <div 
-                      key={index}
-                      className={`rounded-xl p-3 border transition-colors ${
-                        floorPercent > 100 ? 'bg-red-50/50 border-red-100' :
-                        currentFloor === index ? 'bg-blue-50/50 border-blue-200 ring-1 ring-blue-100' : 'bg-gray-50/50 border-gray-100'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <span className={`font-semibold text-xs ${currentFloor === index ? 'text-blue-700' : 'text-gray-700'}`}>
-                          {getFloorName(floor.floorNumber)}
-                        </span>
-                        <span className={`font-bold text-xs ${
-                          floorPercent > 100 ? 'text-red-600' :
-                          floorPercent > 90 ? 'text-amber-600' : 'text-gray-900'
-                        }`}>{Math.round(floorPercent)}%</span>
-                      </div>
-                      
-                      {/* Floor Progress Bar */}
-                      <div className="w-full bg-white rounded-full h-1.5 overflow-hidden border border-gray-200/50">
-                        <div 
-                          className={`h-full transition-all duration-300 ${
-                            floorPercent > 100 ? 'bg-red-500' :
-                            floorPercent > 90 ? 'bg-amber-500' : 
-                            floorPercent > 70 ? 'bg-blue-500' : 'bg-green-500'
-                          }`}
-                          style={{ width: `${Math.min(floorPercent, 100)}%` }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={areaUtilizationPercent > 100}
-              className={`w-full py-4 rounded-xl font-bold text-white shadow-lg transition-all duration-300 ${
-                areaUtilizationPercent > 100 
-                  ? 'bg-gray-400 cursor-not-allowed shadow-none' 
-                  : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 hover:shadow-blue-500/25 hover:-translate-y-0.5'
-              }`}
-            >
-              {areaUtilizationPercent > 100 ? 'Reduce Room Sizes' : 'Save & Continue'}
-            </button>
-          </div>
-        </div>
-        </div> {/* End of 2-Column Layout */}
-      </form>
+        </form>
+      </div>
     </div>
   );
 }
