@@ -605,7 +605,11 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                   const isMaxReached = bedroomCount >= maxRoomsPerFloor;
 
                   return (
-                    <div key={roomType.id} className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300 transition-all">
+                    <div key={roomType.id} className={`bg-white rounded-xl p-5 border transition-all ${
+                      bedroomCount > 0 
+                        ? 'border-blue-400 shadow-md ring-1 ring-blue-100' 
+                        : 'border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300'
+                    }`}>
                       <div className="flex items-center gap-2 mb-3">
                         <span className="text-2xl">{roomType.icon}</span>
                         <label className="font-medium text-gray-900">
@@ -659,7 +663,11 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
             {/* 2. Bathrooms & Washrooms */}
             <div>
               <h4 className="font-semibold text-gray-900 mb-3">2. Bathrooms & Washrooms</h4>
-              <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all">
+              <div className={`bg-white rounded-xl p-5 border transition-all ${
+                (roomCounts[currentFloor]?.['bathroom'] || 0) > 0 
+                  ? 'border-blue-400 shadow-md ring-1 ring-blue-100' 
+                  : 'border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300'
+              }`}>
                 <div className="flex flex-col gap-5">
                   {COUNTABLE_ROOMS.filter(r => r.id === 'bathroom').map((roomType) => {
                     const bathroomCount = roomCounts[currentFloor]?.[roomType.id] || 0;
@@ -723,60 +731,75 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
             <div>
               <h4 className="font-semibold text-gray-900 mb-3">3. Living & Formal Spaces</h4>
               <div className="grid gap-4">
-              <label className={`flex items-start gap-3 p-5 rounded-xl border-2 cursor-pointer transition-all ${
-                  roomCounts[currentFloor]?.['lounge'] > 0 ? 'bg-blue-50 border-blue-500 shadow-sm' : 'bg-white border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300'
+                {/* Lounge */}
+                <div className={`bg-white rounded-xl p-5 border transition-all ${
+                  roomCounts[currentFloor]?.['lounge'] > 0 
+                    ? 'border-blue-400 shadow-md ring-1 ring-blue-100' 
+                    : 'border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300'
                 }`}>
-                  <input
-                    type="checkbox"
-                    checked={roomCounts[currentFloor]?.['lounge'] > 0}
-                    onChange={() => toggleSingleRoom(currentFloor, 'lounge')}
-                    className="mt-1 w-4 h-4 text-blue-600 rounded"
-                  />
-                  <div>
+                  <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <span className="text-xl">📺</span>
-                      <span className={`font-medium ${roomCounts[currentFloor]?.['lounge'] > 0 ? 'text-blue-900' : 'text-gray-900'}`}>
+                      <span className="text-2xl">📺</span>
+                      <label className="font-medium text-gray-900">
                         Lounge / Living Area {currentFloor === 0 && <span className="text-red-500">*</span>}
-                      </span>
+                      </label>
                     </div>
-                    {currentFloor === 0 && roomCounts[currentFloor]?.['lounge'] === 0 && (
-                      <span className="text-xs text-red-500 mt-1">Required on this floor</span>
-                    )}
-                    {roomCounts[currentFloor]?.['lounge'] > 0 && (
-                      <div className="mt-2 w-full" onClick={(e) => e.preventDefault()}>
-                        {renderSizeSelector('lounge', 0, 'Size')}
-                      </div>
-                    )}
+                    <button
+                      type="button"
+                      onClick={() => toggleSingleRoom(currentFloor, 'lounge')}
+                      className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                        roomCounts[currentFloor]?.['lounge'] > 0
+                          ? 'bg-blue-600 text-white hover:bg-blue-700'
+                          : 'bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-700 border border-gray-300'
+                      }`}
+                    >
+                      {roomCounts[currentFloor]?.['lounge'] > 0 ? '✓ Added' : '+ Add'}
+                    </button>
                   </div>
-                </label>
+                  {currentFloor === 0 && roomCounts[currentFloor]?.['lounge'] === 0 && (
+                    <span className="text-xs text-red-500">Required on this floor</span>
+                  )}
+                  {roomCounts[currentFloor]?.['lounge'] > 0 && (
+                    <div className="mt-3 pt-3 border-t border-gray-100">
+                      {renderSizeSelector('lounge', 0, 'Size')}
+                    </div>
+                  )}
+                </div>
 
+                {/* Drawing Room */}
                 {currentFloor === 0 && (
-                  <label className={`flex items-start gap-3 p-5 rounded-xl border-2 cursor-pointer transition-all ${
-                    roomCounts[currentFloor]?.['drawing'] > 0 ? 'bg-blue-50 border-blue-500 shadow-sm' : 'bg-white border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300'
+                  <div className={`bg-white rounded-xl p-5 border transition-all ${
+                    roomCounts[currentFloor]?.['drawing'] > 0 
+                      ? 'border-blue-400 shadow-md ring-1 ring-blue-100' 
+                      : 'border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300'
                   }`}>
-                    <input
-                      type="checkbox"
-                      checked={roomCounts[currentFloor]?.['drawing'] > 0}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          handleDrawingDiningSelection(currentFloor, 'drawing_only');
-                        } else {
-                          handleDrawingDiningSelection(currentFloor, 'none');
-                        }
-                      }}
-                      className="mt-1 w-4 h-4 text-blue-600 rounded"
-                    />
-                    <div className="flex-1">
+                    <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
-                        <span className="text-xl">🛋️</span>
-                        <span className={`font-medium ${roomCounts[currentFloor]?.['drawing'] > 0 ? 'text-blue-900' : 'text-gray-900'}`}>
-                          Drawing Room (Formal Sitting)
-                        </span>
+                        <span className="text-2xl">🛋️</span>
+                        <label className="font-medium text-gray-900">Drawing Room (Formal Sitting)</label>
                       </div>
-                      
-                      {roomCounts[currentFloor]?.['drawing'] > 0 && (
-                        <div className="mt-3 pt-3 border-t border-blue-200">
-                          <label className="flex items-center gap-2 cursor-pointer" onClick={(e) => e.stopPropagation()}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (roomCounts[currentFloor]?.['drawing'] > 0) {
+                            handleDrawingDiningSelection(currentFloor, 'none');
+                          } else {
+                            handleDrawingDiningSelection(currentFloor, 'drawing_only');
+                          }
+                        }}
+                        className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                          roomCounts[currentFloor]?.['drawing'] > 0
+                            ? 'bg-blue-600 text-white hover:bg-blue-700'
+                            : 'bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-700 border border-gray-300'
+                        }`}
+                      >
+                        {roomCounts[currentFloor]?.['drawing'] > 0 ? '✓ Added' : '+ Add'}
+                      </button>
+                    </div>
+                    {roomCounts[currentFloor]?.['drawing'] > 0 && (
+                      <>
+                        <div className="mt-3 pt-3 border-t border-gray-100">
+                          <label className="flex items-center gap-2 cursor-pointer">
                             <input 
                               type="checkbox" 
                               checked={combineDrawingDining}
@@ -785,17 +808,15 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                               }}
                               className="w-4 h-4 text-blue-600 rounded"
                             />
-                            <span className="text-sm text-blue-800 font-medium">Combine with Dining Area (Large Space)</span>
+                            <span className="text-sm text-gray-800 font-medium">Combine with Dining Area (Large Space)</span>
                           </label>
                         </div>
-                      )}
-                      {roomCounts[currentFloor]?.['drawing'] > 0 && (
-                        <div className="mt-2 w-full" onClick={(e) => e.stopPropagation()}>
+                        <div className="mt-2">
                           {renderSizeSelector('drawing', 0, 'Size')}
                         </div>
-                      )}
-                    </div>
-                  </label>
+                      </>
+                    )}
+                  </div>
                 )}
               </div>
             </div>
@@ -804,135 +825,158 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
             <div>
               <h4 className="font-semibold text-gray-900 mb-3">4. Kitchen & Utility</h4>
               <div className="grid md:grid-cols-2 gap-4">
-                <label className={`flex items-start gap-3 p-5 rounded-xl border-2 cursor-pointer transition-all ${
-                  roomCounts[currentFloor]?.['kitchen'] > 0 ? 'bg-blue-50 border-blue-500 shadow-sm' : 'bg-white border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300'
+                {/* Kitchen */}
+                <div className={`bg-white rounded-xl p-5 border transition-all ${
+                  roomCounts[currentFloor]?.['kitchen'] > 0 
+                    ? 'border-blue-400 shadow-md ring-1 ring-blue-100' 
+                    : 'border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300'
                 }`}>
-                  <input
-                    type="checkbox"
-                    checked={roomCounts[currentFloor]?.['kitchen'] > 0}
-                    onChange={() => toggleSingleRoom(currentFloor, 'kitchen')}
-                    className="mt-1 w-4 h-4 text-blue-600 rounded"
-                  />
-                  <div>
+                  <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <span className="text-xl">🍳</span>
-                      <span className={`font-medium ${roomCounts[currentFloor]?.['kitchen'] > 0 ? 'text-blue-900' : 'text-gray-900'}`}>
+                      <span className="text-2xl">🍳</span>
+                      <label className="font-medium text-gray-900">
                         Kitchen {currentFloor === 0 && <span className="text-red-500">*</span>}
-                      </span>
+                      </label>
                     </div>
-                    {currentFloor === 0 && roomCounts[currentFloor]?.['kitchen'] === 0 && (
-                      <span className="text-xs text-red-500 mt-1">Required on this floor</span>
-                    )}
-                    {roomCounts[currentFloor]?.['kitchen'] > 0 && (
-                      <div className="mt-2 w-full" onClick={(e) => e.preventDefault()}>
-                        {renderSizeSelector('kitchen', 0, 'Size')}
-                      </div>
-                    )}
+                    <button
+                      type="button"
+                      onClick={() => toggleSingleRoom(currentFloor, 'kitchen')}
+                      className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                        roomCounts[currentFloor]?.['kitchen'] > 0
+                          ? 'bg-blue-600 text-white hover:bg-blue-700'
+                          : 'bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-700 border border-gray-300'
+                      }`}
+                    >
+                      {roomCounts[currentFloor]?.['kitchen'] > 0 ? '✓ Added' : '+ Add'}
+                    </button>
                   </div>
-                </label>
+                  {currentFloor === 0 && roomCounts[currentFloor]?.['kitchen'] === 0 && (
+                    <span className="text-xs text-red-500">Required on this floor</span>
+                  )}
+                  {roomCounts[currentFloor]?.['kitchen'] > 0 && (
+                    <div className="mt-3 pt-3 border-t border-gray-100">
+                      {renderSizeSelector('kitchen', 0, 'Size')}
+                    </div>
+                  )}
+                </div>
 
-                <label className={`flex items-start gap-3 p-5 rounded-xl border-2 cursor-pointer transition-all ${
-                  roomCounts[currentFloor]?.['store'] > 0 ? 'bg-blue-50 border-blue-500 shadow-sm' : 'bg-white border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300'
+                {/* Store Room */}
+                <div className={`bg-white rounded-xl p-5 border transition-all ${
+                  roomCounts[currentFloor]?.['store'] > 0 
+                    ? 'border-blue-400 shadow-md ring-1 ring-blue-100' 
+                    : 'border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300'
                 }`}>
-                  <input
-                    type="checkbox"
-                    checked={roomCounts[currentFloor]?.['store'] > 0}
-                    onChange={() => toggleSingleRoom(currentFloor, 'store')}
-                    className="mt-1 w-4 h-4 text-blue-600 rounded"
-                  />
-                  <div>
+                  <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <span className="text-xl">📦</span>
-                      <span className={`font-medium ${roomCounts[currentFloor]?.['store'] > 0 ? 'text-blue-900' : 'text-gray-900'}`}>
-                        Store Room
-                      </span>
+                      <span className="text-2xl">📦</span>
+                      <label className="font-medium text-gray-900">Store Room</label>
                     </div>
-                    {roomCounts[currentFloor]?.['store'] > 0 && (
-                      <div className="mt-2 w-full" onClick={(e) => e.preventDefault()}>
-                        {renderSizeSelector('store', 0, 'Size')}
-                      </div>
-                    )}
+                    <button
+                      type="button"
+                      onClick={() => toggleSingleRoom(currentFloor, 'store')}
+                      className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                        roomCounts[currentFloor]?.['store'] > 0
+                          ? 'bg-blue-600 text-white hover:bg-blue-700'
+                          : 'bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-700 border border-gray-300'
+                      }`}
+                    >
+                      {roomCounts[currentFloor]?.['store'] > 0 ? '✓ Added' : '+ Add'}
+                    </button>
                   </div>
-                </label>
+                  {roomCounts[currentFloor]?.['store'] > 0 && (
+                    <div className="mt-3 pt-3 border-t border-gray-100">
+                      {renderSizeSelector('store', 0, 'Size')}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
             {/* 5. Outdoors (Balcony / Terrace) */}
             <div>
-              <h4 className="font-semibold text-gray-900 mb-3">{currentFloor === 0 ? '5.' : '5.'} Outdoors</h4>
+              <h4 className="font-semibold text-gray-900 mb-3">5. Outdoors</h4>
               <div className="grid md:grid-cols-2 gap-4">
                 {['balcony', 'terrace'].map((id) => {
-                  if (currentFloor === 0 && id === 'balcony') return null; // No balconies on ground floor
+                  if (currentFloor === 0 && id === 'balcony') return null;
                   const roomType = SINGLE_ROOMS.find(r => r.id === id);
                   if (!roomType) return null;
-                    const isSelected = roomCounts[currentFloor]?.[id] > 0;
-                    return (
-                      <label key={id} className={`flex items-start gap-3 p-5 rounded-xl border-2 cursor-pointer transition-all ${
-                        isSelected ? 'bg-blue-50 border-blue-500 shadow-sm' : 'bg-white border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300'
-                      }`}>
-                        <input
-                          type="checkbox"
-                          checked={isSelected}
-                          onChange={() => toggleSingleRoom(currentFloor, id)}
-                          className="mt-1 w-4 h-4 text-blue-600 rounded"
-                        />
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xl">{roomType.icon}</span>
-                            <span className={`font-medium ${isSelected ? 'text-blue-900' : 'text-gray-900'}`}>
-                              {currentFloor === 0 && id === 'terrace' ? 'Porch' : roomType.label}
-                            </span>
-                          </div>
-                          {isSelected && (
-                            <div className="mt-2 w-full" onClick={(e) => e.preventDefault()}>
-                              {renderSizeSelector(id, 0, 'Size')}
-                            </div>
-                          )}
+                  const isSelected = roomCounts[currentFloor]?.[id] > 0;
+                  return (
+                    <div key={id} className={`bg-white rounded-xl p-5 border transition-all ${
+                      isSelected 
+                        ? 'border-blue-400 shadow-md ring-1 ring-blue-100' 
+                        : 'border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300'
+                    }`}>
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-2xl">{roomType.icon}</span>
+                          <label className="font-medium text-gray-900">
+                            {currentFloor === 0 && id === 'terrace' ? 'Porch' : roomType.label}
+                          </label>
                         </div>
-                      </label>
-                    );
-                  })}
-                </div>
+                        <button
+                          type="button"
+                          onClick={() => toggleSingleRoom(currentFloor, id)}
+                          className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                            isSelected
+                              ? 'bg-blue-600 text-white hover:bg-blue-700'
+                              : 'bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-700 border border-gray-300'
+                          }`}
+                        >
+                          {isSelected ? '✓ Added' : '+ Add'}
+                        </button>
+                      </div>
+                      {isSelected && (
+                        <div className="mt-3 pt-3 border-t border-gray-100">
+                          {renderSizeSelector(id, 0, 'Size')}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
+            </div>
 
             {/* 6. Roof Options (Top Floor Only) */}
             {currentFloor === floors.length - 1 && (
               <div>
                 <h4 className="font-semibold text-gray-900 mb-3">Roof Configuration</h4>
-                <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all">
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="text-2xl">🏠</span>
-                    <label className="font-medium text-gray-900">Rooftop with Mumty (Stair Enclosure)</label>
-                  </div>
-
-                  <label className={`flex items-start gap-3 cursor-pointer p-4 rounded-xl border-2 transition-all ${
-                    roomCounts[currentFloor]?.['mumty'] > 0 ? 'bg-blue-50 border-blue-500 shadow-sm' : 'bg-white border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300'
-                  }`}>
-                    <input 
-                      type="checkbox" 
-                      checked={roomCounts[currentFloor]?.['mumty'] > 0}
-                      onChange={() => toggleSingleRoom(currentFloor, 'mumty')}
-                      className="mt-1 w-4 h-4 text-blue-600 rounded"
-                    />
-                    <div className="flex-1">
-                      <span className="font-semibold text-gray-900 block">Add Mumty</span>
-                      <span className="text-sm text-gray-600">Build a small stair enclosure (Mumty) to protect the stairs from weather.</span>
-                      
-                      {roomCounts[currentFloor]?.['mumty'] > 0 && (
-                        <div className="mt-3 pt-3 border-t border-blue-200">
-                          <label className="flex items-center gap-2 cursor-pointer" onClick={(e) => e.stopPropagation()}>
-                            <input 
-                              type="checkbox" 
-                              checked={hasParapetWall(currentFloor, 0)}
-                              onChange={() => toggleParapetWall(currentFloor, 0)}
-                              className="w-4 h-4 text-blue-600 rounded"
-                            />
-                            <span className="text-sm text-gray-800 font-medium">Add Parapet Walls (Standard 3.5 ft high roof boundary wall)</span>
-                          </label>
-                        </div>
-                      )}
+                <div className={`bg-white rounded-xl p-5 border transition-all ${
+                  roomCounts[currentFloor]?.['mumty'] > 0 
+                    ? 'border-blue-400 shadow-md ring-1 ring-blue-100' 
+                    : 'border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300'
+                }`}>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl">🏠</span>
+                      <label className="font-medium text-gray-900">Mumty (Stair Enclosure)</label>
                     </div>
-                  </label>
+                    <button
+                      type="button"
+                      onClick={() => toggleSingleRoom(currentFloor, 'mumty')}
+                      className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                        roomCounts[currentFloor]?.['mumty'] > 0
+                          ? 'bg-blue-600 text-white hover:bg-blue-700'
+                          : 'bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-700 border border-gray-300'
+                      }`}
+                    >
+                      {roomCounts[currentFloor]?.['mumty'] > 0 ? '✓ Added' : '+ Add'}
+                    </button>
+                  </div>
+                  <p className="text-xs text-gray-500 mb-2">Build a small stair enclosure (Mumty) to protect the stairs from weather.</p>
+                  {roomCounts[currentFloor]?.['mumty'] > 0 && (
+                    <div className="mt-3 pt-3 border-t border-gray-100">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          checked={hasParapetWall(currentFloor, 0)}
+                          onChange={() => toggleParapetWall(currentFloor, 0)}
+                          className="w-4 h-4 text-blue-600 rounded"
+                        />
+                        <span className="text-sm text-gray-800 font-medium">Add Parapet Walls (Standard 3.5 ft high roof boundary wall)</span>
+                      </label>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
