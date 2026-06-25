@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useProject, FloorDetail } from '../../contexts/ProjectContext';
 import { Home, Plus, Minus, AlertTriangle } from 'lucide-react';
 
@@ -129,6 +129,7 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
   const plotArea = parseFloat(projectData.plotDetails.plotArea) || 0;
   const [floors, setFloors] = useState<FloorDetail[]>([]);
   const [currentFloor, setCurrentFloor] = useState(0);
+  const stepRef = useRef<HTMLDivElement>(null);
   const [roomCounts, setRoomCounts] = useState<RoomCount[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [combineDrawingDining, setCombineDrawingDining] = useState(projectData.roomDetails.combineDrawingDining || false);
@@ -417,6 +418,13 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
 
   const totalRooms = floors.reduce((sum, floor) => sum + floor.rooms.length, 0);
 
+  const handleFloorChange = (newFloor: number) => {
+    setCurrentFloor(newFloor);
+    setTimeout(() => {
+      stepRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  };
+
   const getAreaStatusColor = () => {
     if (areaUtilizationPercent > 100) return 'text-red-600 bg-red-50 border-red-300';
     if (areaUtilizationPercent > 90) return 'text-amber-700 bg-amber-50 border-amber-300';
@@ -446,7 +454,7 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-4 sm:p-8">
+    <div ref={stepRef} className="bg-white rounded-xl shadow-sm p-4 sm:p-8">
       <div className="mb-6">
         <h2 className="text-2xl mb-2">Room Details</h2>
         <p className="text-gray-600">
@@ -455,78 +463,7 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Overall Space Utilization Status */}
-        <div className={`border-2 rounded-lg p-4 ${getAreaStatusColor()}`}>
-          <div className="flex items-start gap-3">
-            {getAreaStatusIcon()}
-            <div className="flex-1">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="font-semibold">Overall Space Utilization</h4>
-                <span className="text-lg font-bold">
-                  {Math.round(areaUtilizationPercent)}%
-                </span>
-              </div>
-              
-              {/* Progress Bar */}
-              <div className="w-full bg-white rounded-full h-3 mb-2 overflow-hidden border">
-                <div 
-                  className={`h-full transition-all ${
-                    areaUtilizationPercent > 100 ? 'bg-red-500' :
-                    areaUtilizationPercent > 90 ? 'bg-amber-500' :
-                    areaUtilizationPercent > 70 ? 'bg-blue-500' :
-                    'bg-green-500'
-                  }`}
-                  style={{ width: `${Math.min(areaUtilizationPercent, 100)}%` }}
-                />
-              </div>
-              
-              <div className="text-sm space-y-1">
-                <p>
-                  <strong>Total Covered Area:</strong> {Math.round(totalRoomArea)} sq ft / {Math.round(totalUsableArea)} sq ft available
-                </p>
-                <p className="text-xs opacity-75">
-                  Plot: {Math.round(plotArea)} sq ft × {numberOfFloors} floor{numberOfFloors > 1 ? 's' : ''} × 65% usable = {Math.round(totalUsableArea)} sq ft
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        {/* Individual Floor Space Utilization */}
-        <div className="bg-gray-50 border-2 border-gray-200 rounded-lg p-4">
-          <h4 className="font-semibold text-gray-900 mb-3">Floor-wise Space Utilization</h4>
-          <div className="grid md:grid-cols-2 gap-3">
-            {floors.map((floor, index) => {
-              const floorArea = calculateFloorRoomArea(index);
-              const floorPercent = (floorArea / usableAreaPerFloor) * 100;
-              
-              return (
-                <div 
-                  key={index}
-                  className={`border-2 rounded-lg p-3 ${getFloorAreaStatusColor(index)}`}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-semibold">{getFloorName(floor.floorNumber)}</span>
-                    <span className="font-bold">{Math.round(floorPercent)}%</span>
-                  </div>
-                  
-                  {/* Floor Progress Bar */}
-                  <div className="w-full bg-white rounded-full h-2 mb-2 overflow-hidden border">
-                    <div 
-                      className={`h-full transition-all ${getFloorAreaProgressColor(index)}`}
-                      style={{ width: `${Math.min(floorPercent, 100)}%` }}
-                    />
-                  </div>
-                  
-                  <div className="text-xs">
-                    <p>{Math.round(floorArea)} / {Math.round(usableAreaPerFloor)} sq ft</p>
-                    <p className="opacity-75">{countSelectedRooms(index)} room{countSelectedRooms(index) !== 1 ? 's' : ''}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
 
         {/* Area Exceeded Error */}
         {errors['areaExceeded'] && (
@@ -564,47 +501,19 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
           </div>
         )}
 
-        {/* Floor Tabs */}
-        <div className="flex flex-wrap gap-2 border-b border-gray-200">
-          {floors.map((floor, index) => {
-            const floorArea = calculateFloorRoomArea(index);
-            const floorPercent = (floorArea / usableAreaPerFloor) * 100;
-            
-            return (
-              <button
-                key={index}
-                type="button"
-                onClick={() => setCurrentFloor(index)}
-                className={`px-6 py-3 border-b-2 transition-colors ${
-                  currentFloor === index
-                    ? 'border-blue-600 text-blue-600 font-semibold'
-                    : 'border-transparent text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <div>
-                  {getFloorName(floor.floorNumber)}
-                  <span className="ml-2 text-sm">
-                    ({countSelectedRooms(index)} room{countSelectedRooms(index) !== 1 ? 's' : ''})
-                  </span>
-                </div>
-                <div className="text-xs mt-1">
-                  {Math.round(floorArea)} sq ft ({Math.round(floorPercent)}%)
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Current Floor Content */}
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xl">
-              {getFloorName(floors[currentFloor]?.floorNumber || 1)}
-            </h3>
-            <div className="text-sm text-gray-600">
-              Floor Area: <strong>{Math.round(currentFloorArea)} sq ft</strong> / {Math.round(usableAreaPerFloor)} sq ft
+        {/* 2-Column Layout: Rooms + Sidebar */}
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Left Column: Room Configuration */}
+          <div className="flex-1 min-w-0 space-y-6">
+            <div className="flex items-center justify-between bg-blue-50 rounded-lg p-3 border border-blue-200">
+              <h3 className="text-lg font-semibold text-blue-900">
+                {getFloorName(floors[currentFloor]?.floorNumber || 1)}
+                <span className="ml-2 text-sm font-normal text-blue-600">({currentFloor + 1} of {floors.length})</span>
+              </h3>
+              <div className="text-sm text-blue-700">
+                {Math.round(currentFloorArea)} / {Math.round(usableAreaPerFloor)} sq ft
+              </div>
             </div>
-          </div>
 
           {errors[`floor${currentFloor}`] && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-3">
@@ -1009,65 +918,130 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
               </div>
             </div>
           )}
-        </div>
+          
+          {/* Floor Navigation (Bottom of Left Column) */}
+          <div className="flex items-center justify-between pt-6 border-t border-gray-200 mt-8">
+            <button
+              type="button"
+              onClick={() => handleFloorChange(currentFloor - 1)}
+              disabled={currentFloor === 0}
+              className="px-4 py-2 sm:px-6 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-sm sm:text-base"
+            >
+              Previous Floor
+            </button>
+            
+            <div className="text-sm text-gray-500 font-medium hidden sm:block">
+              Floor {currentFloor + 1} of {floors.length}
+            </div>
 
-        {/* Summary */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h4 className="font-semibold text-blue-900 mb-2">Project Summary</h4>
-          <div className="grid md:grid-cols-4 gap-4 text-sm">
-            <div>
-              <p className="text-blue-700">Total Floors:</p>
-              <p className="font-semibold text-blue-900">{numberOfFloors}</p>
+            <button
+              type="button"
+              onClick={() => handleFloorChange(currentFloor + 1)}
+              disabled={currentFloor === floors.length - 1}
+              className="px-4 py-2 sm:px-6 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-sm sm:text-base"
+            >
+              Next Floor
+            </button>
+          </div>
+        </div> {/* End of Left Column */}
+
+        {/* Right Column: Space Utilization Sidebar */}
+        <div className="lg:w-80 flex-shrink-0">
+          <div className="sticky top-24 space-y-6">
+            {/* Overall Space Utilization Status */}
+            <div className={`border-2 rounded-lg p-4 ${getAreaStatusColor()}`}>
+              <div className="flex items-start gap-3">
+                {getAreaStatusIcon()}
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-semibold text-sm">Space Utilization</h4>
+                    <span className="text-base font-bold">
+                      {Math.round(areaUtilizationPercent)}%
+                    </span>
+                  </div>
+                  
+                  {/* Progress Bar */}
+                  <div className="w-full bg-white rounded-full h-2 mb-2 overflow-hidden border">
+                    <div 
+                      className={`h-full transition-all ${
+                        areaUtilizationPercent > 100 ? 'bg-red-500' :
+                        areaUtilizationPercent > 90 ? 'bg-amber-500' :
+                        areaUtilizationPercent > 70 ? 'bg-blue-500' :
+                        'bg-green-500'
+                      }`}
+                      style={{ width: `${Math.min(areaUtilizationPercent, 100)}%` }}
+                    />
+                  </div>
+                  
+                  <div className="text-xs space-y-1">
+                    <p>
+                      <strong>Used:</strong> {Math.round(totalRoomArea)} sq ft
+                    </p>
+                    <p>
+                      <strong>Available:</strong> {Math.round(totalUsableArea)} sq ft
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div>
-              <p className="text-blue-700">Total Rooms:</p>
-              <p className="font-semibold text-blue-900">{totalRooms}</p>
+
+            {/* Individual Floor Space Utilization */}
+            <div className="bg-gray-50 border-2 border-gray-200 rounded-lg p-4">
+              <h4 className="font-semibold text-gray-900 mb-3 text-sm">Floor-wise Usage</h4>
+              <div className="space-y-3">
+                {floors.map((floor, index) => {
+                  const floorArea = calculateFloorRoomArea(index);
+                  const floorPercent = (floorArea / usableAreaPerFloor) * 100;
+                  
+                  return (
+                    <div 
+                      key={index}
+                      className={`border rounded-lg p-2 ${getFloorAreaStatusColor(index)}`}
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-medium text-xs">{getFloorName(floor.floorNumber)}</span>
+                        <span className="font-bold text-xs">{Math.round(floorPercent)}%</span>
+                      </div>
+                      
+                      {/* Floor Progress Bar */}
+                      <div className="w-full bg-white rounded-full h-1.5 mb-1 overflow-hidden border">
+                        <div 
+                          className={`h-full transition-all ${getFloorAreaProgressColor(index)}`}
+                          style={{ width: `${Math.min(floorPercent, 100)}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-            <div>
-              <p className="text-blue-700">Plot Area:</p>
-              <p className="font-semibold text-blue-900">
-                {projectData.plotDetails.plotArea} sq ft
-              </p>
+
+            {/* Size Guide */}
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <h4 className="font-semibold text-amber-900 mb-2 text-sm">Room Size Guide</h4>
+              <div className="space-y-2 text-xs text-amber-900">
+                <div>
+                  <span className="font-semibold">Small:</span> 10×10 to 10×12 ft
+                </div>
+                <div>
+                  <span className="font-semibold">Medium:</span> 12×14 to 14×16 ft
+                </div>
+                <div>
+                  <span className="font-semibold">Large:</span> 16×18 ft+
+                </div>
+              </div>
             </div>
-            <div>
-              <p className="text-blue-700">Space Used:</p>
-              <p className="font-semibold text-blue-900">
-                {Math.round(areaUtilizationPercent)}%
-              </p>
-            </div>
+
+            <button
+              type="submit"
+              disabled={areaUtilizationPercent > 100}
+              className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-medium shadow-sm transition-colors"
+            >
+              {areaUtilizationPercent > 100 ? 'Reduce Room Sizes' : 'Save & Continue'}
+            </button>
           </div>
         </div>
-
-        {/* Size Guide */}
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-          <h4 className="font-semibold text-amber-900 mb-2">Room Size Guide</h4>
-          <div className="grid md:grid-cols-3 gap-4 text-sm text-amber-900">
-            <div>
-              <p className="font-semibold">Small (~100-120 sq ft):</p>
-              <p>10×10 to 10×12 ft</p>
-            </div>
-            <div>
-              <p className="font-semibold">Medium (~168-224 sq ft):</p>
-              <p>12×14 to 14×16 ft</p>
-            </div>
-            <div>
-              <p className="font-semibold">Large (~288+ sq ft):</p>
-              <p>16×18 ft and above</p>
-            </div>
-          </div>
-          <p className="text-xs text-amber-800 mt-3">
-            💡 Tip: You can select any size, but make sure total room area doesn't exceed available space. 
-            The system accounts for 35% space for walls, stairs, and circulation.
-          </p>
-        </div>
-
-        <button
-          type="submit"
-          disabled={areaUtilizationPercent > 100}
-          className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-        >
-          {areaUtilizationPercent > 100 ? 'Please Reduce Room Sizes to Continue' : 'Save & Continue to Gray Structure'}
-        </button>
+        </div> {/* End of 2-Column Layout */}
       </form>
     </div>
   );
