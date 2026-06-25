@@ -324,29 +324,7 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
   };
 
   const totalRoomArea = calculateTotalRoomArea();
-  const currentFloorArea = calculateFloorRoomArea(currentFloor);
   const areaUtilizationPercent = (totalRoomArea / totalUsableArea) * 100;
-
-  // Get color for floor-specific utilization
-  const getFloorAreaStatusColor = (floorIndex: number) => {
-    const floorArea = calculateFloorRoomArea(floorIndex);
-    const percent = (floorArea / usableAreaPerFloor) * 100;
-    
-    if (percent > 100) return 'bg-red-100 border-red-400';
-    if (percent > 90) return 'bg-amber-100 border-amber-400';
-    if (percent > 70) return 'bg-blue-100 border-blue-400';
-    return 'bg-green-100 border-green-400';
-  };
-
-  const getFloorAreaProgressColor = (floorIndex: number) => {
-    const floorArea = calculateFloorRoomArea(floorIndex);
-    const percent = (floorArea / usableAreaPerFloor) * 100;
-    
-    if (percent > 100) return 'bg-red-500';
-    if (percent > 90) return 'bg-amber-500';
-    if (percent > 70) return 'bg-blue-500';
-    return 'bg-green-500';
-  };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -419,12 +397,6 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
     return `${floorNumber}th Floor`;
   };
 
-  const countSelectedRooms = (floorIndex: number) => {
-    return floors[floorIndex]?.rooms.length || 0;
-  };
-
-  const totalRooms = floors.reduce((sum, floor) => sum + floor.rooms.length, 0);
-
   const handleFloorChange = (newFloor: number) => {
     setCurrentFloor(newFloor);
     setTimeout(() => {
@@ -440,54 +412,37 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
     }
   };
 
-  const renderSizeSelector = (roomTypeId: string, idx: number, label: string) => (
-    <div key={idx} className="flex flex-col sm:flex-row sm:items-center gap-2 p-2.5 bg-blue-50/50 rounded-lg border border-blue-100">
-      <span className="text-xs font-semibold text-gray-700 sm:w-20 shrink-0">{label}</span>
-      <div className="flex flex-1 bg-white p-1 rounded-lg gap-0.5 border border-gray-200">
-        {(['small', 'medium', 'large'] as const).map(size => (
-          <button
-            key={size}
-            type="button"
-            onClick={() => updateRoomSize(currentFloor, roomTypeId, idx, size)}
-            className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${
-              getRoomSize(currentFloor, roomTypeId, idx) === size
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-            }`}
-          >
-            {size.charAt(0).toUpperCase() + size.slice(1)}
-          </button>
-        ))}
+  const renderSizeSelector = (roomTypeId: string, idx: number, label: string) => {
+    const currentSize = getRoomSize(currentFloor, roomTypeId, idx) as 'small' | 'medium' | 'large';
+    const description = getSizeDescription(currentSize, roomTypeId, combineDrawingDining, plotMarlas);
+    return (
+      <div key={idx} className="flex flex-col gap-1.5 p-2.5 bg-blue-50/50 rounded-lg border border-blue-100 w-full">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+          <span className="text-xs font-semibold text-gray-700 sm:w-20 shrink-0">{label}</span>
+          <div className="flex flex-1 bg-white p-1 rounded-lg gap-0.5 border border-gray-200">
+            {(['small', 'medium', 'large'] as const).map(size => (
+              <button
+                key={size}
+                type="button"
+                onClick={() => updateRoomSize(currentFloor, roomTypeId, idx, size)}
+                className={`flex-1 py-1 text-xs font-semibold rounded-md transition-all ${
+                  currentSize === size
+                    ? 'bg-blue-600 text-white shadow-sm'
+                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                {size.charAt(0).toUpperCase() + size.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
+        {description && (
+          <p className="text-[10px] text-gray-500 font-medium sm:pl-22">
+            Dimensions: {description}
+          </p>
+        )}
       </div>
-    </div>
-  );
-
-  const getAreaStatusColor = () => {
-    if (areaUtilizationPercent > 100) return 'text-red-600 bg-red-50 border-red-300';
-    if (areaUtilizationPercent > 90) return 'text-amber-700 bg-amber-50 border-amber-300';
-    if (areaUtilizationPercent > 70) return 'text-blue-700 bg-blue-50 border-blue-300';
-    return 'text-green-700 bg-green-50 border-green-300';
-  };
-
-  const getAreaStatusIcon = () => {
-    if (areaUtilizationPercent > 100) return <AlertTriangle className="w-5 h-5 text-red-600" />;
-    if (areaUtilizationPercent > 90) return <AlertTriangle className="w-5 h-5 text-amber-600" />;
-    return <Home className="w-5 h-5 text-blue-600" />;
-  };
-
-  const getSizeRecommendations = (): string[] => {
-    const recommendations: string[] = [];
-    
-    if (areaUtilizationPercent > 100) {
-      recommendations.push('Consider changing some Large rooms to Medium size');
-      recommendations.push('Consider changing some Medium rooms to Small size');
-      recommendations.push('Remove non-essential rooms (Store Room, Balcony)');
-    } else if (areaUtilizationPercent > 90) {
-      recommendations.push('You\'re near the space limit - leave some circulation space');
-      recommendations.push('Consider if all rooms are necessary');
-    }
-    
-    return recommendations;
+    );
   };
 
   // Dynamic area validations in real-time
