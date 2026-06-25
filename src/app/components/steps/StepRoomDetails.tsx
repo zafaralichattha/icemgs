@@ -303,22 +303,26 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
     return roomsOfType[roomInstanceIndex]?.hasParapetWalls || false;
   };
 
-  // Calculate total area used by all rooms across all floors
+  // Calculate total area used by all rooms across all floors (excluding mumty for area limit checks)
   const calculateTotalRoomArea = (): number => {
     let totalArea = 0;
     floors.forEach(floor => {
       floor.rooms.forEach(room => {
-        totalArea += getRoomArea(room.size as 'small' | 'medium' | 'large', room.type, combineDrawingDining, plotMarlas);
+        if (room.type !== 'mumty') {
+          totalArea += getRoomArea(room.size as 'small' | 'medium' | 'large', room.type, combineDrawingDining, plotMarlas);
+        }
       });
     });
     return totalArea;
   };
 
-  // Calculate area used on current floor
+  // Calculate area used on current floor (excluding mumty for area limit checks)
   const calculateFloorRoomArea = (floorIndex: number): number => {
     let totalArea = 0;
     floors[floorIndex]?.rooms.forEach(room => {
-      totalArea += getRoomArea(room.size as 'small' | 'medium' | 'large', room.type, combineDrawingDining, plotMarlas);
+      if (room.type !== 'mumty') {
+        totalArea += getRoomArea(room.size as 'small' | 'medium' | 'large', room.type, combineDrawingDining, plotMarlas);
+      }
     });
     return totalArea;
   };
