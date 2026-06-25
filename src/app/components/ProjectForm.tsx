@@ -25,6 +25,11 @@ export default function ProjectForm({ onMenuClick }: ProjectFormProps) {
     }
   }, [projectData.currentStep]);
 
+  // Scroll to top of window when step changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentStep]);
+
   const steps = [
     { id: 1, name: 'Plot Details', component: StepPlotDetails },
     { id: 2, name: 'Room Details', component: StepRoomDetails },

@@ -404,7 +404,7 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
   const handleFloorChange = (newFloor: number) => {
     setCurrentFloor(newFloor);
     setTimeout(() => {
-      stepRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 100);
   };
 
