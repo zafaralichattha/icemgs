@@ -320,7 +320,7 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
               {projectDetails.gray_structure_details && (
                 <div className="mb-4">
                   <h4 className="font-semibold text-gray-700 mb-2">Gray Structure</h4>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                     {projectDetails.gray_structure_details.foundation_type && (
                       <><span className="text-gray-500">Foundation:</span><span className="capitalize">{projectDetails.gray_structure_details.foundation_type.replace(/-/g, ' ')}</span></>
                     )}
@@ -342,7 +342,7 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
               {projectDetails.finishing_details && projectData.constructionType === 'complete' && (
                 <div>
                   <h4 className="font-semibold text-purple-700 mb-2">Finishing</h4>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                     {projectDetails.finishing_details.floor_tiles && (
                       <><span className="text-gray-500">Flooring:</span><span className="capitalize">{projectDetails.finishing_details.floor_tiles}</span></>
                     )}
@@ -370,56 +370,56 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
 
         <div className="grid lg:grid-cols-2 gap-8 mb-8">
           {/* Cost Breakdown */}
-          <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="bg-white rounded-xl shadow-sm p-6 overflow-hidden">
             <h2 className="text-2xl mb-4">Cost Breakdown</h2>
             <div className="space-y-4">
               <div>
-                <div className="flex justify-between mb-2">
-                  <span className="font-medium">Gray Structure</span>
-                  <span>{formatCurrency(costs.grayStructure)}</span>
+                <div className="flex flex-wrap justify-between items-baseline gap-2 mb-2">
+                  <span className="font-medium text-gray-800">Gray Structure</span>
+                  <span className="font-bold text-gray-900">{formatCurrency(costs.grayStructure)}</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-3">
                   <div
                     className="bg-gradient-to-r from-gray-500 to-gray-700 h-3 rounded-full"
-                    style={{ width: `${(costs.grayStructure / costs.total) * 100}%` }}
+                    style={{ width: `${(costs.grayStructure / (costs.total || 1)) * 100}%` }}
                   />
                 </div>
                 <p className="text-sm text-gray-600 mt-1">
-                  {((costs.grayStructure / costs.total) * 100).toFixed(1)}% of total
+                  {((costs.grayStructure / (costs.total || 1)) * 100).toFixed(1)}% of total
                 </p>
               </div>
 
               {costs.finishing > 0 && (
                 <div>
-                  <div className="flex justify-between mb-2">
-                    <span className="font-medium">Finishing</span>
-                    <span>{formatCurrency(costs.finishing)}</span>
+                  <div className="flex flex-wrap justify-between items-baseline gap-2 mb-2">
+                    <span className="font-medium text-gray-800">Finishing</span>
+                    <span className="font-bold text-gray-900">{formatCurrency(costs.finishing)}</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-3">
                     <div
                       className="bg-gradient-to-r from-purple-500 to-purple-700 h-3 rounded-full"
-                      style={{ width: `${(costs.finishing / costs.total) * 100}%` }}
+                      style={{ width: `${(costs.finishing / (costs.total || 1)) * 100}%` }}
                     />
                   </div>
                   <p className="text-sm text-gray-600 mt-1">
-                    {((costs.finishing / costs.total) * 100).toFixed(1)}% of total
+                    {((costs.finishing / (costs.total || 1)) * 100).toFixed(1)}% of total
                   </p>
                 </div>
               )}
 
               <div>
-                <div className="flex justify-between mb-2">
-                  <span className="font-medium">Labor</span>
-                  <span>{formatCurrency(costs.labor)}</span>
+                <div className="flex flex-wrap justify-between items-baseline gap-2 mb-2">
+                  <span className="font-medium text-gray-800">Labor</span>
+                  <span className="font-bold text-gray-900">{formatCurrency(costs.labor)}</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-3">
                   <div
                     className="bg-gradient-to-r from-orange-500 to-orange-700 h-3 rounded-full"
-                    style={{ width: `${(costs.labor / costs.total) * 100}%` }}
+                    style={{ width: `${(costs.labor / (costs.total || 1)) * 100}%` }}
                   />
                 </div>
                 <p className="text-sm text-gray-600 mt-1">
-                  {((costs.labor / costs.total) * 100).toFixed(1)}% of total
+                  {((costs.labor / (costs.total || 1)) * 100).toFixed(1)}% of total
                 </p>
               </div>
             </div>
@@ -427,13 +427,13 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
 
           {/* Future Cost Predictions - AI cost prediction card */}
           <div className="bg-slate-900 text-white rounded-xl shadow-xl p-6 border border-slate-800">
-            <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 pb-3 border-b border-slate-800">
+              <div className="flex items-start sm:items-center gap-2.5">
+                <div className="w-9 h-9 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
                   <Brain className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-white flex items-center gap-1.5">
+                  <h2 className="text-lg sm:text-xl font-bold text-white flex flex-wrap items-center gap-1.5">
                     AI Cost Prediction
                     <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-purple-900/50 text-purple-300 border border-purple-800">Gemini 2.0</span>
                   </h2>
@@ -442,9 +442,9 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
               </div>
               
               {predictionResult && (
-                <div className="text-xs px-2.5 py-1 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 flex items-center gap-1">
-                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                  {predictionResult.engine}
+                <div className="text-xs px-2.5 py-1 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 flex items-center gap-1 self-start sm:self-auto max-w-full overflow-hidden truncate">
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                  <span className="truncate">{predictionResult.engine}</span>
                 </div>
               )}
             </div>
