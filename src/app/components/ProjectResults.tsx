@@ -213,7 +213,7 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-8 w-full max-w-full overflow-x-hidden">
         <div className="mb-8">
           <h1 className="text-2xl sm:text-4xl mb-2">Construction Estimation Report</h1>
           <p className="text-base sm:text-xl text-gray-600">
@@ -227,46 +227,46 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
         </div>
 
         {/* Cost Summary Cards */}
-        <div className="grid md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl shadow-lg p-6 text-white">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 w-full max-w-full">
+          <div className="bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl shadow-lg p-6 text-white w-full overflow-hidden">
             <div className="flex items-center gap-2 mb-2">
               <DollarSign className="w-5 h-5" />
               <h3 className="text-sm opacity-90">Total Cost</h3>
             </div>
-            <p className="text-3xl font-bold">{formatCurrency(costs.total)}</p>
-            <p className="text-xs opacity-75 mt-1">
+            <p className="text-2xl sm:text-3xl font-bold truncate">{formatCurrency(costs.total)}</p>
+            <p className="text-xs opacity-75 mt-1 truncate">
               {formatCurrency(Math.round(costs.total / (parseFloat(projectData.plotDetails.plotArea) * parseInt(projectData.plotDetails.numberOfFloors))))} per sq ft
             </p>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm p-6 border-2 border-gray-200">
+          <div className="bg-white rounded-xl shadow-sm p-6 border-2 border-gray-200 w-full overflow-hidden">
             <div className="flex items-center gap-2 mb-2">
               <Hammer className="w-5 h-5 text-gray-600" />
               <h3 className="text-sm text-gray-600">Gray Structure</h3>
             </div>
-            <p className="text-2xl font-bold">{formatCurrency(costs.grayStructure)}</p>
+            <p className="text-xl sm:text-2xl font-bold truncate">{formatCurrency(costs.grayStructure)}</p>
             <p className="text-xs text-gray-500 mt-1">
               {((costs.grayStructure / costs.total) * 100).toFixed(1)}% of total
             </p>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm p-6 border-2 border-purple-200">
+          <div className="bg-white rounded-xl shadow-sm p-6 border-2 border-purple-200 w-full overflow-hidden">
             <div className="flex items-center gap-2 mb-2">
               <Sparkles className="w-5 h-5 text-purple-600" />
               <h3 className="text-sm text-gray-600">Finishing</h3>
             </div>
-            <p className="text-2xl font-bold">{formatCurrency(costs.finishing)}</p>
+            <p className="text-xl sm:text-2xl font-bold truncate">{formatCurrency(costs.finishing)}</p>
             <p className="text-xs text-gray-500 mt-1">
               {costs.finishing > 0 ? `${((costs.finishing / costs.total) * 100).toFixed(1)}% of total` : 'Not included'}
             </p>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm p-6 border-2 border-orange-200">
+          <div className="bg-white rounded-xl shadow-sm p-6 border-2 border-orange-200 w-full overflow-hidden">
             <div className="flex items-center gap-2 mb-2">
               <FileText className="w-5 h-5 text-orange-600" />
               <h3 className="text-sm text-gray-600">Labor</h3>
             </div>
-            <p className="text-2xl font-bold">{formatCurrency(costs.labor)}</p>
+            <p className="text-xl sm:text-2xl font-bold truncate">{formatCurrency(costs.labor)}</p>
             <p className="text-xs text-gray-500 mt-1">
               25% of material cost
             </p>
@@ -275,9 +275,9 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
 
         {/* Project Details & Floor Summary */}
         {projectDetails && (
-          <div className="grid lg:grid-cols-2 gap-6 mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 w-full max-w-full">
             {/* Floor & Room Summary */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="bg-white rounded-xl shadow-sm p-6 w-full overflow-hidden">
               <div className="flex items-center gap-2 mb-4">
                 <Home className="w-6 h-6 text-blue-600" />
                 <h2 className="text-2xl">Floor & Room Summary</h2>
@@ -312,7 +312,7 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
             </div>
 
             {/* Gray Structure & Finishing Specs */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="bg-white rounded-xl shadow-sm p-6 w-full max-w-full overflow-hidden">
               <div className="flex items-center gap-2 mb-4">
                 <Layers className="w-6 h-6 text-gray-600" />
                 <h2 className="text-2xl">Specifications</h2>
@@ -368,9 +368,9 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
           </div>
         )}
 
-        <div className="grid lg:grid-cols-2 gap-8 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 w-full max-w-full overflow-hidden">
           {/* Cost Breakdown */}
-          <div className="bg-white rounded-xl shadow-sm p-6 overflow-hidden">
+          <div className="bg-white rounded-xl shadow-sm p-6 w-full max-w-full overflow-hidden">
             <h2 className="text-2xl mb-4">Cost Breakdown</h2>
             <div className="space-y-4">
               <div>
@@ -426,7 +426,7 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
           </div>
 
           {/* Future Cost Predictions - AI cost prediction card */}
-          <div className="bg-slate-900 text-white rounded-xl shadow-xl p-6 border border-slate-800">
+          <div className="bg-slate-900 text-white rounded-xl shadow-xl p-6 border border-slate-800 w-full max-w-full overflow-hidden">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 pb-3 border-b border-slate-800">
               <div className="flex items-start sm:items-center gap-2.5">
                 <div className="w-9 h-9 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -665,14 +665,14 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
         </div>
 
         {/* GRAY STRUCTURE BILL OF MATERIALS */}
-        <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+        <div className="bg-white rounded-xl shadow-sm p-6 mb-8 w-full max-w-full overflow-hidden">
           <div className="flex items-center gap-2 mb-6">
             <Hammer className="w-6 h-6 text-gray-700" />
             <h2 className="text-2xl">Gray Structure - Bill of Materials</h2>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full">
+          <div className="w-full max-w-full overflow-x-auto">
+            <table className="w-full min-w-[600px]">
               <thead className="bg-gray-100">
                 <tr>
                   <th className="px-4 py-3 text-left text-sm font-semibold">#</th>
@@ -714,14 +714,14 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
 
         {/* FINISHING BILL OF MATERIALS */}
         {projectData.constructionType === 'complete' && finishingMaterials.length > 0 && (
-          <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+          <div className="bg-white rounded-xl shadow-sm p-6 mb-8 w-full max-w-full overflow-hidden">
             <div className="flex items-center gap-2 mb-6">
               <Sparkles className="w-6 h-6 text-purple-700" />
               <h2 className="text-2xl">Finishing - Bill of Materials</h2>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full">
+            <div className="w-full max-w-full overflow-x-auto">
+              <table className="w-full min-w-[600px]">
                 <thead className="bg-purple-50">
                   <tr>
                     <th className="px-4 py-3 text-left text-sm font-semibold">#</th>
@@ -763,7 +763,7 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
         )}
 
         {projectData.constructionType === 'gray-only' && (
-          <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 mb-8">
+          <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 mb-8 w-full max-w-full overflow-hidden">
             <div className="flex items-center gap-3">
               <Sparkles className="w-6 h-6 text-blue-600" />
               <div>
