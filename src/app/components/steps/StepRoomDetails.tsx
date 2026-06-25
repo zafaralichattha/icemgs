@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useProject, FloorDetail } from '../../contexts/ProjectContext';
-import { Home, Plus, Minus, AlertTriangle } from 'lucide-react';
+import { Home, Plus, Minus, AlertTriangle, Layers } from 'lucide-react';
 
 interface StepRoomDetailsProps {
   onNext: () => void;
@@ -454,12 +454,23 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
   };
 
   return (
-    <div ref={stepRef} className="bg-white rounded-xl shadow-sm p-4 sm:p-8">
-      <div className="mb-6">
-        <h2 className="text-2xl mb-2">Room Details</h2>
-        <p className="text-gray-600">
-          Select number and sizes of rooms for each floor ({totalRooms} room{totalRooms !== 1 ? 's' : ''} configured)
-        </p>
+    <div ref={stepRef} className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/40 p-4 sm:p-8 overflow-hidden relative">
+      {/* Premium Header */}
+      <div className="mb-8 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-700 -mx-4 sm:-mx-8 -mt-4 sm:-mt-8 p-6 sm:p-8 text-white shadow-md relative overflow-hidden">
+        {/* Abstract background pattern */}
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+        
+        <div className="relative z-10 flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-2 flex items-center gap-3">
+              <Home className="w-8 h-8 text-blue-200" />
+              Room Details
+            </h2>
+            <p className="text-blue-100 text-sm sm:text-base max-w-xl">
+              Configure the spaces and room dimensions for your project. You have selected <strong>{totalRooms} room{totalRooms !== 1 ? 's' : ''}</strong> across {numberOfFloors} floor{numberOfFloors !== 1 ? 's' : ''}.
+            </p>
+          </div>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -502,16 +513,28 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
         )}
 
         {/* 2-Column Layout: Rooms + Sidebar */}
-        <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex flex-col-reverse lg:flex-row gap-8">
           {/* Left Column: Room Configuration */}
-          <div className="flex-1 min-w-0 space-y-6">
-            <div className="flex items-center justify-between bg-blue-50 rounded-lg p-3 border border-blue-200">
-              <h3 className="text-lg font-semibold text-blue-900">
-                {getFloorName(floors[currentFloor]?.floorNumber || 1)}
-                <span className="ml-2 text-sm font-normal text-blue-600">({currentFloor + 1} of {floors.length})</span>
-              </h3>
-              <div className="text-sm text-blue-700">
-                {Math.round(currentFloorArea)} / {Math.round(usableAreaPerFloor)} sq ft
+          <div className="flex-1 min-w-0 space-y-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50/50 rounded-xl p-4 sm:p-5 border border-blue-100/50 shadow-sm gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-lg border border-blue-200">
+                  {currentFloor + 1}
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900">
+                    {getFloorName(floors[currentFloor]?.floorNumber || 1)}
+                  </h3>
+                  <p className="text-xs text-blue-600 font-medium tracking-wide uppercase">
+                    Floor {currentFloor + 1} of {floors.length}
+                  </p>
+                </div>
+              </div>
+              <div className="bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm text-sm whitespace-nowrap">
+                <span className="text-gray-500 mr-2">Allocated Area:</span>
+                <strong className={currentFloorArea > usableAreaPerFloor ? "text-red-600" : "text-gray-900"}>{Math.round(currentFloorArea)}</strong>
+                <span className="text-gray-400 mx-1">/</span>
+                <span className="text-gray-600">{Math.round(usableAreaPerFloor)} sq ft</span>
               </div>
             </div>
 
@@ -552,7 +575,7 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                   const isMaxReached = bedroomCount >= maxRoomsPerFloor;
 
                   return (
-                    <div key={roomType.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div key={roomType.id} className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300 transition-all">
                       <div className="flex items-center gap-2 mb-3">
                         <span className="text-2xl">{roomType.icon}</span>
                         <label className="font-medium text-gray-900">
@@ -597,7 +620,7 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
             {/* 2. Bathrooms & Washrooms */}
             <div>
               <h4 className="font-semibold text-gray-900 mb-3">2. Bathrooms & Washrooms</h4>
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all">
                 <div className="flex flex-col gap-5">
                   {COUNTABLE_ROOMS.filter(r => r.id === 'bathroom').map((roomType) => {
                     const bathroomCount = roomCounts[currentFloor]?.[roomType.id] || 0;
@@ -652,8 +675,8 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
             <div>
               <h4 className="font-semibold text-gray-900 mb-3">3. Living & Formal Spaces</h4>
               <div className="grid gap-4">
-                <label className={`flex items-start gap-3 p-4 rounded-lg border-2 cursor-pointer transition-colors ${
-                  roomCounts[currentFloor]?.['lounge'] > 0 ? 'bg-blue-50 border-blue-500' : 'bg-white border-gray-200 hover:border-blue-300'
+              <label className={`flex items-start gap-3 p-5 rounded-xl border-2 cursor-pointer transition-all ${
+                  roomCounts[currentFloor]?.['lounge'] > 0 ? 'bg-blue-50 border-blue-500 shadow-sm' : 'bg-white border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300'
                 }`}>
                   <input
                     type="checkbox"
@@ -675,8 +698,8 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                 </label>
 
                 {currentFloor === 0 && (
-                  <label className={`flex items-start gap-3 p-4 rounded-lg border-2 cursor-pointer transition-colors ${
-                    roomCounts[currentFloor]?.['drawing'] > 0 ? 'bg-blue-50 border-blue-500' : 'bg-white border-gray-200 hover:border-blue-300'
+                  <label className={`flex items-start gap-3 p-5 rounded-xl border-2 cursor-pointer transition-all ${
+                    roomCounts[currentFloor]?.['drawing'] > 0 ? 'bg-blue-50 border-blue-500 shadow-sm' : 'bg-white border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300'
                   }`}>
                     <input
                       type="checkbox"
@@ -723,8 +746,8 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
             <div>
               <h4 className="font-semibold text-gray-900 mb-3">4. Kitchen & Utility</h4>
               <div className="grid md:grid-cols-2 gap-4">
-                <label className={`flex items-start gap-3 p-4 rounded-lg border-2 cursor-pointer transition-colors ${
-                  roomCounts[currentFloor]?.['kitchen'] > 0 ? 'bg-blue-50 border-blue-500' : 'bg-white border-gray-200 hover:border-blue-300'
+                <label className={`flex items-start gap-3 p-5 rounded-xl border-2 cursor-pointer transition-all ${
+                  roomCounts[currentFloor]?.['kitchen'] > 0 ? 'bg-blue-50 border-blue-500 shadow-sm' : 'bg-white border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300'
                 }`}>
                   <input
                     type="checkbox"
@@ -745,8 +768,8 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                   </div>
                 </label>
 
-                <label className={`flex items-start gap-3 p-4 rounded-lg border-2 cursor-pointer transition-colors ${
-                  roomCounts[currentFloor]?.['store'] > 0 ? 'bg-blue-50 border-blue-500' : 'bg-white border-gray-200 hover:border-blue-300'
+                <label className={`flex items-start gap-3 p-5 rounded-xl border-2 cursor-pointer transition-all ${
+                  roomCounts[currentFloor]?.['store'] > 0 ? 'bg-blue-50 border-blue-500 shadow-sm' : 'bg-white border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300'
                 }`}>
                   <input
                     type="checkbox"
@@ -776,8 +799,8 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                   if (!roomType) return null;
                     const isSelected = roomCounts[currentFloor]?.[id] > 0;
                     return (
-                      <label key={id} className={`flex items-start gap-3 p-4 rounded-lg border-2 cursor-pointer transition-colors ${
-                        isSelected ? 'bg-blue-50 border-blue-500' : 'bg-white border-gray-200 hover:border-blue-300'
+                      <label key={id} className={`flex items-start gap-3 p-5 rounded-xl border-2 cursor-pointer transition-all ${
+                        isSelected ? 'bg-blue-50 border-blue-500 shadow-sm' : 'bg-white border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300'
                       }`}>
                         <input
                           type="checkbox"
@@ -803,14 +826,14 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
             {currentFloor === floors.length - 1 && (
               <div>
                 <h4 className="font-semibold text-gray-900 mb-3">Roof Configuration</h4>
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all">
                   <div className="flex items-center gap-2 mb-4">
                     <span className="text-2xl">🏠</span>
                     <label className="font-medium text-gray-900">Rooftop with Mumty (Stair Enclosure)</label>
                   </div>
 
-                  <label className={`flex items-start gap-3 cursor-pointer p-3 rounded border-2 transition-colors ${
-                    roomCounts[currentFloor]?.['mumty'] > 0 ? 'bg-blue-50 border-blue-500' : 'bg-white border-gray-200 hover:border-blue-300'
+                  <label className={`flex items-start gap-3 cursor-pointer p-4 rounded-xl border-2 transition-all ${
+                    roomCounts[currentFloor]?.['mumty'] > 0 ? 'bg-blue-50 border-blue-500 shadow-sm' : 'bg-white border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300'
                   }`}>
                     <input 
                       type="checkbox" 
@@ -853,7 +876,7 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
 
                   const displayLabel = currentFloor === 0 && roomType.id === 'terrace' ? 'Porch' : roomType.label;
                   return (
-                    <div key={roomType.id} className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                    <div key={roomType.id} className="bg-white rounded-xl p-5 border border-blue-100 shadow-sm">
                       <div className="flex items-center gap-2 mb-3">
                         <span className="text-xl">{roomType.icon}</span>
                         <h5 className="font-semibold text-blue-900">
@@ -863,7 +886,7 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                       
                       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
                         {Array.from({ length: count }).map((_, idx) => (
-                          <div key={idx} className="bg-white rounded-lg p-3 border border-blue-200">
+                          <div key={idx} className="bg-gray-50 rounded-xl p-4 border border-gray-200">
                             <div className="text-sm font-medium text-gray-700 mb-2">
                               {displayLabel.replace(/s$/, '')} {idx + 1}
                             </div>
@@ -920,17 +943,17 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
           )}
           
           {/* Floor Navigation (Bottom of Left Column) */}
-          <div className="flex items-center justify-between pt-6 border-t border-gray-200 mt-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between pt-6 border-t border-gray-200 mt-10 gap-4">
             <button
               type="button"
               onClick={() => handleFloorChange(currentFloor - 1)}
               disabled={currentFloor === 0}
-              className="px-4 py-2 sm:px-6 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-sm sm:text-base"
+              className="w-full sm:w-auto px-6 py-3 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 hover:shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all font-semibold"
             >
-              Previous Floor
+              ← Previous Floor
             </button>
             
-            <div className="text-sm text-gray-500 font-medium hidden sm:block">
+            <div className="text-sm text-gray-500 font-medium bg-gray-100 px-4 py-1.5 rounded-full">
               Floor {currentFloor + 1} of {floors.length}
             </div>
 
@@ -938,56 +961,78 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
               type="button"
               onClick={() => handleFloorChange(currentFloor + 1)}
               disabled={currentFloor === floors.length - 1}
-              className="px-4 py-2 sm:px-6 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-sm sm:text-base"
+              className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed transition-all font-semibold shadow-sm"
             >
-              Next Floor
+              Next Floor →
             </button>
           </div>
         </div> {/* End of Left Column */}
 
         {/* Right Column: Space Utilization Sidebar */}
         <div className="lg:w-80 flex-shrink-0">
-          <div className="sticky top-24 space-y-6">
+          <div className="sticky top-24 space-y-5">
             {/* Overall Space Utilization Status */}
-            <div className={`border-2 rounded-lg p-4 ${getAreaStatusColor()}`}>
+            <div className={`bg-white rounded-2xl p-5 shadow-xl border transition-all duration-300 ${
+              areaUtilizationPercent > 100 ? 'border-red-300 shadow-red-100/50 ring-1 ring-red-100' :
+              areaUtilizationPercent > 90 ? 'border-amber-300 shadow-amber-100/50 ring-1 ring-amber-100' :
+              areaUtilizationPercent > 70 ? 'border-blue-200 shadow-blue-100/50' :
+              'border-green-200 shadow-green-100/50'
+            }`}>
               <div className="flex items-start gap-3">
-                {getAreaStatusIcon()}
+                <div className={`p-2 rounded-xl ${
+                  areaUtilizationPercent > 100 ? 'bg-red-100 text-red-600' :
+                  areaUtilizationPercent > 90 ? 'bg-amber-100 text-amber-600' :
+                  areaUtilizationPercent > 70 ? 'bg-blue-100 text-blue-600' :
+                  'bg-green-100 text-green-600'
+                }`}>
+                  {getAreaStatusIcon()}
+                </div>
                 <div className="flex-1">
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-semibold text-sm">Space Utilization</h4>
-                    <span className="text-base font-bold">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-bold text-gray-900">Space Used</h4>
+                    <span className={`text-lg font-black ${
+                      areaUtilizationPercent > 100 ? 'text-red-600' :
+                      areaUtilizationPercent > 90 ? 'text-amber-600' :
+                      areaUtilizationPercent > 70 ? 'text-blue-600' :
+                      'text-green-600'
+                    }`}>
                       {Math.round(areaUtilizationPercent)}%
                     </span>
                   </div>
                   
                   {/* Progress Bar */}
-                  <div className="w-full bg-white rounded-full h-2 mb-2 overflow-hidden border">
+                  <div className="w-full bg-gray-100 rounded-full h-2.5 mb-4 overflow-hidden border border-gray-200/50 shadow-inner">
                     <div 
-                      className={`h-full transition-all ${
-                        areaUtilizationPercent > 100 ? 'bg-red-500' :
-                        areaUtilizationPercent > 90 ? 'bg-amber-500' :
-                        areaUtilizationPercent > 70 ? 'bg-blue-500' :
-                        'bg-green-500'
+                      className={`h-full transition-all duration-500 ease-out rounded-full ${
+                        areaUtilizationPercent > 100 ? 'bg-gradient-to-r from-red-500 to-rose-500' :
+                        areaUtilizationPercent > 90 ? 'bg-gradient-to-r from-amber-400 to-orange-500' :
+                        areaUtilizationPercent > 70 ? 'bg-gradient-to-r from-blue-400 to-indigo-500' :
+                        'bg-gradient-to-r from-emerald-400 to-green-500'
                       }`}
                       style={{ width: `${Math.min(areaUtilizationPercent, 100)}%` }}
                     />
                   </div>
                   
-                  <div className="text-xs space-y-1">
-                    <p>
-                      <strong>Used:</strong> {Math.round(totalRoomArea)} sq ft
-                    </p>
-                    <p>
-                      <strong>Available:</strong> {Math.round(totalUsableArea)} sq ft
-                    </p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between items-center text-gray-600">
+                      <span className="font-medium text-gray-500">Allocated</span>
+                      <strong className="text-gray-900">{Math.round(totalRoomArea)} <span className="text-xs text-gray-400">sq ft</span></strong>
+                    </div>
+                    <div className="flex justify-between items-center text-gray-600 border-t border-gray-100 pt-2">
+                      <span className="font-medium text-gray-500">Max Allowed</span>
+                      <strong className="text-gray-900">{Math.round(totalUsableArea)} <span className="text-xs text-gray-400">sq ft</span></strong>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Individual Floor Space Utilization */}
-            <div className="bg-gray-50 border-2 border-gray-200 rounded-lg p-4">
-              <h4 className="font-semibold text-gray-900 mb-3 text-sm">Floor-wise Usage</h4>
+            <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+              <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <Layers className="w-4 h-4 text-gray-400" />
+                Floor Breakdown
+              </h4>
               <div className="space-y-3">
                 {floors.map((floor, index) => {
                   const floorArea = calculateFloorRoomArea(index);
@@ -996,17 +1041,29 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                   return (
                     <div 
                       key={index}
-                      className={`border rounded-lg p-2 ${getFloorAreaStatusColor(index)}`}
+                      className={`rounded-xl p-3 border transition-colors ${
+                        floorPercent > 100 ? 'bg-red-50/50 border-red-100' :
+                        currentFloor === index ? 'bg-blue-50/50 border-blue-200 ring-1 ring-blue-100' : 'bg-gray-50/50 border-gray-100'
+                      }`}
                     >
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="font-medium text-xs">{getFloorName(floor.floorNumber)}</span>
-                        <span className="font-bold text-xs">{Math.round(floorPercent)}%</span>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className={`font-semibold text-xs ${currentFloor === index ? 'text-blue-700' : 'text-gray-700'}`}>
+                          {getFloorName(floor.floorNumber)}
+                        </span>
+                        <span className={`font-bold text-xs ${
+                          floorPercent > 100 ? 'text-red-600' :
+                          floorPercent > 90 ? 'text-amber-600' : 'text-gray-900'
+                        }`}>{Math.round(floorPercent)}%</span>
                       </div>
                       
                       {/* Floor Progress Bar */}
-                      <div className="w-full bg-white rounded-full h-1.5 mb-1 overflow-hidden border">
+                      <div className="w-full bg-white rounded-full h-1.5 overflow-hidden border border-gray-200/50">
                         <div 
-                          className={`h-full transition-all ${getFloorAreaProgressColor(index)}`}
+                          className={`h-full transition-all duration-300 ${
+                            floorPercent > 100 ? 'bg-red-500' :
+                            floorPercent > 90 ? 'bg-amber-500' : 
+                            floorPercent > 70 ? 'bg-blue-500' : 'bg-green-500'
+                          }`}
                           style={{ width: `${Math.min(floorPercent, 100)}%` }}
                         />
                       </div>
@@ -1016,26 +1073,14 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
               </div>
             </div>
 
-            {/* Size Guide */}
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-              <h4 className="font-semibold text-amber-900 mb-2 text-sm">Room Size Guide</h4>
-              <div className="space-y-2 text-xs text-amber-900">
-                <div>
-                  <span className="font-semibold">Small:</span> 10×10 to 10×12 ft
-                </div>
-                <div>
-                  <span className="font-semibold">Medium:</span> 12×14 to 14×16 ft
-                </div>
-                <div>
-                  <span className="font-semibold">Large:</span> 16×18 ft+
-                </div>
-              </div>
-            </div>
-
             <button
               type="submit"
               disabled={areaUtilizationPercent > 100}
-              className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-medium shadow-sm transition-colors"
+              className={`w-full py-4 rounded-xl font-bold text-white shadow-lg transition-all duration-300 ${
+                areaUtilizationPercent > 100 
+                  ? 'bg-gray-400 cursor-not-allowed shadow-none' 
+                  : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 hover:shadow-blue-500/25 hover:-translate-y-0.5'
+              }`}
             >
               {areaUtilizationPercent > 100 ? 'Reduce Room Sizes' : 'Save & Continue'}
             </button>
