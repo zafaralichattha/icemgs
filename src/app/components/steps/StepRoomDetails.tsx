@@ -891,15 +891,15 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                               {displayLabel.replace(/s$/, '')} {idx + 1}
                             </div>
                             
-                            {/* Render size buttons normally for all rooms including combined drawing/dining */}
-                            <div className="grid grid-cols-3 gap-2">
+                            {/* Render size buttons as segmented control */}
+                            <div className="flex bg-gray-100/70 p-1.5 rounded-lg border border-gray-200">
                               <button
                                 type="button"
                                 onClick={() => updateRoomSize(currentFloor, roomType.id, idx, 'small')}
-                                className={`px-2 py-2 text-xs rounded border-2 transition-colors ${
+                                className={`flex-1 py-1.5 px-1 text-xs sm:text-sm font-semibold rounded-md transition-all truncate ${
                                   getRoomSize(currentFloor, roomType.id, idx) === 'small'
-                                    ? 'border-blue-500 bg-blue-500 text-white font-semibold'
-                                    : 'border-gray-300 bg-white text-gray-600 hover:border-blue-400'
+                                    ? 'bg-white text-blue-700 shadow-sm ring-1 ring-gray-200'
+                                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200/50'
                                 }`}
                               >
                                 Small
@@ -907,10 +907,10 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                               <button
                                 type="button"
                                 onClick={() => updateRoomSize(currentFloor, roomType.id, idx, 'medium')}
-                                className={`px-2 py-2 text-xs rounded border-2 transition-colors ${
+                                className={`flex-1 py-1.5 px-1 text-xs sm:text-sm font-semibold rounded-md transition-all truncate ${
                                   getRoomSize(currentFloor, roomType.id, idx) === 'medium'
-                                    ? 'border-blue-500 bg-blue-500 text-white font-semibold'
-                                    : 'border-gray-300 bg-white text-gray-600 hover:border-blue-400'
+                                    ? 'bg-white text-blue-700 shadow-sm ring-1 ring-gray-200'
+                                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200/50'
                                 }`}
                               >
                                 Medium
@@ -918,10 +918,10 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                               <button
                                 type="button"
                                 onClick={() => updateRoomSize(currentFloor, roomType.id, idx, 'large')}
-                                className={`px-2 py-2 text-xs rounded border-2 transition-colors ${
+                                className={`flex-1 py-1.5 px-1 text-xs sm:text-sm font-semibold rounded-md transition-all truncate ${
                                   getRoomSize(currentFloor, roomType.id, idx) === 'large'
-                                    ? 'border-blue-500 bg-blue-500 text-white font-semibold'
-                                    : 'border-gray-300 bg-white text-gray-600 hover:border-blue-400'
+                                    ? 'bg-white text-blue-700 shadow-sm ring-1 ring-gray-200'
+                                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200/50'
                                 }`}
                               >
                                 Large
