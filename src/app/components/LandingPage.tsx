@@ -69,7 +69,7 @@ export default function LandingPage({ onMenuClick }: LandingPageProps) {
           Automated construction cost estimation and 2D floor plan generation 
           that strictly follows LDA bylaws. Perfect for homeowners, contractors, and architecture students.
         </p>
-        <Link to={isAuthenticated ? "/project/new" : "/register"}>
+        <Link to="/project/new">
           <button className="px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-lg">
             {isAuthenticated ? "Create New Project" : "Start Your Project"}
           </button>
