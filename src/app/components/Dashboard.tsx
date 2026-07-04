@@ -104,7 +104,7 @@ export default function Dashboard({ onMenuClick }: DashboardProps) {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4">
+        <div className="w-full max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center gap-2">
             <button
               onClick={onMenuClick}
@@ -118,7 +118,7 @@ export default function Dashboard({ onMenuClick }: DashboardProps) {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-12">
+      <div className="w-full max-w-7xl mx-auto px-4 py-12">
         {/* Welcome Section */}
         <div className="mb-12">
           <h1 className="text-2xl sm:text-4xl mb-4">Dashboard</h1>

@@ -67,7 +67,7 @@ export default function ProjectForm({ onMenuClick }: ProjectFormProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <div className="w-full max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <button
               onClick={onMenuClick}
@@ -95,7 +95,7 @@ export default function ProjectForm({ onMenuClick }: ProjectFormProps) {
         </div>
       </header>
 
-      <div className="max-w-5xl mx-auto px-4 py-8">
+      <div className="w-full max-w-5xl mx-auto px-4 py-8">
         {/* Progress Steps */}
         <div className="mb-8">
           {/* Mobile view */}

@@ -96,7 +96,7 @@ export default function MaterialRates({ onMenuClick }: MaterialRatesProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <div className="w-full max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <button
               onClick={onMenuClick}
@@ -124,7 +124,7 @@ export default function MaterialRates({ onMenuClick }: MaterialRatesProps) {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="w-full max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-2xl sm:text-4xl mb-2 flex items-center gap-2 sm:gap-3">
             <DollarSign className="w-8 h-8 sm:w-10 sm:h-10 text-green-600" />

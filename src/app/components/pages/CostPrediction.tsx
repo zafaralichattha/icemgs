@@ -47,7 +47,7 @@ export default function CostPrediction({ onMenuClick }: CostPredictionProps) {
     <div className="min-h-screen" style={{background:'linear-gradient(135deg,#0f0c29 0%,#302b63 50%,#24243e 100%)'}}>
       {/* Header */}
       <header className="sticky top-0 z-10" style={{background:'rgba(15,12,41,0.85)',backdropFilter:'blur(20px)',borderBottom:'1px solid rgba(255,255,255,0.08)'}}>
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
+        <div className="w-full max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
           <button onClick={onMenuClick} className="p-2 hover:bg-white/10 rounded-lg"><Menu className="w-6 h-6 text-gray-300"/></button>
           <div className="w-9 h-9 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center"><Building2 className="w-5 h-5 text-white"/></div>
           <span className="text-lg text-white/90 font-medium">ICEMGS</span>
@@ -56,7 +56,7 @@ export default function CostPrediction({ onMenuClick }: CostPredictionProps) {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="w-full max-w-7xl mx-auto px-4 py-8">
         {/* Hero */}
         <div className="mb-8 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4" style={{background:'linear-gradient(135deg,rgba(139,92,246,0.3),rgba(59,130,246,0.3))',border:'1px solid rgba(139,92,246,0.3)'}}>

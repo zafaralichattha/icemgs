@@ -60,9 +60,9 @@ function App() {
           <ProjectProvider>
             <div className="flex flex-col min-h-screen w-full max-w-full overflow-x-hidden">
               <BackendStatusBanner />
-              <div className="flex flex-1 w-full max-w-full overflow-x-hidden">
+              <div className="flex-grow w-full max-w-full overflow-x-hidden relative">
                 <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-                <div className="flex-1 min-w-0 w-full max-w-full overflow-x-hidden">
+                <div className="w-full max-w-full overflow-x-hidden">
                   <Routes>
                   <Route path="/" element={<LandingPage onMenuClick={() => setSidebarOpen(true)} />} />
                   <Route path="/login" element={<LoginPage onMenuClick={() => setSidebarOpen(true)} />} />
