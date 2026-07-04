@@ -1,6 +1,7 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Building2, Calculator, Map, FileText, TrendingUp, Shield, DollarSign, Users, Menu, LayoutDashboard, PlusCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useProject } from '../contexts/ProjectContext';
 
 interface LandingPageProps {
   onMenuClick: () => void;
@@ -8,6 +9,13 @@ interface LandingPageProps {
 
 export default function LandingPage({ onMenuClick }: LandingPageProps) {
   const { isAuthenticated, user } = useAuth();
+  const { resetProject } = useProject();
+  const navigate = useNavigate();
+
+  const handleStartProject = () => {
+    resetProject();
+    navigate('/project/new');
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -36,12 +44,14 @@ export default function LandingPage({ onMenuClick }: LandingPageProps) {
                     <span className="hidden sm:inline">Dashboard</span>
                   </button>
                 </Link>
-                <Link to="/project/new">
-                  <button className="px-2.5 py-1.5 sm:px-6 sm:py-2 text-sm sm:text-base bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-1 sm:gap-2" title="New Project">
-                    <PlusCircle className="w-4 h-4" />
-                    <span className="hidden sm:inline">New Project</span>
-                  </button>
-                </Link>
+                <button
+                  onClick={handleStartProject}
+                  className="px-2.5 py-1.5 sm:px-6 sm:py-2 text-sm sm:text-base bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-1 sm:gap-2"
+                  title="New Project"
+                >
+                  <PlusCircle className="w-4 h-4" />
+                  <span className="hidden sm:inline">New Project</span>
+                </button>
               </>
             ) : (
               <>
@@ -69,11 +79,12 @@ export default function LandingPage({ onMenuClick }: LandingPageProps) {
           Automated construction cost estimation and 2D floor plan generation 
           that strictly follows LDA bylaws. Perfect for homeowners, contractors, and architecture students.
         </p>
-        <Link to="/project/new">
-          <button className="px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-lg">
-            {isAuthenticated ? "Create New Project" : "Start Your Project"}
-          </button>
-        </Link>
+        <button
+          onClick={handleStartProject}
+          className="px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-lg font-semibold shadow-md transition-all"
+        >
+          {isAuthenticated ? "Create New Project" : "Start Your Project"}
+        </button>
       </section>
 
       {/* Features Section */}

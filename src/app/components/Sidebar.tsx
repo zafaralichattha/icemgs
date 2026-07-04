@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useProject } from '../contexts/ProjectContext';
 import {
   Building2,
   Home,
@@ -23,6 +24,7 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const { user, logout, isAuthenticated } = useAuth();
+  const { resetProject } = useProject();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -33,6 +35,9 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   };
 
   const handleNavigate = (path: string) => {
+    if (path === '/project/new') {
+      resetProject();
+    }
     navigate(path);
     onClose();
   };
