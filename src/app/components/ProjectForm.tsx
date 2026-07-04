@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useProject } from '../contexts/ProjectContext';
 import { useAuth } from '../contexts/AuthContext';
+import { guestEstimateService } from '../services/api.service';
 import { Building2, Check, Info, Menu, LogIn } from 'lucide-react';
 import StepPlotDetails from './steps/StepPlotDetails';
 import StepRoomDetails from './steps/StepRoomDetails';
@@ -15,7 +16,7 @@ interface ProjectFormProps {
 }
 
 export default function ProjectForm({ onMenuClick }: ProjectFormProps) {
-  const { projectData, saveProject } = useProject();
+  const { projectData, saveProject, setGuestResults } = useProject();
   const { isAuthenticated } = useAuth();
   const [currentStep, setCurrentStep] = useState(projectData.currentStep || 1);
   const navigate = useNavigate();
@@ -54,9 +55,66 @@ export default function ProjectForm({ onMenuClick }: ProjectFormProps) {
 
   const handleSubmit = async () => {
     if (!isAuthenticated) {
-      // Guest user — show alert and redirect to login
-      alert('Please login or register to save your project and generate the full estimation report. Your project data will be preserved.');
-      navigate('/login');
+      // Guest user — call guest estimate API (no data saved to DB)
+      try {
+        const apiData = {
+          name: `Guest Estimate - ${projectData.plotDetails.location || 'Untitled'}`,
+          construction_type: projectData.constructionType === 'complete' ? 'full' : 'gray',
+          plot_area: parseFloat(projectData.plotDetails.plotArea) || 0,
+          plot_unit: 'marla',
+          location: projectData.plotDetails.location || '',
+          plot_marlas: projectData.plotDetails.plotMarlas ? parseFloat(projectData.plotDetails.plotMarlas) : null,
+          marla_size: projectData.plotDetails.marlaSize ? parseInt(projectData.plotDetails.marlaSize) : null,
+          num_floors: parseInt(projectData.plotDetails.numberOfFloors) || 1,
+          gray_structure_details: {
+            foundation_type: projectData.grayStructure.foundationType,
+            wall_material: projectData.grayStructure.wallMaterial,
+            wall_thickness: projectData.grayStructure.wallThickness,
+            roof_type: projectData.grayStructure.roofType,
+            steel_grade: projectData.grayStructure.steelGrade,
+            cement_type: projectData.grayStructure.cementType,
+            brick_type: projectData.grayStructure.brickType,
+            plaster_type: projectData.grayStructure.plasterType,
+            spiral_stairs: projectData.grayStructure.spiralStairs || false,
+          },
+          finishing_details: {
+            floor_tiles: projectData.finishing.flooringType,
+            paint: projectData.finishing.paintQuality,
+            wall_tiles: projectData.finishing.tilesQuality,
+            doors: projectData.finishing.doorType,
+            windows: projectData.finishing.windowType,
+            electrical: projectData.finishing.electricalFittings,
+            plumbing: projectData.finishing.plumbingQuality,
+            sanitary: projectData.finishing.sanitaryQuality,
+            cabinets: projectData.finishing.kitchenCabinets,
+          },
+          lda_compliant: true,
+          front_setback: projectData.compliance.frontSetback,
+          rear_setback: projectData.compliance.rearSetback,
+          side_setbacks: projectData.compliance.sideSetbacks,
+          max_height: projectData.compliance.maxHeight,
+          coverage_ratio: projectData.compliance.coverageRatio,
+          floors: projectData.roomDetails.floors.map((f: any) => ({
+            floor_number: f.floorNumber - 1,
+            floor_type: f.floorNumber === 1 ? 'ground' : f.floorNumber === 2 ? 'first' : f.floorNumber === 3 ? 'second' : f.floorNumber === 4 ? 'third' : 'ground',
+            total_area: 0,
+            rooms: f.rooms.map((r: any) => {
+              let mappedType = r.type;
+              if (r.type === 'drawing') mappedType = 'drawing_room';
+              else if (r.type === 'dining') mappedType = 'dining_room';
+              else if (r.type === 'store') mappedType = 'store_room';
+              else if (r.type === 'lounge') mappedType = 'living_room';
+              return { room_type: mappedType, size: r.size, custom_name: r.type, has_parapet_walls: r.hasParapetWalls || false };
+            }),
+          })),
+        };
+        const result = await guestEstimateService.estimate(apiData);
+        setGuestResults(result);
+        navigate('/project/guest/results');
+      } catch (error) {
+        console.error('Failed to generate guest estimate', error);
+        alert('Failed to generate estimate. Please try again.');
+      }
       return;
     }
 
@@ -68,8 +126,8 @@ export default function ProjectForm({ onMenuClick }: ProjectFormProps) {
         navigate(`/project/${projectId}/results`);
       }
     } catch (error) {
-      console.error("Failed to save project", error);
-      alert("Failed to save project. Please try again.");
+      console.error('Failed to save project', error);
+      alert('Failed to save project. Please try again.');
     }
   };
 

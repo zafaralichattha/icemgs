@@ -63,12 +63,14 @@ interface ProjectContextType {
   projectData: ProjectData;
   loading: boolean;
   error: string | null;
+  guestResults: any | null;
   updateProjectData: (step: keyof ProjectData, data: any) => void;
   markStepComplete: (step: number) => void;
   resetProject: () => void;
   saveProject: () => Promise<string>;
   loadProject: (id: string) => Promise<void>;
   getAllProjects: () => Promise<Project[]>;
+  setGuestResults: (data: any | null) => void;
 }
 
 const initialProjectData: ProjectData = {
@@ -123,6 +125,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   const [projectData, setProjectData] = useState<ProjectData>(initialProjectData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [guestResults, setGuestResults] = useState<any | null>(null);
   // Use a ref for the project ID to avoid stale closures causing duplicate creates
   const projectIdRef = useRef<string | undefined>(undefined);
   // Guard against concurrent saves
@@ -158,6 +161,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   const resetProject = () => {
     setProjectData(initialProjectData);
     projectIdRef.current = undefined;
+    setGuestResults(null);
     setError(null);
   };
 
@@ -408,12 +412,14 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
       projectData,
       loading,
       error,
+      guestResults,
       updateProjectData,
       markStepComplete,
       resetProject,
       saveProject,
       loadProject,
-      getAllProjects
+      getAllProjects,
+      setGuestResults
     }}>
       {children}
     </ProjectContext.Provider>

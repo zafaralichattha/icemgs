@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useProject } from '../contexts/ProjectContext';
+import { useAuth } from '../contexts/AuthContext';
 import { projectService, bomService, aiPredictionService } from '../services/api.service';
-import { Building2, Download, TrendingUp, FileText, DollarSign, Menu, Hammer, Sparkles, Home, Layers, Brain, Loader2 } from 'lucide-react';
+import { Building2, Download, TrendingUp, FileText, DollarSign, Menu, Hammer, Sparkles, Home, Layers, Brain, Loader2, LogIn, Info } from 'lucide-react';
 
 interface CostBreakdown {
   grayStructure: number;
@@ -26,7 +27,8 @@ interface ProjectResultsProps {
 
 export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
   const { id } = useParams();
-  const { loadProject, projectData } = useProject();
+  const { loadProject, projectData, guestResults } = useProject();
+  const { isAuthenticated } = useAuth();
   const [costs, setCosts] = useState<CostBreakdown>({ grayStructure: 0, finishing: 0, labor: 0, total: 0 });
   const [grayMaterials, setGrayMaterials] = useState<MaterialItem[]>([]);
   const [finishingMaterials, setFinishingMaterials] = useState<MaterialItem[]>([]);
@@ -41,8 +43,39 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
   const [predictionError, setPredictionError] = useState('');
   const [expandedRec, setExpandedRec] = useState<number|null>(null);
 
+  const isGuestMode = id === 'guest';
+
   useEffect(() => {
-    if (id) {
+    if (isGuestMode && guestResults) {
+      // Guest mode — populate from context
+      setProjectDetails(guestResults);
+      setCosts({
+        grayStructure: parseFloat(guestResults.gray_structure_cost) || 0,
+        finishing: parseFloat(guestResults.finishing_cost) || 0,
+        labor: parseFloat(guestResults.labor_cost) || 0,
+        total: parseFloat(guestResults.total_cost) || 0,
+      });
+
+      const grayMats: MaterialItem[] = [];
+      const finishMats: MaterialItem[] = [];
+      (guestResults.bill_of_materials || []).forEach((bom: any) => {
+        const item: MaterialItem = {
+          name: bom.material_detail?.name || bom.material,
+          quantity: parseFloat(bom.quantity).toString(),
+          unit: bom.unit,
+          rate: parseFloat(bom.rate),
+          cost: parseFloat(bom.total_cost),
+          category: bom.material_detail?.category_display || bom.category_display || '',
+        };
+        if (bom.category === 'gray_structure') {
+          grayMats.push(item);
+        } else {
+          finishMats.push(item);
+        }
+      });
+      setGrayMaterials(grayMats);
+      setFinishingMaterials(finishMats);
+    } else if (id && !isGuestMode) {
       loadProject(id);
       fetchCostsFromDatabase(id);
       fetchProjectDetails(id);
@@ -225,6 +258,29 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
             {' '}{projectData.constructionType === 'complete' ? 'Complete Construction' : 'Gray Structure Only'}
           </p>
         </div>
+
+        {isGuestMode && (
+          <div className="mb-8 p-4 bg-amber-50 border border-amber-200 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <Info className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
+              <div>
+                <h4 className="font-semibold text-amber-800">Temporary Guest Preview</h4>
+                <p className="text-sm text-amber-700">
+                  This estimation report is a temporary preview. Since you are not logged in, this data will be lost when you leave this screen.
+                </p>
+              </div>
+            </div>
+            {!isAuthenticated && (
+              <Link
+                to="/login"
+                className="flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 text-sm font-semibold transition-colors flex-shrink-0"
+              >
+                <LogIn className="w-4 h-4" />
+                Login to Save Project
+              </Link>
+            )}
+          </div>
+        )}
 
         {/* Cost Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 w-full max-w-full">

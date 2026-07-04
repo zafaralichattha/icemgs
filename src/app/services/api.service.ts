@@ -618,3 +618,12 @@ export const aiPredictionService = {
     return response.data;
   },
 };
+
+// ==================== GUEST ESTIMATE SERVICE ====================
+
+export const guestEstimateService = {
+  async estimate(data: any): Promise<any> {
+    const response = await api.post('guest-estimate/', data);
+    return response.data;
+  },
+};

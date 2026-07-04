@@ -9,7 +9,7 @@ from .views import (
     BillOfMaterialViewSet, CostHistoryViewSet, DashboardStatsView,
     DatabaseHealthCheckView, VerifyEmailView, ResendOTPView,
     AICostPredictionView, DiagnoseView, GoogleIdTokenLogin,
-    GoogleOAuthRedirect, GoogleOAuthCallback
+    GoogleOAuthRedirect, GoogleOAuthCallback, GuestEstimateView
 )
 
 router = DefaultRouter()
@@ -32,5 +32,6 @@ urlpatterns = [
     path('dashboard/stats/', DashboardStatsView.as_view(), name='dashboard-stats'),
     path('health-check/', DatabaseHealthCheckView.as_view(), name='health-check'),
     path('ai/predict-cost/', AICostPredictionView.as_view(), name='ai-predict-cost'),
+    path('guest-estimate/', GuestEstimateView.as_view(), name='guest-estimate'),
     path('diagnose/', DiagnoseView.as_view(), name='diagnose'),
 ]

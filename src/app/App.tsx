@@ -119,6 +119,12 @@ function App() {
                     }
                   />
                   <Route
+                    path="/project/guest/results"
+                    element={
+                      <ProjectResults onMenuClick={() => setSidebarOpen(true)} />
+                    }
+                  />
+                  <Route
                     path="/project/:id/results"
                     element={
                       <PrivateRoute>

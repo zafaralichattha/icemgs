@@ -14,7 +14,7 @@ from decimal import Decimal
 from rest_framework.authtoken.models import Token
 from .models import (
     User, Material, Project, Floor, Room,
-    FinishingDetails, BillOfMaterial, CostHistory, OTPVerification
+    FinishingDetails, GrayStructureDetails, BillOfMaterial, CostHistory, OTPVerification
 )
 from .serializers import (
     UserSerializer, MaterialSerializer, ProjectListSerializer,
@@ -1600,3 +1600,97 @@ class DiagnoseView(APIView):
             return Response(res)
         except Exception as e:
             return Response({'error': str(e)}, status=500)
+
+
+class GuestEstimateView(APIView):
+    """Generate cost estimation without requiring authentication.
+    Creates a temporary project, calculates costs, returns results, then deletes the project.
+    Nothing is persisted in the database."""
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        from django.db import transaction
+
+        try:
+            # Get or create a system guest user (not a real user)
+            guest_user, _ = User.objects.get_or_create(
+                email='guest@icemgs.system',
+                defaults={
+                    'first_name': 'Guest',
+                    'last_name': 'User',
+                    'role': 'homeowner',
+                    'is_active': False,
+                }
+            )
+
+            data = request.data
+            floors_data = data.get('floors', [])
+            gray_data = data.get('gray_structure_details', None)
+            finishing_data = data.get('finishing_details', None)
+
+            # Create temporary project
+            project = Project.objects.create(
+                user=guest_user,
+                name=data.get('name', 'Guest Estimate'),
+                construction_type=data.get('construction_type', 'full'),
+                plot_area=data.get('plot_area', 0),
+                plot_unit=data.get('plot_unit', 'marla'),
+                plot_marlas=data.get('plot_marlas'),
+                marla_size=data.get('marla_size'),
+                location=data.get('location', ''),
+                num_floors=data.get('num_floors', 1),
+                lda_compliant=data.get('lda_compliant', True),
+                front_setback=data.get('front_setback', ''),
+                rear_setback=data.get('rear_setback', ''),
+                side_setbacks=data.get('side_setbacks', ''),
+                max_height=data.get('max_height', ''),
+                coverage_ratio=data.get('coverage_ratio', ''),
+            )
+
+            # Create nested objects
+            if gray_data:
+                GrayStructureDetails.objects.create(project=project, **gray_data)
+            if finishing_data:
+                FinishingDetails.objects.create(project=project, **finishing_data)
+            for floor_data in floors_data:
+                rooms_data = floor_data.get('rooms', [])
+                floor_obj = Floor.objects.create(
+                    project=project,
+                    floor_number=floor_data.get('floor_number', 0),
+                    floor_type=floor_data.get('floor_type', 'ground'),
+                    total_area=floor_data.get('total_area', 0),
+                )
+                for room_data in rooms_data:
+                    Room.objects.create(
+                        floor=floor_obj,
+                        room_type=room_data.get('room_type', 'other'),
+                        custom_name=room_data.get('custom_name', ''),
+                        size=room_data.get('size', 'none'),
+                        has_parapet_walls=room_data.get('has_parapet_walls', False),
+                    )
+
+            # Run cost calculation using existing ProjectViewSet logic
+            viewset = ProjectViewSet()
+            viewset._perform_cost_calculation(project)
+
+            # Refresh from DB to get updated costs
+            project.refresh_from_db()
+
+            # Serialize the full project with all nested data
+            serializer = ProjectDetailSerializer(project)
+            result = serializer.data
+
+            # Delete the temporary project (CASCADE deletes floors, rooms, BOM, etc.)
+            project.delete()
+
+            return Response(result, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            logger.error(f'Guest estimate error: {e}')
+            import traceback as tb
+            logger.error(tb.format_exc())
+            return Response(
+                {'error': f'Failed to generate estimate: {str(e)}'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
