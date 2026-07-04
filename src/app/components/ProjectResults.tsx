@@ -29,6 +29,12 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
   const { id } = useParams();
   const { loadProject, projectData, guestResults } = useProject();
   const { isAuthenticated } = useAuth();
+  
+  const location = projectDetails?.location || projectData.plotDetails.location || '';
+  const plotMarlas = projectDetails?.plot_marlas || projectData.plotDetails.plotMarlas || '';
+  const plotArea = projectDetails?.plot_area || projectData.plotDetails.plotArea || '';
+  const numberOfFloors = projectDetails?.num_floors || projectData.plotDetails.numberOfFloors || '';
+  const isComplete = projectDetails?.construction_type ? projectDetails.construction_type === 'full' : projectData.constructionType === 'complete';
   const [costs, setCosts] = useState<CostBreakdown>({ grayStructure: 0, finishing: 0, labor: 0, total: 0 });
   const [grayMaterials, setGrayMaterials] = useState<MaterialItem[]>([]);
   const [finishingMaterials, setFinishingMaterials] = useState<MaterialItem[]>([]);
@@ -75,12 +81,15 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
       });
       setGrayMaterials(grayMats);
       setFinishingMaterials(finishMats);
+      
+      // Run prediction immediately on load for guest mode
+      fetchAIPrediction(guestResults, predictionQuality, predictionMonths);
     } else if (id && !isGuestMode) {
       loadProject(id);
       fetchCostsFromDatabase(id);
       fetchProjectDetails(id);
     }
-  }, [id]);
+  }, [id, guestResults, isGuestMode, predictionQuality, predictionMonths]);
 
   const fetchAIPrediction = async (details: any, qualityTier: string, monthsStr: string) => {
     if (!details) return;
@@ -187,7 +196,7 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
       const url = window.URL.createObjectURL(pdfBlob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `ICEMGS_Report_${projectData.plotDetails.location || 'Project'}_${id.substring(0, 8)}.pdf`;
+      link.download = `ICEMGS_Report_${location || 'Project'}_${id ? id.substring(0, 8) : 'guest'}.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -250,12 +259,12 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
         <div className="mb-8">
           <h1 className="text-2xl sm:text-4xl mb-2">Construction Estimation Report</h1>
           <p className="text-base sm:text-xl text-gray-600">
-            Project: {projectData.plotDetails.location}
+            Project: {location}
           </p>
           <p className="text-sm text-gray-500 mt-1">
-            {projectData.plotDetails.plotMarlas} marlas ({projectData.plotDetails.plotArea} sq ft) •
-            {' '}{projectData.plotDetails.numberOfFloors} floor{parseInt(projectData.plotDetails.numberOfFloors) > 1 ? 's' : ''} •
-            {' '}{projectData.constructionType === 'complete' ? 'Complete Construction' : 'Gray Structure Only'}
+            {plotMarlas} marlas ({plotArea} sq ft) •
+            {' '}{numberOfFloors} floor{parseInt(numberOfFloors) > 1 ? 's' : ''} •
+            {' '}{isComplete ? 'Complete Construction' : 'Gray Structure Only'}
           </p>
         </div>
 
@@ -291,7 +300,7 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
             </div>
             <p className="text-2xl sm:text-3xl font-bold truncate">{formatCurrency(costs.total)}</p>
             <p className="text-xs opacity-75 mt-1 truncate">
-              {formatCurrency(Math.round(costs.total / (parseFloat(projectData.plotDetails.plotArea) * parseInt(projectData.plotDetails.numberOfFloors))))} per sq ft
+              {formatCurrency(Math.round(costs.total / (parseFloat(plotArea || '0') * parseInt(numberOfFloors || '1'))))} per sq ft
             </p>
           </div>
 
@@ -395,7 +404,7 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
                   </div>
                 </div>
               )}
-              {projectDetails.finishing_details && projectData.constructionType === 'complete' && (
+              {projectDetails.finishing_details && isComplete && (
                 <div>
                   <h4 className="font-semibold text-purple-700 mb-2">Finishing</h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">

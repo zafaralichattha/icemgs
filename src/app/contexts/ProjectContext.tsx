@@ -125,7 +125,27 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   const [projectData, setProjectData] = useState<ProjectData>(initialProjectData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [guestResults, setGuestResults] = useState<any | null>(null);
+  const [guestResults, setGuestResultsState] = useState<any | null>(() => {
+    try {
+      const saved = sessionStorage.getItem('guest_results');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const setGuestResults = (data: any | null) => {
+    setGuestResultsState(data);
+    try {
+      if (data) {
+        sessionStorage.setItem('guest_results', JSON.stringify(data));
+      } else {
+        sessionStorage.removeItem('guest_results');
+      }
+    } catch (e) {
+      console.error('Failed to update sessionStorage for guest results:', e);
+    }
+  };
   // Use a ref for the project ID to avoid stale closures causing duplicate creates
   const projectIdRef = useRef<string | undefined>(undefined);
   // Guard against concurrent saves
