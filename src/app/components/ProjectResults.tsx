@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { useProject } from '../contexts/ProjectContext';
 import { useAuth } from '../contexts/AuthContext';
 import { projectService, bomService, aiPredictionService } from '../services/api.service';
@@ -27,6 +27,7 @@ interface ProjectResultsProps {
 
 export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
   const { id } = useParams();
+  const routerLocation = useLocation();
   const { loadProject, projectData, guestResults } = useProject();
   const { isAuthenticated } = useAuth();
   
@@ -50,7 +51,7 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
   const [predictionError, setPredictionError] = useState('');
   const [expandedRec, setExpandedRec] = useState<number|null>(null);
 
-  const isGuestMode = id === 'guest';
+  const isGuestMode = id === 'guest' || routerLocation.pathname.includes('/guest/');
 
   useEffect(() => {
     if (isGuestMode && guestResults) {
@@ -177,6 +178,11 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
   };
 
   const handleDownloadPDF = async () => {
+    if (isGuestMode) {
+      alert('Please login or register to save your project and generate the full estimation report.');
+      return;
+    }
+
     if (!id) {
       alert('No project ID found');
       return;
