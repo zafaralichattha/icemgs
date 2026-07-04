@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useProject } from '../../contexts/ProjectContext';
-import { CheckCircle, MapPin, Home, Hammer, Paintbrush, Shield, Loader2 } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { CheckCircle, MapPin, Home, Hammer, Paintbrush, Shield, Loader2, LogIn } from 'lucide-react';
 
 interface StepReviewProps {
   onSubmit: () => Promise<void> | void;
@@ -8,6 +9,7 @@ interface StepReviewProps {
 
 export default function StepReview({ onSubmit }: StepReviewProps) {
   const { projectData } = useProject();
+  const { isAuthenticated } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -240,8 +242,13 @@ export default function StepReview({ onSubmit }: StepReviewProps) {
               <Loader2 className="w-5 h-5 animate-spin" />
               Saving Project...
             </>
-          ) : (
+          ) : isAuthenticated ? (
             'Generate Estimation & Floor Plan'
+          ) : (
+            <>
+              <LogIn className="w-5 h-5" />
+              Login to Generate Estimation
+            </>
           )}
         </button>
       </div>

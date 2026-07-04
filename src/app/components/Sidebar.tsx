@@ -44,7 +44,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     const menuItems = [
     { icon: Home, label: 'Home', path: '/', show: true, id: 'home' },
     { icon: Home, label: 'Dashboard', path: '/dashboard', show: isAuthenticated, id: 'dashboard' },
-    { icon: Plus, label: 'New Project', path: '/project/new', show: isAuthenticated, id: 'new-project' },
+    { icon: Plus, label: 'New Project', path: '/project/new', show: true, id: 'new-project' },
     { icon: User, label: 'Profile', path: '/profile', show: isAuthenticated, id: 'profile' },
     { icon: Calculator, label: 'Quick Estimate', path: '/quick-estimate', show: true, id: 'quick-estimate' },
     { icon: TrendingUp, label: 'Cost Prediction', path: '/cost-prediction', show: true, id: 'cost-prediction' },

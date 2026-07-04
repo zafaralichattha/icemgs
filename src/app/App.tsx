@@ -113,11 +113,9 @@ function App() {
                   <Route
                     path="/project/new"
                     element={
-                      <PrivateRoute>
                         <ErrorBoundary>
                           <ProjectForm onMenuClick={() => setSidebarOpen(true)} />
                         </ErrorBoundary>
-                      </PrivateRoute>
                     }
                   />
                   <Route

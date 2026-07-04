@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useProject } from '../contexts/ProjectContext';
-import { Building2, Check, Info, Menu } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { Building2, Check, Info, Menu, LogIn } from 'lucide-react';
 import StepPlotDetails from './steps/StepPlotDetails';
 import StepRoomDetails from './steps/StepRoomDetails';
 import StepGrayStructure from './steps/StepGrayStructure';
@@ -15,6 +16,7 @@ interface ProjectFormProps {
 
 export default function ProjectForm({ onMenuClick }: ProjectFormProps) {
   const { projectData, saveProject } = useProject();
+  const { isAuthenticated } = useAuth();
   const [currentStep, setCurrentStep] = useState(projectData.currentStep || 1);
   const navigate = useNavigate();
 
@@ -51,6 +53,13 @@ export default function ProjectForm({ onMenuClick }: ProjectFormProps) {
   };
 
   const handleSubmit = async () => {
+    if (!isAuthenticated) {
+      // Guest user — show alert and redirect to login
+      alert('Please login or register to save your project and generate the full estimation report. Your project data will be preserved.');
+      navigate('/login');
+      return;
+    }
+
     try {
       // Save the project and mark as completed
       const projectId = await saveProject();
@@ -78,24 +87,47 @@ export default function ProjectForm({ onMenuClick }: ProjectFormProps) {
             <Building2 className="w-8 h-8 text-blue-600" />
             <span className="text-xl">ICEMGS</span>
           </div>
-          <button
-            onClick={async () => {
-              try {
-                await saveProject();
-                navigate('/dashboard');
-              } catch (error) {
-                console.error("Failed to save project", error);
-                alert("Failed to save project. Please try again.");
-              }
-            }}
-            className="px-6 py-2 text-gray-600 hover:text-gray-900"
-          >
-            Save & Exit
-          </button>
+          {isAuthenticated ? (
+            <button
+              onClick={async () => {
+                try {
+                  await saveProject();
+                  navigate('/dashboard');
+                } catch (error) {
+                  console.error("Failed to save project", error);
+                  alert("Failed to save project. Please try again.");
+                }
+              }}
+              className="px-6 py-2 text-gray-600 hover:text-gray-900"
+            >
+              Save & Exit
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
+            >
+              <LogIn className="w-4 h-4" />
+              Login to Save
+            </Link>
+          )}
         </div>
       </header>
 
       <div className="w-full max-w-5xl mx-auto px-4 py-8">
+        {/* Guest notice */}
+        {!isAuthenticated && (
+          <div className="mb-6 bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
+            <Info className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm text-amber-900 font-medium">You are using ICEMGS as a guest</p>
+              <p className="text-sm text-amber-800 mt-1">
+                You can fill out the entire project form, but you'll need to <Link to="/login" className="text-blue-600 underline font-semibold">login</Link> or <Link to="/register" className="text-blue-600 underline font-semibold">register</Link> to save your project and generate the full estimation report.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Progress Steps */}
         <div className="mb-8">
           {/* Mobile view */}
@@ -157,7 +189,10 @@ export default function ProjectForm({ onMenuClick }: ProjectFormProps) {
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
           <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
           <p className="text-sm text-blue-900">
-            Remember to save your progress using the "Save & Exit" button before leaving. You can continue later from where you left off.
+            {isAuthenticated
+              ? 'Remember to save your progress using the "Save & Exit" button before leaving. You can continue later from where you left off.'
+              : 'Login or register to save your project progress and access your estimation reports anytime.'
+            }
           </p>
         </div>
       </div>
