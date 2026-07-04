@@ -30,15 +30,16 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
   const { loadProject, projectData, guestResults } = useProject();
   const { isAuthenticated } = useAuth();
   
+  const [costs, setCosts] = useState<CostBreakdown>({ grayStructure: 0, finishing: 0, labor: 0, total: 0 });
+  const [grayMaterials, setGrayMaterials] = useState<MaterialItem[]>([]);
+  const [finishingMaterials, setFinishingMaterials] = useState<MaterialItem[]>([]);
+  const [projectDetails, setProjectDetails] = useState<any>(null);
+
   const location = projectDetails?.location || projectData.plotDetails.location || '';
   const plotMarlas = projectDetails?.plot_marlas || projectData.plotDetails.plotMarlas || '';
   const plotArea = projectDetails?.plot_area || projectData.plotDetails.plotArea || '';
   const numberOfFloors = projectDetails?.num_floors || projectData.plotDetails.numberOfFloors || '';
   const isComplete = projectDetails?.construction_type ? projectDetails.construction_type === 'full' : projectData.constructionType === 'complete';
-  const [costs, setCosts] = useState<CostBreakdown>({ grayStructure: 0, finishing: 0, labor: 0, total: 0 });
-  const [grayMaterials, setGrayMaterials] = useState<MaterialItem[]>([]);
-  const [finishingMaterials, setFinishingMaterials] = useState<MaterialItem[]>([]);
-  const [projectDetails, setProjectDetails] = useState<any>(null);
 
   // AI Prediction states
   const [predictionLoading, setPredictionLoading] = useState(false);
