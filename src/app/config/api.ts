@@ -61,7 +61,7 @@ api.interceptors.response.use(
           // Unauthorized - clear token and redirect to login
           // But don't redirect during auth calls (login/register/password change) or profile updates
           const requestUrl = error.config?.url || '';
-          const isAuthCall = requestUrl.includes('/auth/login') || requestUrl.includes('/auth/registration') || requestUrl.includes('/auth/password/change') || requestUrl.includes('/users/update_profile');
+          const isAuthCall = requestUrl.includes('/auth/login') || requestUrl.includes('/auth/registration') || requestUrl.includes('/auth/password/change') || requestUrl.includes('/users/update_profile') || requestUrl.includes('materials/');
           if (!isAuthCall) {
             localStorage.removeItem('auth_token');
             localStorage.removeItem('user');

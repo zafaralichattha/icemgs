@@ -430,8 +430,10 @@ class MaterialViewSet(viewsets.ModelViewSet):
     ordering_fields = ['category', 'rate', 'created_at']
 
     def get_permissions(self):
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+        if self.action in ['create', 'update', 'partial_update', 'destroy', 'bulk_update_rates', 'sync_market_prices']:
             return [IsAdminUser()]
+        if self.action in ['list', 'retrieve', 'by_category']:
+            return [permissions.AllowAny()]
         return [permissions.IsAuthenticated()]
 
     @action(detail=False, methods=['get'])
