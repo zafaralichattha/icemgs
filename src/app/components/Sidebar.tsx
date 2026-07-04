@@ -48,7 +48,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     { icon: User, label: 'Profile', path: '/profile', show: isAuthenticated, id: 'profile' },
     { icon: Calculator, label: 'Quick Estimate', path: '/quick-estimate', show: true, id: 'quick-estimate' },
     { icon: TrendingUp, label: 'Cost Prediction', path: '/cost-prediction', show: true, id: 'cost-prediction' },
-    { icon: DollarSign, label: 'Material Rates', path: '/material-rates', show: isAuthenticated, id: 'material-rates' },
+    { icon: DollarSign, label: 'Material Rates', path: '/material-rates', show: true, id: 'material-rates' },
     { icon: BarChart3, label: 'Analytics', path: '/analytics', show: isAuthenticated, id: 'analytics' },
     { icon: Box, label: 'House Map', path: '/house-map', show: isAuthenticated, id: 'house-map' },
   ];

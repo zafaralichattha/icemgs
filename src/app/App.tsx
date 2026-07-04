@@ -131,9 +131,7 @@ function App() {
                   <Route
                     path="/material-rates"
                     element={
-                      <PrivateRoute>
                         <MaterialRates onMenuClick={() => setSidebarOpen(true)} />
-                      </PrivateRoute>
                     }
                   />
                 </Routes>
