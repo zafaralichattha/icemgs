@@ -199,7 +199,13 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     setError(null);
 
     try {
-      const apiData = {
+      // Determine which steps are completed to only send relevant data
+      const completed = projectData.completedSteps;
+      const hasGrayStructure = completed.includes(3) && !!projectData.grayStructure.foundationType;
+      const hasFinishing = completed.includes(4) && !!projectData.finishing.flooringType;
+      const hasCompliance = completed.includes(5) && !!projectData.compliance.frontSetback;
+
+      const apiData: Record<string, any> = {
         name: `Project ${projectData.plotDetails.location || 'Untitled'}`,
         construction_type: projectData.constructionType === 'complete' ? 'full' as const : 'gray' as const,
         plot_area: parseFloat(projectData.plotDetails.plotArea) || 0,
@@ -209,39 +215,13 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         marla_size: projectData.plotDetails.marlaSize ? parseInt(projectData.plotDetails.marlaSize) : null,
         num_floors: parseInt(projectData.plotDetails.numberOfFloors) || 1,
         
-        // Gray Structure
-        gray_structure_details: {
-          foundation_type: projectData.grayStructure.foundationType,
-          wall_material: projectData.grayStructure.wallMaterial,
-          wall_thickness: projectData.grayStructure.wallThickness,
-          roof_type: projectData.grayStructure.roofType,
-          steel_grade: projectData.grayStructure.steelGrade,
-          cement_type: projectData.grayStructure.cementType,
-          brick_type: projectData.grayStructure.brickType,
-          plaster_type: projectData.grayStructure.plasterType,
-          spiral_stairs: projectData.grayStructure.spiralStairs || false,
-        },
-        
-        // Finishing Details
-        finishing_details: {
-          floor_tiles: projectData.finishing.flooringType,
-          paint: projectData.finishing.paintQuality,
-          wall_tiles: projectData.finishing.tilesQuality,
-          doors: projectData.finishing.doorType,
-          windows: projectData.finishing.windowType,
-          electrical: projectData.finishing.electricalFittings,
-          plumbing: projectData.finishing.plumbingQuality,
-          sanitary: projectData.finishing.sanitaryQuality,
-          cabinets: projectData.finishing.kitchenCabinets,
-        },
-        
-        // Compliance
-        lda_compliant: true,
-        front_setback: projectData.compliance.frontSetback,
-        rear_setback: projectData.compliance.rearSetback,
-        side_setbacks: projectData.compliance.sideSetbacks,
-        max_height: projectData.compliance.maxHeight,
-        coverage_ratio: projectData.compliance.coverageRatio,
+        // Compliance — only set lda_compliant to true when user has completed step 5
+        lda_compliant: hasCompliance,
+        front_setback: hasCompliance ? projectData.compliance.frontSetback : '',
+        rear_setback: hasCompliance ? projectData.compliance.rearSetback : '',
+        side_setbacks: hasCompliance ? projectData.compliance.sideSetbacks : '',
+        max_height: hasCompliance ? projectData.compliance.maxHeight : '',
+        coverage_ratio: hasCompliance ? projectData.compliance.coverageRatio : '',
         
         // Floors and Rooms
         floors: projectData.roomDetails.floors.map((f: any) => ({
@@ -264,6 +244,36 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
             })
         }))
       };
+
+      // Only include gray_structure_details if step 3 was completed
+      if (hasGrayStructure) {
+        apiData.gray_structure_details = {
+          foundation_type: projectData.grayStructure.foundationType,
+          wall_material: projectData.grayStructure.wallMaterial,
+          wall_thickness: projectData.grayStructure.wallThickness,
+          roof_type: projectData.grayStructure.roofType,
+          steel_grade: projectData.grayStructure.steelGrade,
+          cement_type: projectData.grayStructure.cementType,
+          brick_type: projectData.grayStructure.brickType,
+          plaster_type: projectData.grayStructure.plasterType,
+          spiral_stairs: projectData.grayStructure.spiralStairs || false,
+        };
+      }
+
+      // Only include finishing_details if step 4 was completed
+      if (hasFinishing) {
+        apiData.finishing_details = {
+          floor_tiles: projectData.finishing.flooringType,
+          paint: projectData.finishing.paintQuality,
+          wall_tiles: projectData.finishing.tilesQuality,
+          doors: projectData.finishing.doorType,
+          windows: projectData.finishing.windowType,
+          electrical: projectData.finishing.electricalFittings,
+          plumbing: projectData.finishing.plumbingQuality,
+          sanitary: projectData.finishing.sanitaryQuality,
+          cabinets: projectData.finishing.kitchenCabinets,
+        };
+      }
 
       let savedProject: Project;
 
@@ -311,30 +321,65 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
       // Try to load from API first
       const apiProject = await projectService.getById(id);
 
-      // Dynamically determine current and completed steps based on populated data
+      // Debug: log the raw API response to trace step inference
+      console.log('🔍 [loadProject] Raw API response:', JSON.stringify({
+        plot_area: apiProject.plot_area,
+        floors: (apiProject as any).floors?.length,
+        gray_structure_details: (apiProject as any).gray_structure_details,
+        finishing_details: (apiProject as any).finishing_details,
+        lda_compliant: apiProject.lda_compliant,
+        front_setback: (apiProject as any).front_setback,
+        construction_type: apiProject.construction_type,
+      }, null, 2));
+
+      // Dynamically determine current and completed steps based on populated data.
+      // Each check verifies that the relevant data has meaningful non-empty values,
+      // not just default/empty strings or booleans.
       const completedSteps: number[] = [];
       let currentStep = 1;
 
+      // Step 1: Plot Details — completed if plot_area is set
       if (apiProject.plot_area && parseFloat(apiProject.plot_area.toString()) > 0) {
         completedSteps.push(1);
         currentStep = 2;
       }
+
+      // Step 2: Room Details — completed if there are floors with rooms
       if ((apiProject as any).floors && (apiProject as any).floors.length > 0) {
         completedSteps.push(2);
         currentStep = 3;
       }
-      if ((apiProject as any).gray_structure_details && (apiProject as any).gray_structure_details.foundation_type) {
+
+      // Step 3: Gray Structure — completed only if foundation_type is a non-empty string
+      const grayDetails = (apiProject as any).gray_structure_details;
+      const hasGrayData = grayDetails
+        && typeof grayDetails.foundation_type === 'string'
+        && grayDetails.foundation_type.trim().length > 0;
+      if (hasGrayData) {
         completedSteps.push(3);
         currentStep = apiProject.construction_type === 'full' ? 4 : 5;
       }
-      if (apiProject.construction_type === 'full' && (apiProject as any).finishing_details && (apiProject as any).finishing_details.floor_tiles) {
+
+      // Step 4: Finishing — completed only if floor_tiles is a non-empty string
+      const finishingDetails = (apiProject as any).finishing_details;
+      const hasFinishingData = finishingDetails
+        && typeof finishingDetails.floor_tiles === 'string'
+        && finishingDetails.floor_tiles.trim().length > 0;
+      if (apiProject.construction_type === 'full' && hasFinishingData) {
         completedSteps.push(4);
         currentStep = 5;
       }
-      if ((apiProject as any).front_setback || (apiProject as any).lda_compliant) {
+
+      // Step 5: Compliance — completed only if front_setback has a real value
+      const hasFrontSetback = (apiProject as any).front_setback
+        && typeof (apiProject as any).front_setback === 'string'
+        && (apiProject as any).front_setback.trim().length > 0;
+      if (hasFrontSetback) {
         completedSteps.push(5);
         currentStep = 6;
       }
+
+      console.log('🔍 [loadProject] Step inference result:', { completedSteps, currentStep });
 
       // Map API response to frontend format
       const mappedProject: ProjectData = {

@@ -72,8 +72,8 @@ export default function Dashboard({ onMenuClick }: DashboardProps) {
     navigate('/project/new');
   };
 
-  const handleContinueProject = (id: string) => {
-    loadProject(id);
+  const handleContinueProject = async (id: string) => {
+    await loadProject(id);
     navigate('/project/new');
   };
 
