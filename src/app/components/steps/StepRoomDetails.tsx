@@ -468,10 +468,8 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
     );
   }
 
-  // Current floor area for the floating panel
-  const currentFloorAreaVal = calculateFloorRoomArea(currentFloor);
-  const currentFloorPercent = (currentFloorAreaVal / usableAreaPerFloor) * 100;
-  const currentFloorExceeded = currentFloorAreaVal > usableAreaPerFloor;
+  // Current floor area (used by area validation above)
+  // calculateFloorRoomArea is called inline in the validation loops
 
   return (
     <div ref={stepRef} className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden relative pb-40 sm:pb-36">
