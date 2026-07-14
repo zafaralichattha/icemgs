@@ -162,7 +162,7 @@ export default function LandingPage({ onMenuClick }: LandingPageProps) {
           <p className="text-lg text-gray-600">Designed for everyone in the construction industry</p>
         </div>
         <div className="grid md:grid-cols-4 gap-6">
-          {audiences.map((item, index) => {
+          {audiences.map((item) => {
             const Icon = item.icon;
             return (
               <div
