@@ -195,7 +195,7 @@ export default function ProfilePage({ onMenuClick: _onMenuClick }: ProfilePagePr
               
               <div className="bg-gray-50 p-6 rounded-lg border border-gray-100">
                 <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
-                  <User className="w-5 h-5 text-blue-600" /> Account Settings
+                  <User className="w-5 h-5 text-indigo-600" /> Account Settings
                 </h3>
                 <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Profile Picture</label>
@@ -207,8 +207,8 @@ export default function ProfilePage({ onMenuClick: _onMenuClick }: ProfilePagePr
                       file:mr-4 file:py-2 file:px-4
                       file:rounded-full file:border-0
                       file:text-sm file:font-semibold
-                      file:bg-blue-50 file:text-blue-700
-                      hover:file:bg-blue-100 cursor-pointer"
+                      file:bg-indigo-50 file:text-blue-700
+                      hover:file:bg-indigo-100 cursor-pointer"
                   />
                 </div>
                 
@@ -232,7 +232,7 @@ export default function ProfilePage({ onMenuClick: _onMenuClick }: ProfilePagePr
                         name="role"
                         value={formData.role}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
                       >
                         <option value="homeowner">Homeowner</option>
                         <option value="contractor">Contractor</option>
@@ -255,7 +255,7 @@ export default function ProfilePage({ onMenuClick: _onMenuClick }: ProfilePagePr
                       value={formData.first_name}
                       onChange={handleChange}
                       required
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
                     />
                   </div>
                 </div>
@@ -269,7 +269,7 @@ export default function ProfilePage({ onMenuClick: _onMenuClick }: ProfilePagePr
                       name="last_name"
                       value={formData.last_name}
                       onChange={handleChange}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
                     />
                   </div>
                 </div>
@@ -283,7 +283,7 @@ export default function ProfilePage({ onMenuClick: _onMenuClick }: ProfilePagePr
                       name="phone_number"
                       value={formData.phone_number}
                       onChange={handleChange}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
                     />
                   </div>
                 </div>
@@ -297,7 +297,7 @@ export default function ProfilePage({ onMenuClick: _onMenuClick }: ProfilePagePr
                       name="company_name"
                       value={formData.company_name}
                       onChange={handleChange}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
                     />
                   </div>
                 </div>
@@ -305,7 +305,7 @@ export default function ProfilePage({ onMenuClick: _onMenuClick }: ProfilePagePr
 
               <div className="bg-gray-50 p-6 rounded-lg border border-gray-100">
                 <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
-                  <Lock className="w-5 h-5 text-blue-600" /> Change Password
+                  <Lock className="w-5 h-5 text-indigo-600" /> Change Password
                 </h3>
                 <p className="text-sm text-gray-500 mb-4">Leave blank if you don't want to change your password.</p>
                 <div className="space-y-4">
@@ -315,7 +315,7 @@ export default function ProfilePage({ onMenuClick: _onMenuClick }: ProfilePagePr
                       type="password"
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400"
                     />
                   </div>
                   <div className="grid md:grid-cols-2 gap-4">
@@ -325,7 +325,7 @@ export default function ProfilePage({ onMenuClick: _onMenuClick }: ProfilePagePr
                         type="password"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400"
                       />
                     </div>
                     <div>
@@ -334,7 +334,7 @@ export default function ProfilePage({ onMenuClick: _onMenuClick }: ProfilePagePr
                         type="password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400"
                       />
                     </div>
                   </div>
@@ -345,7 +345,7 @@ export default function ProfilePage({ onMenuClick: _onMenuClick }: ProfilePagePr
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex items-center justify-center w-full sm:w-auto gap-2 px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-70 font-medium"
+                  className="flex items-center justify-center w-full sm:w-auto gap-2 px-8 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-70 font-medium"
                 >
                   <Save className="w-5 h-5" />
                   {loading ? 'Saving...' : 'Save Changes'}

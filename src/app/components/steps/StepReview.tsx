@@ -42,7 +42,7 @@ export default function StepReview({ onSubmit }: StepReviewProps) {
         {/* Plot Details */}
         <div className="border border-gray-200 rounded-lg p-6">
           <div className="flex items-center gap-2 mb-4">
-            <MapPin className="w-5 h-5 text-blue-600" />
+            <MapPin className="w-5 h-5 text-indigo-600" />
             <h3 className="text-lg">Plot Details</h3>
             <CheckCircle className="w-5 h-5 text-green-600 ml-auto" />
           </div>
@@ -69,7 +69,7 @@ export default function StepReview({ onSubmit }: StepReviewProps) {
         {/* Room Details */}
         <div className="border border-gray-200 rounded-lg p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Home className="w-5 h-5 text-blue-600" />
+            <Home className="w-5 h-5 text-indigo-600" />
             <h3 className="text-lg">Room Configuration</h3>
             <CheckCircle className="w-5 h-5 text-green-600 ml-auto" />
           </div>
@@ -104,7 +104,7 @@ export default function StepReview({ onSubmit }: StepReviewProps) {
         {/* Gray Structure */}
         <div className="border border-gray-200 rounded-lg p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Hammer className="w-5 h-5 text-blue-600" />
+            <Hammer className="w-5 h-5 text-indigo-600" />
             <h3 className="text-lg">Gray Structure Materials</h3>
             <CheckCircle className="w-5 h-5 text-green-600 ml-auto" />
           </div>
@@ -135,7 +135,7 @@ export default function StepReview({ onSubmit }: StepReviewProps) {
         {/* Finishing */}
         <div className="border border-gray-200 rounded-lg p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Paintbrush className="w-5 h-5 text-blue-600" />
+            <Paintbrush className="w-5 h-5 text-indigo-600" />
             <h3 className="text-lg">Finishing Materials</h3>
             <CheckCircle className="w-5 h-5 text-green-600 ml-auto" />
           </div>
@@ -174,7 +174,7 @@ export default function StepReview({ onSubmit }: StepReviewProps) {
         {/* Compliance */}
         <div className="border border-gray-200 rounded-lg p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Shield className="w-5 h-5 text-blue-600" />
+            <Shield className="w-5 h-5 text-indigo-600" />
             <h3 className="text-lg">LDA Compliance</h3>
             <CheckCircle className="w-5 h-5 text-green-600 ml-auto" />
           </div>

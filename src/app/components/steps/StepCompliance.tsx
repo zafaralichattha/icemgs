@@ -93,64 +93,64 @@ export default function StepCompliance({ onNext }: StepComplianceProps) {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* LDA Bylaw Requirements Box */}
-        <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-5">
+        <div className="bg-indigo-50 border-2 border-blue-300 rounded-lg p-5">
           <div className="flex items-start gap-3 mb-4">
-            <Info className="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" />
+            <Info className="w-6 h-6 text-indigo-600 flex-shrink-0 mt-0.5" />
             <div>
-              <h3 className="font-semibold text-blue-900 mb-2">LDA Building Bylaws - Minimum Requirements</h3>
-              <p className="text-sm text-blue-800">These are the minimum legal requirements for construction in Lahore:</p>
+              <h3 className="font-semibold text-indigo-900 mb-2">LDA Building Bylaws - Minimum Requirements</h3>
+              <p className="text-sm text-indigo-800">These are the minimum legal requirements for construction in Lahore:</p>
             </div>
           </div>
           
           <div className="grid md:grid-cols-2 gap-4 mt-4">
-            <div className="bg-white rounded-lg p-3 border border-blue-200">
+            <div className="bg-white rounded-lg p-3 border border-indigo-200">
               <div className="flex items-center gap-2 mb-1">
-                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                <div className="w-2 h-2 bg-indigo-600 rounded-full"></div>
                 <span className="font-semibold text-gray-900">Front Space:</span>
               </div>
               <p className="text-sm text-gray-700 pl-4">Minimum <strong>10 feet</strong> from road</p>
               <p className="text-xs text-gray-600 pl-4 mt-1">Empty space in front for parking/garden</p>
             </div>
 
-            <div className="bg-white rounded-lg p-3 border border-blue-200">
+            <div className="bg-white rounded-lg p-3 border border-indigo-200">
               <div className="flex items-center gap-2 mb-1">
-                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                <div className="w-2 h-2 bg-indigo-600 rounded-full"></div>
                 <span className="font-semibold text-gray-900">Back Space:</span>
               </div>
               <p className="text-sm text-gray-700 pl-4">Minimum <strong>10 feet</strong> from back</p>
               <p className="text-xs text-gray-600 pl-4 mt-1">Empty space at the back</p>
             </div>
 
-            <div className="bg-white rounded-lg p-3 border border-blue-200">
+            <div className="bg-white rounded-lg p-3 border border-indigo-200">
               <div className="flex items-center gap-2 mb-1">
-                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                <div className="w-2 h-2 bg-indigo-600 rounded-full"></div>
                 <span className="font-semibold text-gray-900">Side Spaces:</span>
               </div>
               <p className="text-sm text-gray-700 pl-4">Minimum <strong>5 feet</strong> on each side</p>
               <p className="text-xs text-gray-600 pl-4 mt-1">Empty space on left & right</p>
             </div>
 
-            <div className="bg-white rounded-lg p-3 border border-blue-200">
+            <div className="bg-white rounded-lg p-3 border border-indigo-200">
               <div className="flex items-center gap-2 mb-1">
-                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                <div className="w-2 h-2 bg-indigo-600 rounded-full"></div>
                 <span className="font-semibold text-gray-900">Building Height:</span>
               </div>
               <p className="text-sm text-gray-700 pl-4">Maximum <strong>12 feet per floor</strong></p>
               <p className="text-xs text-gray-600 pl-4 mt-1">Plus 3 feet for roof/parapet</p>
             </div>
 
-            <div className="bg-white rounded-lg p-3 border border-blue-200">
+            <div className="bg-white rounded-lg p-3 border border-indigo-200">
               <div className="flex items-center gap-2 mb-1">
-                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                <div className="w-2 h-2 bg-indigo-600 rounded-full"></div>
                 <span className="font-semibold text-gray-900">Ground Coverage:</span>
               </div>
               <p className="text-sm text-gray-700 pl-4">Maximum <strong>60%</strong> of plot</p>
               <p className="text-xs text-gray-600 pl-4 mt-1">40% must remain open/green</p>
             </div>
 
-            <div className="bg-white rounded-lg p-3 border border-blue-200">
+            <div className="bg-white rounded-lg p-3 border border-indigo-200">
               <div className="flex items-center gap-2 mb-1">
-                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                <div className="w-2 h-2 bg-indigo-600 rounded-full"></div>
                 <span className="font-semibold text-gray-900">Purpose:</span>
               </div>
               <p className="text-sm text-gray-700 pl-4">Safety & ventilation</p>
@@ -191,7 +191,7 @@ export default function StepCompliance({ onNext }: StepComplianceProps) {
             type="number"
             value={formData.frontSetback}
             onChange={(e) => handleChange('frontSetback', e.target.value)}
-            className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+            className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-transparent ${
               complianceStatus.frontSetback ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'
             }`}
             step="0.1"
@@ -214,7 +214,7 @@ export default function StepCompliance({ onNext }: StepComplianceProps) {
             type="number"
             value={formData.rearSetback}
             onChange={(e) => handleChange('rearSetback', e.target.value)}
-            className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+            className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-transparent ${
               complianceStatus.rearSetback ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'
             }`}
             step="0.1"
@@ -237,7 +237,7 @@ export default function StepCompliance({ onNext }: StepComplianceProps) {
             type="number"
             value={formData.sideSetbacks}
             onChange={(e) => handleChange('sideSetbacks', e.target.value)}
-            className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+            className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-transparent ${
               complianceStatus.sideSetbacks ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'
             }`}
             step="0.1"
@@ -262,7 +262,7 @@ export default function StepCompliance({ onNext }: StepComplianceProps) {
             type="number"
             value={formData.maxHeight}
             onChange={(e) => handleChange('maxHeight', e.target.value)}
-            className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+            className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-transparent ${
               complianceStatus.height ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'
             }`}
             step="0.1"
@@ -285,7 +285,7 @@ export default function StepCompliance({ onNext }: StepComplianceProps) {
             type="number"
             value={formData.coverageRatio}
             onChange={(e) => handleChange('coverageRatio', e.target.value)}
-            className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+            className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-transparent ${
               complianceStatus.coverage ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'
             }`}
             step="0.1"
@@ -315,7 +315,7 @@ export default function StepCompliance({ onNext }: StepComplianceProps) {
 
         <button
           type="submit"
-          className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
+          className="w-full py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-semibold"
         >
           Continue to Review & Results
         </button>

@@ -421,7 +421,7 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
     const currentSize = getRoomSize(currentFloor, roomTypeId, idx) as 'small' | 'medium' | 'large';
     const description = getSizeDescription(currentSize, roomTypeId, combineDrawingDining, plotMarlas);
     return (
-      <div key={idx} className="flex flex-col gap-1.5 p-2.5 bg-blue-50/50 rounded-lg border border-blue-100 w-full">
+      <div key={idx} className="flex flex-col gap-1.5 p-2.5 bg-indigo-50/50 rounded-lg border border-blue-100 w-full">
         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
           <span className="text-xs font-semibold text-gray-700 sm:w-20 shrink-0">{label}</span>
           <div className="flex flex-1 bg-white p-1 rounded-lg gap-0.5 border border-gray-200">
@@ -432,7 +432,7 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                 onClick={() => updateRoomSize(currentFloor, roomTypeId, idx, size)}
                 className={`flex-1 py-1 text-xs font-semibold rounded-md transition-all ${
                   currentSize === size
-                    ? 'bg-blue-600 text-white shadow-sm'
+                    ? 'bg-indigo-600 text-white shadow-sm'
                     : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
                 }`}
               >
@@ -552,7 +552,7 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                         </button>
                         
                         <div className="flex-1 text-center">
-                          <div className="text-2xl font-bold text-blue-600">
+                          <div className="text-2xl font-bold text-indigo-600">
                             {roomCounts[currentFloor]?.[roomType.id] || 0}
                           </div>
                           <div className="text-xs text-gray-500">
@@ -563,7 +563,7 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                         <button
                           type="button"
                           onClick={() => updateRoomCount(currentFloor, roomType.id, true)}
-                          className="w-10 h-10 flex items-center justify-center bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                          className="w-10 h-10 flex items-center justify-center bg-white border-2 border-gray-300 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           disabled={isMaxReached}
                         >
                           <Plus className="w-4 h-4" />
@@ -617,7 +617,7 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                           </button>
                           
                           <div className="flex-1 text-center">
-                            <div className="text-2xl font-bold text-blue-600">
+                            <div className="text-2xl font-bold text-indigo-600">
                               {roomCounts[currentFloor]?.[roomType.id] || 0}
                             </div>
                             <div className="text-xs text-gray-500">
@@ -628,7 +628,7 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                           <button
                             type="button"
                             onClick={() => updateRoomCount(currentFloor, roomType.id, true)}
-                            className="w-10 h-10 flex items-center justify-center bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="w-10 h-10 flex items-center justify-center bg-white border-2 border-gray-300 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                             disabled={isMaxReached}
                           >
                             <Plus className="w-4 h-4" />
@@ -673,8 +673,8 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                       onClick={() => toggleSingleRoom(currentFloor, 'lounge')}
                       className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                         roomCounts[currentFloor]?.['lounge'] > 0
-                          ? 'bg-blue-600 text-white hover:bg-blue-700'
-                          : 'bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-700 border border-gray-300'
+                          ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                          : 'bg-gray-100 text-gray-700 hover:bg-indigo-50 hover:text-blue-700 border border-gray-300'
                       }`}
                     >
                       {roomCounts[currentFloor]?.['lounge'] > 0 ? '✓ Added' : '+ Add'}
@@ -713,8 +713,8 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                         }}
                         className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                           roomCounts[currentFloor]?.['drawing'] > 0
-                            ? 'bg-blue-600 text-white hover:bg-blue-700'
-                            : 'bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-700 border border-gray-300'
+                            ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                            : 'bg-gray-100 text-gray-700 hover:bg-indigo-50 hover:text-blue-700 border border-gray-300'
                         }`}
                       >
                         {roomCounts[currentFloor]?.['drawing'] > 0 ? '✓ Added' : '+ Add'}
@@ -730,7 +730,7 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                               onChange={(e) => {
                                 handleDrawingDiningSelection(currentFloor, e.target.checked ? 'drawing_dining' : 'drawing_only');
                               }}
-                              className="w-4 h-4 text-blue-600 rounded"
+                              className="w-4 h-4 text-indigo-600 rounded"
                             />
                             <span className="text-sm text-gray-800 font-medium">Combine with Dining Area (Large Space)</span>
                           </label>
@@ -767,8 +767,8 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                       onClick={() => toggleSingleRoom(currentFloor, 'kitchen')}
                       className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                         roomCounts[currentFloor]?.['kitchen'] > 0
-                          ? 'bg-blue-600 text-white hover:bg-blue-700'
-                          : 'bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-700 border border-gray-300'
+                          ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                          : 'bg-gray-100 text-gray-700 hover:bg-indigo-50 hover:text-blue-700 border border-gray-300'
                       }`}
                     >
                       {roomCounts[currentFloor]?.['kitchen'] > 0 ? '✓ Added' : '+ Add'}
@@ -800,8 +800,8 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                       onClick={() => toggleSingleRoom(currentFloor, 'store')}
                       className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                         roomCounts[currentFloor]?.['store'] > 0
-                          ? 'bg-blue-600 text-white hover:bg-blue-700'
-                          : 'bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-700 border border-gray-300'
+                          ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                          : 'bg-gray-100 text-gray-700 hover:bg-indigo-50 hover:text-blue-700 border border-gray-300'
                       }`}
                     >
                       {roomCounts[currentFloor]?.['store'] > 0 ? '✓ Added' : '+ Add'}
@@ -843,8 +843,8 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                           onClick={() => toggleSingleRoom(currentFloor, id)}
                           className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                             isSelected
-                              ? 'bg-blue-600 text-white hover:bg-blue-700'
-                              : 'bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-700 border border-gray-300'
+                              ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                              : 'bg-gray-100 text-gray-700 hover:bg-indigo-50 hover:text-blue-700 border border-gray-300'
                           }`}
                         >
                           {isSelected ? '✓ Added' : '+ Add'}
@@ -880,8 +880,8 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                       onClick={() => toggleSingleRoom(currentFloor, 'mumty')}
                       className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                         roomCounts[currentFloor]?.['mumty'] > 0
-                          ? 'bg-blue-600 text-white hover:bg-blue-700'
-                          : 'bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-700 border border-gray-300'
+                          ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                          : 'bg-gray-100 text-gray-700 hover:bg-indigo-50 hover:text-blue-700 border border-gray-300'
                       }`}
                     >
                       {roomCounts[currentFloor]?.['mumty'] > 0 ? '✓ Added' : '+ Add'}
@@ -895,7 +895,7 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                           type="checkbox" 
                           checked={hasParapetWall(currentFloor, 0)}
                           onChange={() => toggleParapetWall(currentFloor, 0)}
-                          className="w-4 h-4 text-blue-600 rounded"
+                          className="w-4 h-4 text-indigo-600 rounded"
                         />
                         <span className="text-sm text-gray-800 font-medium">Add Parapet Walls (Standard 3.5 ft high roof boundary wall)</span>
                       </label>
@@ -908,7 +908,7 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
             <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mt-8 space-y-2">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm font-semibold text-gray-700 gap-1">
                 <span>Overall Space Utilization (All Floors Combined)</span>
-                <span className={areaUtilizationPercent > 100 || areaErrors.length > 0 ? 'text-red-600' : areaUtilizationPercent > 90 ? 'text-amber-600' : 'text-blue-600'}>
+                <span className={areaUtilizationPercent > 100 || areaErrors.length > 0 ? 'text-red-600' : areaUtilizationPercent > 90 ? 'text-amber-600' : 'text-indigo-600'}>
                   {Math.round(areaUtilizationPercent)}% Used ({Math.round(totalRoomArea)} / {Math.round(totalUsableArea)} sq ft)
                 </span>
               </div>
@@ -916,7 +916,7 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                 <div className={`h-full rounded-full transition-all duration-500 ${
                   areaUtilizationPercent > 100 || areaErrors.length > 0 ? 'bg-red-500' :
                   areaUtilizationPercent > 90 ? 'bg-amber-500' :
-                  areaUtilizationPercent > 70 ? 'bg-blue-500' : 'bg-green-500'
+                  areaUtilizationPercent > 70 ? 'bg-indigo-500' : 'bg-green-500'
                 }`} style={{ width: `${Math.min(areaUtilizationPercent, 100)}%` }} />
               </div>
               <p className="text-[11px] text-gray-500">
@@ -1022,22 +1022,22 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                       isExceeded 
                         ? 'bg-red-50 border-red-300 shadow-md ring-1 ring-red-100' 
                         : isActive 
-                          ? 'bg-blue-50 border-blue-400 shadow-md' 
+                          ? 'bg-indigo-50 border-blue-400 shadow-md' 
                           : 'bg-gray-50 border-gray-200 hover:border-blue-300 hover:shadow-sm'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black ${
-                          isExceeded ? 'bg-red-500 text-white' : isActive ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-700'
+                          isExceeded ? 'bg-red-500 text-white' : isActive ? 'bg-indigo-600 text-white' : 'bg-gray-300 text-gray-700'
                         }`}>
                           {index + 1}
                         </div>
-                        <span className={`font-bold text-sm ${isExceeded ? 'text-red-700' : isActive ? 'text-blue-800' : 'text-gray-700'}`}>
+                        <span className={`font-bold text-sm ${isExceeded ? 'text-red-700' : isActive ? 'text-indigo-800' : 'text-gray-700'}`}>
                           {getFloorName(floor.floorNumber)}
                         </span>
                         {isActive && (
-                          <span className="text-[9px] font-semibold bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full uppercase tracking-wider">Current</span>
+                          <span className="text-[9px] font-semibold bg-indigo-100 text-blue-700 px-1.5 py-0.5 rounded-full uppercase tracking-wider">Current</span>
                         )}
                       </div>
                       <span className={`font-black text-sm ${
@@ -1052,7 +1052,7 @@ export default function StepRoomDetails({ onNext }: StepRoomDetailsProps) {
                       <div 
                         className={`h-full rounded-full transition-all duration-500 ${
                           isExceeded ? 'bg-red-500' :
-                          floorPercent > 90 ? 'bg-amber-500' : 'bg-blue-500'
+                          floorPercent > 90 ? 'bg-amber-500' : 'bg-indigo-500'
                         }`}
                         style={{ width: `${Math.min(floorPercent, 100)}%` }}
                       />

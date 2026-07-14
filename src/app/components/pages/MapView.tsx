@@ -57,7 +57,7 @@ export default function MapView({ onMenuClick }: MapViewProps) {
             >
               <Menu className="w-6 h-6 text-gray-600" />
             </button>
-            <Building2 className="w-8 h-8 text-blue-600" />
+            <Building2 className="w-8 h-8 text-indigo-600" />
             <span className="text-xl">ICEMGS - Map View</span>
           </div>
         </div>
@@ -89,7 +89,7 @@ export default function MapView({ onMenuClick }: MapViewProps) {
           </div>
 
           <div className="relative z-10 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-sm mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/20 border border-blue-400/30 text-blue-300 text-sm mb-6">
               <Rocket className="w-4 h-4" />
               <span>Coming Soon</span>
             </div>
@@ -176,7 +176,7 @@ export default function MapView({ onMenuClick }: MapViewProps) {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-400"
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent text-gray-900 placeholder-gray-400"
                 />
                 <button
                   type="submit"
@@ -203,7 +203,7 @@ export default function MapView({ onMenuClick }: MapViewProps) {
                 <div className="flex flex-col items-center">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
                     item.status === 'in-progress'
-                      ? 'bg-blue-100 text-blue-600 ring-4 ring-blue-50'
+                      ? 'bg-indigo-100 text-indigo-600 ring-4 ring-blue-50'
                       : 'bg-gray-100 text-gray-400'
                   }`}>
                     {index + 1}
@@ -216,7 +216,7 @@ export default function MapView({ onMenuClick }: MapViewProps) {
                   <div className="flex items-center gap-3 mb-1">
                     <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{item.phase}</span>
                     {item.status === 'in-progress' && (
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-blue-700">
                         In Progress
                       </span>
                     )}

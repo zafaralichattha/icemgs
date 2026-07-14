@@ -132,18 +132,20 @@ export default function ProjectForm({ onMenuClick }: ProjectFormProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
+    <div className="min-h-screen bg-[#f0f4ff] page-enter">
+      <header className="glass-card border-b border-white/20 sticky top-0 z-10">
         <div className="w-full max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <button
               onClick={onMenuClick}
-              className="p-2 hover:bg-gray-100 rounded-lg mr-2"
+              className="p-2 hover:bg-indigo-50 rounded-xl mr-2 transition-colors"
             >
-              <Menu className="w-6 h-6 text-gray-600" />
+              <Menu className="w-6 h-6 text-indigo-600" />
             </button>
-            <Building2 className="w-8 h-8 text-blue-600" />
-            <span className="text-xl">ICEMGS</span>
+            <div className="w-9 h-9 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200">
+              <Building2 className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-xl font-bold gradient-text">ICEMGS</span>
           </div>
           {isAuthenticated ? (
             <button
@@ -156,14 +158,14 @@ export default function ProjectForm({ onMenuClick }: ProjectFormProps) {
                   alert("Failed to save project. Please try again.");
                 }
               }}
-              className="px-6 py-2 text-gray-600 hover:text-gray-900"
+              className="px-6 py-2 text-indigo-600 hover:text-indigo-800 font-medium hover:bg-indigo-50 rounded-xl transition-all"
             >
               Save & Exit
             </button>
           ) : (
             <Link
               to="/login"
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl hover:shadow-lg hover:shadow-indigo-200 text-sm transition-all duration-300 font-medium"
             >
               <LogIn className="w-4 h-4" />
               Login to Save
@@ -175,12 +177,12 @@ export default function ProjectForm({ onMenuClick }: ProjectFormProps) {
       <div className="w-full max-w-5xl mx-auto px-4 py-8">
         {/* Guest notice */}
         {!isAuthenticated && (
-          <div className="mb-6 bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
+          <div className="mb-6 bg-amber-50/80 backdrop-blur-sm border border-amber-200/50 rounded-2xl p-4 flex items-start gap-3">
             <Info className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
             <div>
               <p className="text-sm text-amber-900 font-medium">You are using ICEMGS as a guest</p>
               <p className="text-sm text-amber-800 mt-1">
-                You can fill out the entire project form, but you'll need to <Link to="/login" className="text-blue-600 underline font-semibold">login</Link> or <Link to="/register" className="text-blue-600 underline font-semibold">register</Link> to save your project and generate the full estimation report.
+                You can fill out the entire project form, but you'll need to <Link to="/login" className="text-indigo-600 underline font-semibold">login</Link> or <Link to="/register" className="text-indigo-600 underline font-semibold">register</Link> to save your project and generate the full estimation report.
               </p>
             </div>
           </div>
@@ -189,14 +191,14 @@ export default function ProjectForm({ onMenuClick }: ProjectFormProps) {
         {/* Progress Steps */}
         <div className="mb-8">
           {/* Mobile view */}
-          <div className="md:hidden bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+          <div className="md:hidden glass-card p-4 rounded-2xl flex items-center justify-between">
             <div>
-              <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">Step {safeCurrentStep} of 6</p>
+              <p className="text-xs text-indigo-500 font-semibold uppercase tracking-wider">Step {safeCurrentStep} of 6</p>
               <h3 className="text-base font-bold text-gray-800">{steps[safeCurrentStep - 1]?.name}</h3>
             </div>
-            <div className="w-24 bg-gray-200 rounded-full h-2">
+            <div className="w-24 bg-indigo-100 rounded-full h-2.5 overflow-hidden">
               <div
-                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                className="progress-gradient h-2.5 rounded-full transition-all duration-300"
                 style={{ width: `${(safeCurrentStep / 6) * 100}%` }}
               />
             </div>
@@ -208,10 +210,10 @@ export default function ProjectForm({ onMenuClick }: ProjectFormProps) {
               <div key={step.id} className="flex items-center">
                 <div className="flex flex-col items-center">
                   <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${
                       safeCurrentStep >= step.id
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-200 text-gray-600'
+                        ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-200'
+                        : 'bg-indigo-100 text-indigo-400'
                     }`}
                   >
                     {projectData.completedSteps.includes(step.id) ? (
@@ -224,8 +226,8 @@ export default function ProjectForm({ onMenuClick }: ProjectFormProps) {
                 </div>
                 {index < steps.length - 1 && (
                   <div
-                    className={`h-1 w-12 mx-2 ${
-                      safeCurrentStep > step.id ? 'bg-blue-600' : 'bg-gray-200'
+                    className={`h-1 w-12 mx-2 rounded-full transition-all duration-300 ${
+                      safeCurrentStep > step.id ? 'bg-gradient-to-r from-indigo-500 to-purple-500' : 'bg-indigo-100'
                     }`}
                   />
                 )}
@@ -235,7 +237,7 @@ export default function ProjectForm({ onMenuClick }: ProjectFormProps) {
         </div>
 
         {/* Current Step */}
-        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-8 mb-6">
+        <div className="glass-card rounded-2xl p-4 sm:p-8 mb-6">
           {safeCurrentStep === 6 ? (
             <StepReview onSubmit={handleSubmit} />
           ) : (
@@ -244,9 +246,9 @@ export default function ProjectForm({ onMenuClick }: ProjectFormProps) {
         </div>
 
         {/* Info Box */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
-          <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-blue-900">
+        <div className="bg-indigo-50/80 backdrop-blur-sm border border-indigo-200/50 rounded-2xl p-4 flex items-start gap-3">
+          <Info className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-indigo-900">
             {isAuthenticated
               ? 'Remember to save your progress using the "Save & Exit" button before leaving. You can continue later from where you left off.'
               : 'Login or register to save your project progress and access your estimation reports anytime.'

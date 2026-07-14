@@ -132,7 +132,7 @@ export default function StepPlotDetails({ onNext }: StepPlotDetailsProps) {
             onClick={() => setInputType('dimensions')}
             className={`w-full sm:flex-1 py-2.5 text-center rounded-lg font-semibold transition-colors ${
               inputType === 'dimensions'
-                ? 'bg-blue-600 text-white shadow-sm'
+                ? 'bg-indigo-600 text-white shadow-sm'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
@@ -143,7 +143,7 @@ export default function StepPlotDetails({ onNext }: StepPlotDetailsProps) {
             onClick={() => setInputType('marlas')}
             className={`w-full sm:flex-1 py-2.5 text-center rounded-lg font-semibold transition-colors ${
               inputType === 'marlas'
-                ? 'bg-blue-600 text-white shadow-sm'
+                ? 'bg-indigo-600 text-white shadow-sm'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
@@ -173,7 +173,7 @@ export default function StepPlotDetails({ onNext }: StepPlotDetailsProps) {
                     }
                   }}
                   min="0"
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-transparent ${
                     errors.plotLength ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="e.g., 25"
@@ -201,7 +201,7 @@ export default function StepPlotDetails({ onNext }: StepPlotDetailsProps) {
                     }
                   }}
                   min="0"
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-transparent ${
                     errors.plotWidth ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="e.g., 45"
@@ -232,7 +232,7 @@ export default function StepPlotDetails({ onNext }: StepPlotDetailsProps) {
                     }
                   }}
                   min="0"
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-transparent ${
                     errors.plotMarlas ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="e.g., 5, 10, 20"
@@ -339,7 +339,7 @@ export default function StepPlotDetails({ onNext }: StepPlotDetailsProps) {
               type="text"
               value={formData.location}
               onChange={(e) => handleChange('location', e.target.value)}
-              className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+              className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-transparent ${
                 errors.location ? 'border-red-500' : 'border-gray-300'
               }`}
               placeholder="e.g., DHA Phase 5, Lahore"
@@ -348,8 +348,8 @@ export default function StepPlotDetails({ onNext }: StepPlotDetailsProps) {
           {errors.location && <p className="text-red-600 text-sm mt-1">{errors.location}</p>}
         </div>
 
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <p className="text-sm text-blue-900">
+        <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+          <p className="text-sm text-indigo-900">
             <strong>Note:</strong> The marla is a traditional unit of area used in Pakistan and India. 
             The standard marla in Lahore is 272.25 sq ft (equivalent to 9 sq yards or 25.29 sq meters).
           </p>
@@ -357,7 +357,7 @@ export default function StepPlotDetails({ onNext }: StepPlotDetailsProps) {
 
         <button
           type="submit"
-          className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="w-full py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
         >
           Save & Continue to Room Details
         </button>

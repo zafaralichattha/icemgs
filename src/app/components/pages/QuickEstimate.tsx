@@ -92,7 +92,7 @@ export default function QuickEstimate({ onMenuClick }: QuickEstimateProps) {
             >
               <Menu className="w-6 h-6 text-gray-600" />
             </button>
-            <Building2 className="w-8 h-8 text-blue-600" />
+            <Building2 className="w-8 h-8 text-indigo-600" />
             <span className="text-xl">ICEMGS - Quick Estimate</span>
           </div>
         </div>
@@ -108,7 +108,7 @@ export default function QuickEstimate({ onMenuClick }: QuickEstimateProps) {
 
         <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8">
           <div className="flex items-center gap-3 mb-6">
-            <Calculator className="w-8 h-8 text-blue-600" />
+            <Calculator className="w-8 h-8 text-indigo-600" />
             <h2 className="text-xl sm:text-2xl">Enter Plot Details</h2>
           </div>
 
@@ -118,7 +118,7 @@ export default function QuickEstimate({ onMenuClick }: QuickEstimateProps) {
               onClick={() => setInputType('dimensions')}
               className={`w-full sm:flex-1 py-2.5 text-center rounded-lg font-semibold transition-colors ${
                 inputType === 'dimensions'
-                  ? 'bg-blue-600 text-white shadow-sm'
+                  ? 'bg-indigo-600 text-white shadow-sm'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
@@ -129,7 +129,7 @@ export default function QuickEstimate({ onMenuClick }: QuickEstimateProps) {
               onClick={() => setInputType('marlas')}
               className={`w-full sm:flex-1 py-2.5 text-center rounded-lg font-semibold transition-colors ${
                 inputType === 'marlas'
-                  ? 'bg-blue-600 text-white shadow-sm'
+                  ? 'bg-indigo-600 text-white shadow-sm'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
@@ -157,7 +157,7 @@ export default function QuickEstimate({ onMenuClick }: QuickEstimateProps) {
                       }
                     }}
                     min="0"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400"
                     placeholder="e.g., 25"
                   />
                 </div>
@@ -179,7 +179,7 @@ export default function QuickEstimate({ onMenuClick }: QuickEstimateProps) {
                       }
                     }}
                     min="0"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400"
                     placeholder="e.g., 45"
                   />
                 </div>
@@ -203,7 +203,7 @@ export default function QuickEstimate({ onMenuClick }: QuickEstimateProps) {
                       }
                     }}
                     min="0"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400"
                     placeholder="e.g., 5"
                   />
                 </div>
@@ -213,7 +213,7 @@ export default function QuickEstimate({ onMenuClick }: QuickEstimateProps) {
                   <select
                     value={marlaSize}
                     onChange={(e) => setMarlaSize(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400"
                   >
                     <option value="225">225 sq ft (Lahore Standard)</option>
                     <option value="250">250 sq ft (KPK/Others)</option>
@@ -228,7 +228,7 @@ export default function QuickEstimate({ onMenuClick }: QuickEstimateProps) {
               <select
                 value={floors}
                 onChange={(e) => setFloors(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400"
               >
                 <option value="1">1 Floor (Ground Only)</option>
                 <option value="2">2 Floors (Ground + 1st)</option>
@@ -241,7 +241,7 @@ export default function QuickEstimate({ onMenuClick }: QuickEstimateProps) {
               <select
                 value={quality}
                 onChange={(e) => setQuality(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400"
               >
                 <option value="economy">Economy</option>
                 <option value="standard">Standard</option>
@@ -276,27 +276,27 @@ export default function QuickEstimate({ onMenuClick }: QuickEstimateProps) {
               </div>
 
               {/* Calculation breakdown */}
-              <div className="p-5 bg-blue-50 border border-blue-200 rounded-xl">
-                <h4 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
+              <div className="p-5 bg-indigo-50 border border-indigo-200 rounded-xl">
+                <h4 className="font-semibold text-indigo-900 mb-3 flex items-center gap-2">
                   <TrendingUp className="w-5 h-5" />
                   Calculation Breakdown
                 </h4>
                 <div className="grid md:grid-cols-2 gap-3 text-sm">
-                  <div className="bg-white rounded-lg p-3 border border-blue-200">
+                  <div className="bg-white rounded-lg p-3 border border-indigo-200">
                     <p className="text-gray-600">Plot Area</p>
-                    <p className="font-semibold text-blue-900">{breakdown.plotArea} sq ft</p>
+                    <p className="font-semibold text-indigo-900">{breakdown.plotArea} sq ft</p>
                   </div>
-                  <div className="bg-white rounded-lg p-3 border border-blue-200">
+                  <div className="bg-white rounded-lg p-3 border border-indigo-200">
                     <p className="text-gray-600">Covered Area (65%)</p>
-                    <p className="font-semibold text-blue-900">{breakdown.coveredArea} sq ft</p>
+                    <p className="font-semibold text-indigo-900">{breakdown.coveredArea} sq ft</p>
                   </div>
-                  <div className="bg-white rounded-lg p-3 border border-blue-200">
+                  <div className="bg-white rounded-lg p-3 border border-indigo-200">
                     <p className="text-gray-600">Total Built Area ({floors} floor{parseInt(floors) > 1 ? 's' : ''})</p>
-                    <p className="font-semibold text-blue-900">{breakdown.totalBuiltArea} sq ft</p>
+                    <p className="font-semibold text-indigo-900">{breakdown.totalBuiltArea} sq ft</p>
                   </div>
-                  <div className="bg-white rounded-lg p-3 border border-blue-200">
+                  <div className="bg-white rounded-lg p-3 border border-indigo-200">
                     <p className="text-gray-600">Rate per sq ft ({quality})</p>
-                    <p className="font-semibold text-blue-900">Rs. {breakdown.ratePerSqFt.toLocaleString()}</p>
+                    <p className="font-semibold text-indigo-900">Rs. {breakdown.ratePerSqFt.toLocaleString()}</p>
                   </div>
                 </div>
                 <p className="text-xs text-blue-700 mt-3">
@@ -332,12 +332,12 @@ export default function QuickEstimate({ onMenuClick }: QuickEstimateProps) {
             <p className="text-lg font-bold text-gray-700">Rs. 2,800/sq ft</p>
             <p className="text-xs text-gray-500 mt-1">Basic materials</p>
           </div>
-          <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-4">
-            <p className="text-sm text-blue-900">
+          <div className="bg-indigo-50 border-2 border-blue-300 rounded-lg p-4">
+            <p className="text-sm text-indigo-900">
               <strong>Standard</strong>
             </p>
             <p className="text-lg font-bold text-blue-700">Rs. 3,500/sq ft</p>
-            <p className="text-xs text-blue-600 mt-1">Quality materials</p>
+            <p className="text-xs text-indigo-600 mt-1">Quality materials</p>
           </div>
           <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
             <p className="text-sm text-purple-900">

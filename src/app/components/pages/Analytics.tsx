@@ -60,7 +60,7 @@ export default function Analytics({ onMenuClick }: AnalyticsProps) {
             >
               <Menu className="w-6 h-6 text-gray-600" />
             </button>
-            <Building2 className="w-8 h-8 text-blue-600" />
+            <Building2 className="w-8 h-8 text-indigo-600" />
             <span className="text-xl">ICEMGS - Analytics</span>
           </div>
         </div>
@@ -126,7 +126,7 @@ export default function Analytics({ onMenuClick }: AnalyticsProps) {
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-lg text-blue-600">
+                        <p className="text-lg text-indigo-600">
                           Rs. {estimatedCost > 0 ? estimatedCost.toLocaleString() : 'Pending'}
                         </p>
                         <p className="text-xs text-gray-500">
@@ -136,7 +136,7 @@ export default function Analytics({ onMenuClick }: AnalyticsProps) {
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div
-                        className="bg-blue-600 h-2 rounded-full"
+                        className="bg-indigo-600 h-2 rounded-full"
                         style={{ width: `${progress}%` }}
                       />
                     </div>

@@ -96,42 +96,49 @@ export default function LoginPage({ onMenuClick }: LoginPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4">
+    <div className="min-h-screen relative overflow-hidden flex items-center justify-center px-4 page-enter">
+      {/* Animated Background */}
+      <div className="absolute inset-0 animated-gradient-bg"></div>
+      <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl float-animation"></div>
+      <div className="absolute bottom-20 right-20 w-96 h-96 bg-indigo-500/15 rounded-full blur-3xl float-animation" style={{ animationDelay: '3s' }}></div>
+
       <button
         onClick={onMenuClick}
-        className="fixed top-4 left-4 p-2 bg-white hover:bg-gray-100 rounded-lg shadow-md z-10"
+        className="fixed top-4 left-4 p-2 bg-white/10 backdrop-blur-md hover:bg-white/20 rounded-xl shadow-lg z-10 border border-white/20 transition-all"
       >
-        <Menu className="w-6 h-6 text-gray-600" />
+        <Menu className="w-6 h-6 text-white" />
       </button>
 
-      <div className="max-w-md w-full">
+      <div className="relative max-w-md w-full">
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 mb-6">
-            <Building2 className="w-10 h-10 text-blue-600" />
-            <span className="text-2xl">ICEMGS</span>
+          <Link to="/" className="inline-flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
+              <Building2 className="w-7 h-7 text-white" />
+            </div>
+            <span className="text-2xl font-bold text-white">ICEMGS</span>
           </Link>
-          <h1 className="text-3xl mb-2">Welcome Back</h1>
-          <p className="text-gray-600">Login to access your construction projects</p>
+          <h1 className="text-3xl font-bold mb-2 text-white">Welcome Back</h1>
+          <p className="text-indigo-200">Login to access your construction projects</p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8">
+        <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-6 sm:p-8 border border-white/15 shadow-2xl">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-2">
-                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                <p className="text-red-600">{error}</p>
+              <div className="bg-red-500/10 border border-red-400/30 rounded-xl p-4 flex items-start gap-2 backdrop-blur-sm">
+                <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                <p className="text-red-300">{error}</p>
               </div>
             )}
 
             <div>
-              <label className="block mb-2">Email Address</label>
+              <label className="block mb-2 text-sm font-medium text-indigo-100">Email Address</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-indigo-300" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-indigo-300/60 focus:ring-2 focus:ring-indigo-400 focus:border-transparent backdrop-blur-sm transition-all"
                   placeholder="your.email@example.com"
                   autoComplete="email"
                 />
@@ -139,14 +146,14 @@ export default function LoginPage({ onMenuClick }: LoginPageProps) {
             </div>
 
             <div>
-              <label className="block mb-2">Password</label>
+              <label className="block mb-2 text-sm font-medium text-indigo-100">Password</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-indigo-300" />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-indigo-300/60 focus:ring-2 focus:ring-indigo-400 focus:border-transparent backdrop-blur-sm transition-all"
                   placeholder="Enter your password"
                   autoComplete="current-password"
                 />
@@ -156,7 +163,7 @@ export default function LoginPage({ onMenuClick }: LoginPageProps) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-semibold hover:-translate-y-0.5"
             >
               {loading ? 'Logging in...' : 'Login'}
             </button>
@@ -164,10 +171,10 @@ export default function LoginPage({ onMenuClick }: LoginPageProps) {
 
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300"></div>
+              <div className="w-full border-t border-white/15"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or</span>
+              <span className="px-3 text-indigo-300">Or</span>
             </div>
           </div>
 
@@ -176,7 +183,7 @@ export default function LoginPage({ onMenuClick }: LoginPageProps) {
             type="button"
             onClick={handleGoogleLogin}
             disabled={loading}
-            className="w-full py-3 px-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 flex items-center justify-center gap-3 mb-6 disabled:opacity-50"
+            className="w-full py-3 px-4 bg-white text-gray-800 font-medium border-0 rounded-xl hover:bg-gray-100 flex items-center justify-center gap-3 mb-6 disabled:opacity-50 transition-all shadow-md"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -188,9 +195,9 @@ export default function LoginPage({ onMenuClick }: LoginPageProps) {
           </button>
 
           <div className="text-center">
-            <p className="text-gray-600">
+            <p className="text-indigo-200">
               Don't have an account?{' '}
-              <Link to="/register" className="text-blue-600 hover:underline">
+              <Link to="/register" className="text-purple-300 hover:text-white font-semibold transition-colors underline underline-offset-2">
                 Register here
               </Link>
             </p>

@@ -41,7 +41,7 @@ export default function CostPrediction({ onMenuClick }: CostPredictionProps) {
 
   const trendIcon = (t: string) => t === 'rising' ? <ArrowUpRight className="w-4 h-4 text-red-500"/> : t === 'falling' ? <ArrowDownRight className="w-4 h-4 text-green-500"/> : <Minus className="w-4 h-4 text-yellow-500"/>;
   const impactColor = (i: string) => i === 'high' ? 'bg-red-100 text-red-700 border-red-200' : i === 'medium' ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-green-100 text-green-700 border-green-200';
-  const priorityColor = (p: string) => p === 'high' ? 'bg-red-500' : p === 'medium' ? 'bg-amber-500' : 'bg-blue-500';
+  const priorityColor = (p: string) => p === 'high' ? 'bg-red-500' : p === 'medium' ? 'bg-amber-500' : 'bg-indigo-500';
 
   return (
     <div className="min-h-screen" style={{background:'linear-gradient(135deg,#0f0c29 0%,#302b63 50%,#24243e 100%)'}}>

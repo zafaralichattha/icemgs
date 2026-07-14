@@ -64,14 +64,14 @@ export default function StepGrayStructure({ onNext }: StepGrayStructureProps) {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Construction Type Selection */}
-        <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4">
+        <div className="bg-indigo-50 border-2 border-indigo-200 rounded-lg p-4">
           <label className="block mb-3">
-            <span className="font-semibold text-blue-900">What do you want to build?</span>
+            <span className="font-semibold text-indigo-900">What do you want to build?</span>
             <span className="text-red-600"> *</span>
           </label>
           <div className="space-y-3">
-            <label className={`flex items-start gap-3 p-3 bg-white rounded-lg border-2 cursor-pointer hover:border-blue-500 transition-colors ${
-              constructionType === 'gray-only' ? 'border-blue-600 bg-blue-50' : 'border-gray-200'
+            <label className={`flex items-start gap-3 p-3 bg-white rounded-lg border-2 cursor-pointer hover:border-indigo-500 transition-colors ${
+              constructionType === 'gray-only' ? 'border-blue-600 bg-indigo-50' : 'border-gray-200'
             }`}>
               <input
                 type="radio"
@@ -89,8 +89,8 @@ export default function StepGrayStructure({ onNext }: StepGrayStructureProps) {
               </div>
             </label>
             
-            <label className={`flex items-start gap-3 p-3 bg-white rounded-lg border-2 cursor-pointer hover:border-blue-500 transition-colors ${
-              constructionType === 'complete' ? 'border-blue-600 bg-blue-50' : 'border-gray-200'
+            <label className={`flex items-start gap-3 p-3 bg-white rounded-lg border-2 cursor-pointer hover:border-indigo-500 transition-colors ${
+              constructionType === 'complete' ? 'border-blue-600 bg-indigo-50' : 'border-gray-200'
             }`}>
               <input
                 type="radio"
@@ -302,7 +302,7 @@ export default function StepGrayStructure({ onNext }: StepGrayStructureProps) {
                 type="checkbox"
                 checked={formData.spiralStairs}
                 onChange={(e) => handleChange('spiralStairs', e.target.checked as any)}
-                className="w-4 h-4 text-blue-600 rounded"
+                className="w-4 h-4 text-indigo-600 rounded"
               />
               <span className="font-medium text-gray-900">Include Spiral Stairs (e.g., for roof access)</span>
             </label>
@@ -332,11 +332,11 @@ export default function StepGrayStructure({ onNext }: StepGrayStructureProps) {
         </div>
 
         {constructionType === 'gray-only' && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
             <div className="flex gap-3">
-              <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+              <AlertCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm text-blue-900">
+                <p className="text-sm text-indigo-900">
                   <strong>Note:</strong> You've selected "Basic Structure Only". 
                   Your estimate will NOT include tiles, paint, doors, windows, or fittings. 
                   You can add these later or hire separately.
@@ -348,7 +348,7 @@ export default function StepGrayStructure({ onNext }: StepGrayStructureProps) {
 
         <button
           type="submit"
-          className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="w-full py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
         >
           {constructionType === 'gray-only' 
             ? 'Continue to Compliance Check' 

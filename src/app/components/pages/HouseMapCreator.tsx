@@ -76,7 +76,7 @@ export default function HouseMapCreator({ onMenuClick }: HouseMapCreatorProps) {
             >
               <Menu className="w-6 h-6 text-gray-600" />
             </button>
-            <Building2 className="w-8 h-8 text-blue-600" />
+            <Building2 className="w-8 h-8 text-indigo-600" />
             <span className="text-base sm:text-xl">ICEMGS - House Map Creator</span>
           </div>
         </div>
@@ -151,7 +151,7 @@ export default function HouseMapCreator({ onMenuClick }: HouseMapCreatorProps) {
                 onClick={() => setViewMode('2d')}
                 className={`flex-1 flex items-center justify-center gap-2 px-6 py-4 text-sm font-semibold transition-all ${
                   viewMode === '2d'
-                    ? 'bg-white text-blue-600 border-b-2 border-blue-600 shadow-sm'
+                    ? 'bg-white text-indigo-600 border-b-2 border-blue-600 shadow-sm'
                     : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
@@ -177,10 +177,10 @@ export default function HouseMapCreator({ onMenuClick }: HouseMapCreatorProps) {
                 <div className="text-center max-w-lg">
                   {/* Stylized 2D floor plan wireframe preview */}
                   <div className="relative w-full max-w-md mx-auto mb-6">
-                    <div className="border-4 border-dashed border-blue-300 rounded-xl p-6 bg-blue-50/30">
+                    <div className="border-4 border-dashed border-blue-300 rounded-xl p-6 bg-indigo-50/30">
                       <div className="grid grid-cols-3 gap-2">
-                        <div className="col-span-2 border-2 border-blue-400 rounded-lg p-3 bg-blue-100/50 h-24 flex items-center justify-center">
-                          <span className="text-xs font-semibold text-blue-600">Living Room</span>
+                        <div className="col-span-2 border-2 border-blue-400 rounded-lg p-3 bg-indigo-100/50 h-24 flex items-center justify-center">
+                          <span className="text-xs font-semibold text-indigo-600">Living Room</span>
                         </div>
                         <div className="border-2 border-green-400 rounded-lg p-3 bg-green-100/50 h-24 flex items-center justify-center">
                           <span className="text-xs font-semibold text-green-600">Kitchen</span>
@@ -200,7 +200,7 @@ export default function HouseMapCreator({ onMenuClick }: HouseMapCreatorProps) {
                       <div className="absolute -right-8 top-1/2 -translate-y-1/2 bg-white px-2 text-xs text-gray-500 font-mono rotate-90">45' 0"</div>
                     </div>
                   </div>
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-medium mb-3">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-100 text-blue-700 text-sm font-medium mb-3">
                     <Grid3x3 className="w-4 h-4" />
                     2D Floor Plan Preview
                   </div>

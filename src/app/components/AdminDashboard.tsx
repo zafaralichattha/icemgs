@@ -509,7 +509,7 @@ export default function AdminDashboard({ onMenuClick }: AdminDashboardProps) {
                     <div className="flex gap-2 pt-4">
                       <button
                         onClick={handleSaveUser}
-                        className="flex-1 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                        className="flex-1 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
                       >
                         Save Changes
                       </button>
@@ -544,7 +544,7 @@ export default function AdminDashboard({ onMenuClick }: AdminDashboardProps) {
                       <td className="px-4 py-3">
                         <span className={`px-3 py-1 rounded-full text-sm ${
                           userData.role === 'admin' ? 'bg-purple-100 text-purple-800' :
-                          userData.role === 'contractor' ? 'bg-blue-100 text-blue-800' :
+                          userData.role === 'contractor' ? 'bg-indigo-100 text-indigo-800' :
                           userData.role === 'student' ? 'bg-green-100 text-green-800' :
                           'bg-gray-100 text-gray-800'
                         }`}>
@@ -556,7 +556,7 @@ export default function AdminDashboard({ onMenuClick }: AdminDashboardProps) {
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleEditUser(userData)}
-                            className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                            className="p-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
                             title="Edit User"
                           >
                             <Edit2 className="w-4 h-4" />
@@ -589,7 +589,7 @@ export default function AdminDashboard({ onMenuClick }: AdminDashboardProps) {
                 <button
                   onClick={handleSyncPrices}
                   disabled={isSyncing}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                  className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50"
                 >
                   <TrendingUp className="w-5 h-5" />
                   {isSyncing ? "Syncing..." : "Sync from Trusted Source"}
@@ -665,7 +665,7 @@ export default function AdminDashboard({ onMenuClick }: AdminDashboardProps) {
                         ) : (
                           <button
                             onClick={() => setEditingMaterial(material.id)}
-                            className="flex items-center gap-1 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                            className="flex items-center gap-1 px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700"
                           >
                             <Edit2 className="w-4 h-4" />
                             Edit
@@ -707,7 +707,7 @@ export default function AdminDashboard({ onMenuClick }: AdminDashboardProps) {
                     <span className="text-gray-600">Status</span>
                     <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
                       project.status === 'completed' ? 'bg-green-100 text-green-800' :
-                      project.status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
+                      project.status === 'in_progress' ? 'bg-indigo-100 text-indigo-800' :
                       'bg-gray-100 text-gray-800'
                     }`}>{project.status_display || project.status}</span>
                   </div>

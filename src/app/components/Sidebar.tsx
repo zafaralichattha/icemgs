@@ -68,52 +68,52 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity"
           onClick={onClose}
         />
       )}
 
       {/* Sidebar */}
-      <aside className={`fixed left-0 top-0 h-screen w-64 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white shadow-2xl flex flex-col z-50 transform transition-transform duration-300 ${
+      <aside className={`fixed left-0 top-0 h-screen w-72 bg-gradient-to-b from-[#0f0a2a] via-[#1a1145] to-[#0f0a2a] text-white shadow-2xl shadow-indigo-900/30 flex flex-col z-50 transform transition-transform duration-300 ${
         isOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         {/* Logo Section */}
-        <div className="p-6 border-b border-gray-700">
+        <div className="p-6 border-b border-indigo-500/15">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
                 <Building2 className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h1 className="text-xl tracking-wide">ICEMGS</h1>
-                <p className="text-xs text-gray-400">Construction Estimator</p>
+                <h1 className="text-xl tracking-wide font-bold">ICEMGS</h1>
+                <p className="text-xs text-indigo-300">Construction Estimator</p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="p-1 hover:bg-gray-700 rounded-lg transition-colors"
+              className="p-1.5 hover:bg-white/10 rounded-xl transition-colors"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5 text-indigo-300" />
             </button>
           </div>
         </div>
 
         {/* User Profile */}
         {isAuthenticated && user && (
-          <div className="px-4 py-4 border-b border-gray-700">
-            <div className="flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg">
-              <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
-                <span className="text-lg">
+          <div className="px-4 py-4 border-b border-indigo-500/15">
+            <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-xl border border-indigo-500/15">
+              <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
+                <span className="text-lg font-bold">
                   {user.first_name ? user.first_name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
                 </span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm truncate">
+                <p className="text-sm truncate font-medium text-indigo-100">
                   {user.first_name && user.last_name
                     ? `${user.first_name} ${user.last_name}`
                     : user.email}
                 </p>
-                <p className="text-xs text-gray-400 capitalize">{user.role}</p>
+                <p className="text-xs text-indigo-400 capitalize">{user.role}</p>
               </div>
             </div>
           </div>
@@ -131,14 +131,14 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 <button
                   key={item.id}
                   onClick={() => handleNavigate(item.path)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                     active
-                      ? 'bg-blue-600 text-white shadow-lg'
-                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                      ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/25'
+                      : 'text-indigo-200 hover:bg-white/5 hover:text-white'
                   }`}
                 >
                   <Icon className="w-5 h-5" />
-                  <span className="text-sm">{item.label}</span>
+                  <span className="text-sm font-medium">{item.label}</span>
                 </button>
               );
             })}
@@ -147,8 +147,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             {user?.role === 'admin' && (
               <>
                 <div className="my-4 px-4">
-                  <div className="border-t border-gray-700"></div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wider mt-4 mb-2">
+                  <div className="border-t border-indigo-500/15"></div>
+                  <p className="text-xs text-indigo-500 uppercase tracking-wider mt-4 mb-2 font-semibold">
                     Admin Tools
                   </p>
                 </div>
@@ -161,14 +161,14 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                     <button
                       key={item.id}
                       onClick={() => handleNavigate(item.path)}
-                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                         active
-                          ? 'bg-purple-600 text-white shadow-lg'
-                          : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                          ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white shadow-lg shadow-purple-500/25'
+                          : 'text-indigo-200 hover:bg-white/5 hover:text-white'
                       }`}
                     >
                       <Icon className="w-5 h-5" />
-                      <span className="text-sm">{item.label}</span>
+                      <span className="text-sm font-medium">{item.label}</span>
                     </button>
                   );
                 })}
@@ -178,26 +178,26 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         </nav>
 
         {/* Bottom Actions */}
-        <div className="p-4 border-t border-gray-700">
+        <div className="p-4 border-t border-indigo-500/15">
           {isAuthenticated ? (
             <button
               onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-red-600/10 text-red-400 hover:bg-red-600 hover:text-white transition-all duration-200"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-all duration-200 border border-red-500/20 hover:border-transparent"
             >
               <LogOut className="w-5 h-5" />
-              <span className="text-sm">Logout</span>
+              <span className="text-sm font-medium">Logout</span>
             </button>
           ) : (
             <div className="space-y-2">
               <button
                 onClick={() => handleNavigate('/login')}
-                className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm transition-colors"
+                className="w-full px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 hover:shadow-lg hover:shadow-indigo-500/25 rounded-xl text-sm font-medium transition-all"
               >
                 Login
               </button>
               <button
                 onClick={() => handleNavigate('/register')}
-                className="w-full px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm transition-colors"
+                className="w-full px-4 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl text-sm font-medium transition-colors border border-indigo-500/15"
               >
                 Register
               </button>
@@ -207,7 +207,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
         {/* Footer */}
         <div className="px-4 pb-4">
-          <p className="text-xs text-gray-500 text-center">
+          <p className="text-xs text-indigo-500/60 text-center">
             © 2026 ICEMGS
           </p>
         </div>

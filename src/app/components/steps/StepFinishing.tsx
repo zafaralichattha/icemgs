@@ -71,12 +71,12 @@ export default function StepFinishing({ onNext }: StepFinishingProps) {
           </p>
         </div>
 
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+        <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-6 mb-6">
           <div className="flex gap-3">
-            <AlertCircle className="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" />
+            <AlertCircle className="w-6 h-6 text-indigo-600 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold text-blue-900 mb-2">Basic Structure Only</p>
-              <p className="text-sm text-blue-900">
+              <p className="font-semibold text-indigo-900 mb-2">Basic Structure Only</p>
+              <p className="text-sm text-indigo-900">
                 You've chosen to estimate basic structure only. This step is skipped. 
                 Your estimate includes only foundation, walls, pillars, roof, and plaster.
               </p>
@@ -86,7 +86,7 @@ export default function StepFinishing({ onNext }: StepFinishingProps) {
 
         <button
           onClick={handleSubmit}
-          className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="w-full py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
         >
           Continue to Compliance Check
         </button>
@@ -346,7 +346,7 @@ export default function StepFinishing({ onNext }: StepFinishingProps) {
 
         <button
           type="submit"
-          className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="w-full py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
         >
           Continue to Compliance Check
         </button>

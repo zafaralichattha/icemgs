@@ -82,7 +82,7 @@ export default function MaterialRates({ onMenuClick }: MaterialRatesProps) {
   const getQualityBadge = (quality?: string) => {
     if (!quality) return null;
     const colors = {
-      standard: 'bg-blue-100 text-blue-800',
+      standard: 'bg-indigo-100 text-indigo-800',
       good: 'bg-green-100 text-green-800',
       premium: 'bg-purple-100 text-purple-800'
     };
@@ -104,7 +104,7 @@ export default function MaterialRates({ onMenuClick }: MaterialRatesProps) {
             >
               <Menu className="w-6 h-6 text-gray-600" />
             </button>
-            <Building2 className="w-8 h-8 text-blue-600" />
+            <Building2 className="w-8 h-8 text-indigo-600" />
             <span className="text-xl">ICEMGS</span>
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
@@ -150,7 +150,7 @@ export default function MaterialRates({ onMenuClick }: MaterialRatesProps) {
                 onClick={() => setActiveCategory(category)}
                 className={`px-4 py-2 rounded-lg transition-colors ${
                   activeCategory === category
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-indigo-600 text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
@@ -194,7 +194,7 @@ export default function MaterialRates({ onMenuClick }: MaterialRatesProps) {
                           type="number"
                           value={editRate}
                           onChange={(e) => setEditRate(parseFloat(e.target.value))}
-                          className="w-32 px-3 py-2 border border-blue-500 rounded-lg text-right font-semibold"
+                          className="w-32 px-3 py-2 border border-indigo-500 rounded-lg text-right font-semibold"
                           autoFocus
                         />
                       ) : (
@@ -229,7 +229,7 @@ export default function MaterialRates({ onMenuClick }: MaterialRatesProps) {
                           ) : (
                             <button
                               onClick={() => handleEditClick(material)}
-                              className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                              className="p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
                               title="Edit Rate"
                             >
                               <Edit2 className="w-4 h-4" />
@@ -246,12 +246,12 @@ export default function MaterialRates({ onMenuClick }: MaterialRatesProps) {
         </div>
 
         {user?.role !== 'admin' && (
-          <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-6">
+          <div className="mt-6 bg-indigo-50 border border-indigo-200 rounded-xl p-6">
             <div className="flex items-start gap-3">
-              <Shield className="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" />
+              <Shield className="w-6 h-6 text-indigo-600 flex-shrink-0 mt-0.5" />
               <div>
-                <h3 className="font-semibold text-blue-900 mb-2">Admin Access Required</h3>
-                <p className="text-sm text-blue-800">
+                <h3 className="font-semibold text-indigo-900 mb-2">Admin Access Required</h3>
+                <p className="text-sm text-indigo-800">
                   Only administrators can update material rates. These rates are used to calculate project costs. 
                   Contact your system administrator if you need to request rate changes.
                 </p>

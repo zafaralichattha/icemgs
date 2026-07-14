@@ -239,7 +239,7 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
             >
               <Menu className="w-6 h-6 text-gray-600" />
             </button>
-            <Building2 className="w-8 h-8 text-blue-600" />
+            <Building2 className="w-8 h-8 text-indigo-600" />
             <span className="text-xl">ICEMGS</span>
           </div>
           <div className="flex flex-wrap gap-1.5 sm:gap-4 justify-end">
@@ -351,7 +351,7 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
             {/* Floor & Room Summary */}
             <div className="bg-white rounded-xl shadow-sm p-6 w-full overflow-hidden">
               <div className="flex items-center gap-2 mb-4">
-                <Home className="w-6 h-6 text-blue-600" />
+                <Home className="w-6 h-6 text-indigo-600" />
                 <h2 className="text-2xl">Floor & Room Summary</h2>
               </div>
               {(projectDetails.floors || []).length > 0 ? (
@@ -366,7 +366,7 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
                         {activeRooms.length > 0 ? (
                           <div className="flex flex-wrap gap-2">
                             {activeRooms.map((room: any, ri: number) => (
-                              <span key={ri} className="px-3 py-1 bg-blue-50 text-blue-700 text-sm rounded-full border border-blue-200">
+                              <span key={ri} className="px-3 py-1 bg-indigo-50 text-blue-700 text-sm rounded-full border border-indigo-200">
                                 {(room.room_type_display || room.room_type || '').replace('_', ' ')} ({(room.size || '').charAt(0).toUpperCase() + (room.size || '').slice(1)})
                               </span>
                             ))}
@@ -715,7 +715,7 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
                               </div>
                               <span className={`text-[8px] px-1.5 py-0.5 rounded font-bold uppercase text-white ${
                                 r.priority === 'high' ? 'bg-red-600' :
-                                r.priority === 'medium' ? 'bg-amber-600' : 'bg-blue-600'
+                                r.priority === 'medium' ? 'bg-amber-600' : 'bg-indigo-600'
                               }`}>
                                 {r.priority}
                               </span>
@@ -835,11 +835,11 @@ export default function ProjectResults({ onMenuClick }: ProjectResultsProps) {
         )}
 
         {projectData.constructionType === 'gray-only' && (
-          <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 mb-8 w-full max-w-full overflow-hidden">
+          <div className="bg-indigo-50 border-2 border-indigo-200 rounded-xl p-6 mb-8 w-full max-w-full overflow-hidden">
             <div className="flex items-center gap-3">
-              <Sparkles className="w-6 h-6 text-blue-600" />
+              <Sparkles className="w-6 h-6 text-indigo-600" />
               <div>
-                <h3 className="font-semibold text-blue-900">Gray Structure Only Selected</h3>
+                <h3 className="font-semibold text-indigo-900">Gray Structure Only Selected</h3>
                 <p className="text-sm text-blue-700">
                   Finishing materials are not included in this estimate. Add finishing work separately when ready.
                 </p>
